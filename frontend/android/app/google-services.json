@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "797572013164",
+    "project_id": "abimind-2caf8",
+    "storage_bucket": "abimind-2caf8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797572013164:android:69046c3c2f5c73e265cc49",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY3vJrgfNHPiMstzDukGpCCcWOLOpDc_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
