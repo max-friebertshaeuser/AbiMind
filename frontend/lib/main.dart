@@ -25,7 +25,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.deepPurple,
       ),
-      initialRoute: appRoutes.home,
+      initialRoute:
+      // FirebaseAuth.instance.currentUser == null ? AppRoutes.welcome :
+      AppRoutes.home,
       routes: appRoutes,
     );
   }
