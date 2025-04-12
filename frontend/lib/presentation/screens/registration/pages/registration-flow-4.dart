@@ -35,9 +35,9 @@ class _RegistrationFlow4State extends State<RegistrationFlow4> {
   @override
   Widget build(BuildContext context) {
     return FlowContent(
-      title: 'Sorry about the legal stuff',
+      title: 'Mathe Abitur Datum',
       description:
-          'For legal reasons we need your birthday. \n Just to make sure you\'re old enough to use achievd',
+          'Um deinen optimalen Lernplan zu erstellen, benötigen wir dein Mathe Abitur Datum.',
       buttonText: 'Let\'s goooo!',
       callback: () => widget.handleBirthday(birthday),
       content: Column(
@@ -50,7 +50,7 @@ class _RegistrationFlow4State extends State<RegistrationFlow4> {
             autofocus: false,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Your birthday',
+              labelText: 'Mathe Abitur Datum ',
               helperText: 'YYYY-MM-DD',
             ),
           ),
