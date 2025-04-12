@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/routes/routes.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -50,7 +51,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             width: double.infinity,
             height: 48,
             child: OutlinedButton(
-              onPressed: () => Navigator.pushNamed(context, '/login-flow'),
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.login),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
                   color: Theme.of(context).colorScheme.primary,
@@ -62,7 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           FullWidthButton(
               text: 'Get started!',
               onPressed: () =>
-                  Navigator.pushNamed(context, RegistrationFlow.route)),
+                  Navigator.pushNamed(context, AppRoutes.register)),
         ],
       ),
     );

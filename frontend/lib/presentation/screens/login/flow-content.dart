@@ -26,28 +26,30 @@ class FlowContent extends StatelessWidget {
         leading: first ? null : const SizedBox(),
         centerTitle: true,
         title: const Text(
-          'achievd',
+          'AbiMind',
           style: kAchievdHeaderStyle,
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16, bottom: 8),
-            child: Text(title, style: kHeaderStyle),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text(description),
-          ),
-          Expanded(child: content ?? const SizedBox()),
-          FullWidthButton(
-            text: buttonText,
-            onPressed: callback,
-          ),
-        ],
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 16, bottom: 8),
+              child: Text(title, style: kHeaderStyle),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: Text(description),
+            ),
+            Expanded(child: content ?? const SizedBox()),
+            FullWidthButton(
+              text: buttonText,
+              onPressed: callback,
+            ),
+          ],
+        ),
       ),
     );
   }

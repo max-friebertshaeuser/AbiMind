@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../widgets/phonenumber-textfield.dart';
 import '../flow-content.dart';
-import '../widgets/phonenumber-textfield.dart';
 
 class LoginFlow0 extends StatefulWidget {
   LoginFlow0({
@@ -24,6 +24,15 @@ class _LoginFlow0State extends State<LoginFlow0> {
 
   //todo remove debug values
   String? error;
+  void handleNumber(String value) {
+    print('submitted number: $value');
+    widget.number = value;
+  }
+
+  void handleCountry(String value) {
+    print('submitted coutry: $value');
+    widget.country = value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +40,12 @@ class _LoginFlow0State extends State<LoginFlow0> {
       title: 'Welcome back then!',
       description: 'Please enter your Phonenumber',
       buttonText: 'Verify',
-      callback: () => {},
+      callback: () => widget.handlePhoneNumber(widget.country + widget.number),
       content: PhonenumberTextfield(
         number: widget.number,
         country: widget.country,
-        handleCountry: (value) => {},
-        handleNumber: (value) => {},
+        handleCountry: (value) => handleCountry(value),
+        handleNumber: (value) => handleNumber(value),
         error: error,
         enabled: true,
       ),

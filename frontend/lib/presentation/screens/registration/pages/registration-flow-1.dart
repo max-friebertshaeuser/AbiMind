@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../widgets/phonenumber-textfield.dart';
 import '../../login/flow-content.dart';
-import '../../login/widgets/phonenumber-textfield.dart';
 
 class RegistrationFlow1 extends StatefulWidget {
   RegistrationFlow1(

@@ -4,12 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'routes/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug, // todo: remove and work out the recaptcha stuff
+  );
+
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -26,7 +31,7 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: Colors.deepPurple,
       ),
       initialRoute:
-      // FirebaseAuth.instance.currentUser == null ? AppRoutes.welcome :
+      FirebaseAuth.instance.currentUser == null ? AppRoutes.welcome :
       AppRoutes.home,
       routes: appRoutes,
     );
