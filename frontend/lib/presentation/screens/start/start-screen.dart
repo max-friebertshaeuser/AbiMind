@@ -17,7 +17,7 @@ class StarScreen extends StatelessWidget {
           'AbiMind',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-/*        title: Image.asset(
+        /*        title: Image.asset(
           'asset/logo.png',
           height: 40, // Adjust the height as needed
         ),*/
@@ -26,122 +26,121 @@ class StarScreen extends StatelessWidget {
           onPressed: () {}, // Optional drawer
         ),
       ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left Side Column: Recent Exams
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Section title
-                  Text(
-                    "Recent Exams",
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Left Column: Circle + Subjects
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            children: [
-                              const Text(
-                                "2024",
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              SizedBox(
-                                height: 200,
-                                width: 200,
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    CircularProgressIndicator(
-                                      value: 0.65,
-                                      strokeWidth: 12,
-                                      valueColor: AlwaysStoppedAnimation(
-                                        colorScheme.primary,
-                                      ),
-                                      backgroundColor:
-                                          colorScheme.primaryContainer,
-                                    ),
-                                    const Text(
-                                      "65%",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 24),
-                              buildSubjectBar("Geometrie", 4, 7, colorScheme),
-                              buildSubjectBar("Analysis", 8, 9, colorScheme),
-                              buildSubjectBar("Stochastic", 2, 8, colorScheme),
-                            ],
+body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left Side Column: Recent Exams
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Section title
+                    Text(
+                      "Recent Exams",
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: colorScheme.primary,
                           ),
-                        ),
-                        const SizedBox(width: 16),
-                        // Right Column: Exam Cards
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            children: List.generate(
-                              4,
-                              (_) => buildExamCard(colorScheme),
+                    ),
+                    Container(
+                      height: 500,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Left Column: Circle + Subjects
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "2024",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  height: 200,
+                                  width: 200,
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      CircularProgressIndicator(
+                                        value: 0.65,
+                                        strokeWidth: 12,
+                                        valueColor: AlwaysStoppedAnimation(
+                                          colorScheme.primary,
+                                        ),
+                                        backgroundColor:
+                                            colorScheme.primaryContainer,
+                                      ),
+                                      const Text(
+                                        "65%",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                buildSubjectBar("Geometrie", 4, 7, colorScheme),
+                                buildSubjectBar("Analysis", 8, 9, colorScheme),
+                                buildSubjectBar("Stochastic", 2, 8, colorScheme),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-
-                  // Inner Split: Circular + Subject Progress | Exam Cards
-
-                  // Streak Section
-                  Container(
-                    padding: const EdgeInsets.all(30),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Row(
-                      children: const [
-                        Text(
-                          "17 🔥",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(width: 16),
+                          // Right Column: Exam Cards
+                          Expanded(
+                            flex: 3,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: List.generate(
+                                  20, // Increased the number of cards for scrolling
+                                  (_) => buildExamCard(colorScheme),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                        Text("Du hast dein Lernziel 17 Tage lang erreicht"),
-                        Spacer(),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24), // Add gap between sections
+                    // Streak Section
+                    Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Row(
+                        children: const [
+                          Text(
+                            "17 🔥",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Text("Du hast dein Lernziel 17 Tage lang erreicht"),
+                          Spacer(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
           // Right Side Column: Exercises
           Expanded(
@@ -161,11 +160,10 @@ class StarScreen extends StatelessWidget {
 
                   // Scrollable list of exercises
                   Expanded(
-
                     child: SingleChildScrollView(
                       child: Column(
                         children: List.generate(
-                          4,
+                          20,
                           (_) => buildExerciseCard(colorScheme),
                         ),
                       ),
