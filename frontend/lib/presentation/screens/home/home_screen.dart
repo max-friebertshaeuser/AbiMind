@@ -37,6 +37,14 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.logout), label: const Text('Log out'),
             ),
             ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.start);
+              },
+              label: const Text('Statistics'),
+              icon: const Icon(Icons.line_axis_outlined),
+            ),
+            ),
+            ElevatedButton.icon(
               onPressed: () async {
                 print(await FirebaseService().getExam('OHLESyc19sRHmLTVOUji'));
               },
