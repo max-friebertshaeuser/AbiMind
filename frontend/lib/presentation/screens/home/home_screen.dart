@@ -34,7 +34,14 @@ class HomeScreen extends StatelessWidget {
                     context, AppRoutes.welcome, (route) => false);
               },
               icon: const Icon(Icons.logout), label: const Text('Log out'),
-            )
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.start);
+              },
+              label: const Text('Statistics'),
+              icon: const Icon(Icons.line_axis_outlined),
+            ),
           ],
         ),
       ),
