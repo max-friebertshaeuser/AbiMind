@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/presentation/screens/home/home_screen.dart';
 import 'package:frontend/presentation/screens/exercise/exercise_screen.dart';
 import 'package:frontend/presentation/screens/paint/paint_screen.dart';
+import 'package:frontend/presentation/screens/start/start-screen.dart';
 import '../presentation/screens/login/login-flow.dart';
 import '../presentation/screens/paint/paint_screen.dart';
 import '../presentation/screens/registration/registration-flow.dart';
@@ -14,6 +15,7 @@ class AppRoutes {
   static const welcome = '/welcome';
   static const login = '/login';
   static const register = '/registration';
+  static const start = '/start';
 }
 
 final Map<String, WidgetBuilder> appRoutes = {
@@ -23,4 +25,5 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.welcome: (context) => const WelcomeScreen(),
   AppRoutes.login: (context) => const LoginFlow(),
   AppRoutes.register: (context) => const RegistrationFlow(),
+  AppRoutes.start: (context) => const StarScreen(),
 };
