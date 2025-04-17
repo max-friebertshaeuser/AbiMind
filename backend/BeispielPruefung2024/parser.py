@@ -1,26 +1,39 @@
 import re
 from pathlib import Path
 
-def parse_tasks(text):
-    # Regex für Pflicht- und Wahlaufgaben (P1, P2, ..., W1, W2, ...)
-    pattern = re.compile(r'\b(P\d+|W\d+)\b(.*?)(?=\n(?:P\d+|W\d+)\b|\Z)', re.DOTALL)
+import re
 
-    aufgaben = {}
-    for match in pattern.finditer(text):
-        aufgaben_nr = match.group(1).strip()
-        aufgaben_text = match.group(2).strip()
-        aufgaben[aufgaben_nr] = aufgaben_text
+def parse_abitur_latex(text, fach="Mathematik", jahr="2024"):
+    aufgaben = re.split(r'\\section\*\{Aufgabe ([^\}]+)\}', text)
+    lösungen = re.split(r'\\section\*\{Aufgabe ([^\}]+):\}', text)
 
-    return aufgaben
+    # Wir nehmen die Lösungsteile ab der ersten Lösung
+    lösungen = lösungen[1:]  # [Nummer1, Lösung1, Nummer2, Lösung2, ...]
+    aufgaben = aufgaben[1:]  # [Nummer1, Aufgabe1, Nummer2, Aufgabe2, ...]
 
-def read_file_and_parse(path):
-    with open(path, 'r', encoding='utf-8') as f:
-        content = f.read()
-    return parse_tasks(content)
+    tupel_liste = []
 
-if __name__ == "__main__":
-    file = __file__
-    file_path = Path.joinpath(Path(file).parent,"")
-    result = read_file_and_parse(file_path)
-    for key, value in result.items():
-        print(f"{key}:\n{value}\n{'-'*40}")
+    for i in range(0, len(aufgaben), 2):
+        nummer = aufgaben[i].strip()
+        aufgabe = aufgaben[i+1].strip()
+        # Finde die zugehörige Lösung
+        lösung = ""
+        for j in range(0, len(lösungen), 2):
+            if lösungen[j].strip() == nummer:
+                lösung = lösungen[j+1].strip()
+                break
+        tupel_liste.append((fach, jahr, nummer, aufgabe, lösung))
+
+    return tupel_liste
+
+file = __file__
+file_path = Path.joinpath(Path(file).parent,"testpruefung.tex")
+
+with open(file_path, "r", encoding="utf-8") as f:
+    text = f.read()
+
+tupel = parse_abitur_latex(text)
+for eintrag in tupel:
+    print(eintrag)
+    print("\n\n")
+
