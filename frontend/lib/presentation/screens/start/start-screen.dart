@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class StarScreen extends StatelessWidget {
   const StarScreen({super.key});
@@ -8,6 +9,11 @@ class StarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    const TextStyle percentageStyle = TextStyle(
+      fontSize: 32,
+      fontWeight: FontWeight.bold,
+      color: Color(0xFF584178),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -45,6 +51,27 @@ class StarScreen extends StatelessWidget {
                               color: Colors.yellow,
                               borderRadius: BorderRadius.circular(20),
                             ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "2024",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+
+                                CircularPercentIndicator(
+                                  //TODO set Values in Stat
+                                  radius: 80.0,
+                                  lineWidth: 12.0,
+                                  percent: 0.65,
+                                  center: Text("65%", style: percentageStyle),
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                ),
+
+                                Divider(thickness: 2),
+                              ],
+                            ),
                           ),
                         ),
                         Expanded(
@@ -56,7 +83,7 @@ class StarScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -68,9 +95,7 @@ class StarScreen extends StatelessWidget {
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-
-                          ],
+                          children: [],
                         ),
                       ],
                     ),
@@ -110,6 +135,61 @@ class StarScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CathegorieProgress extends StatelessWidget {
+  final String title;
+  final int done;
+  final int total;
+
+  const CathegorieProgress({
+    super.key,
+    required this.title,
+    required this.done,
+    required this.total,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double progress = done / total;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFF584178),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                "$done/$total",
+                style: const TextStyle(fontSize: 16, color: Color(0xFF584178)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              backgroundColor: const Color(0xFFD3BFFF), // Light pastel purple
+              valueColor: const AlwaysStoppedAnimation(
+                Color(0xFF584178),
+              ), // Deep purple
+            ),
+          ),
+        ],
       ),
     );
   }
