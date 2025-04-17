@@ -20,7 +20,7 @@ def read_file_and_parse(path):
 
 if __name__ == "__main__":
     file = __file__
-    file_path = Path.joinpath(Path(file).parent,"BeispielPruefung2024.tex")
+    file_path = Path.joinpath(Path(file).parent,"")
     result = read_file_and_parse(file_path)
     for key, value in result.items():
         print(f"{key}:\n{value}\n{'-'*40}")
