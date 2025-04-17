@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class StarScreen extends StatelessWidget {
@@ -25,42 +27,12 @@ class StarScreen extends StatelessWidget {
           direction: Axis.horizontal,
           children: [
             Expanded(
-              flex: 2,
-              child: Column(
+              flex: 1,
+              child:Flex(
+                direction: Axis.vertical,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 0, 0, 0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Recent Exams',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      margin: const EdgeInsets.all(20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(20)
-                      ), // Rand um das Feld
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      margin: const EdgeInsets.all(20.0),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(20),
-                      ), // Rand um das Feld
-                    ),
-                  ),
+                  Card(title: 'Current Exercise', boxFlex: 2,child:Text('Content') ),
+                  Card(title: 'Current Exercise', boxFlex: 1, child:Text('Content'))
                 ],
               ),
             ),
@@ -96,6 +68,46 @@ class StarScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class Card extends StatelessWidget {
+  const Card({super.key, required this.title, required this.boxFlex, required this.child});
+
+  final String title;
+  final int boxFlex;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+    return Expanded(
+      flex: boxFlex,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(30.0, 0, 0, 0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: child,// Rand um das Feld
+            ),
+          ),
+        ],
       ),
     );
   }
