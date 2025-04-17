@@ -54,7 +54,7 @@ class _LoginFlowState extends State<LoginFlow> {
                 curve: Curves.easeIn);
           },
           codeAutoRetrievalTimeout: (String verificationId) {
-            print('code auto retrieval timeout');
+            print('code auto retrieval timeout ');
           },
         );
       }
@@ -71,7 +71,7 @@ class _LoginFlowState extends State<LoginFlow> {
           Navigator.removeRouteBelow(context, ModalRoute.of(context)!);
           Navigator.pushReplacementNamed(context, AppRoutes.home);
         } else {
-          print('something went wrong');
+          print('something went wrong with the verification code');
         }
       }
     }

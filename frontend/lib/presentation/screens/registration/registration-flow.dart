@@ -11,8 +11,6 @@ import '../../../routes/routes.dart';
 class RegistrationFlow extends StatefulWidget {
   const RegistrationFlow({super.key});
 
-  static const String route = '/registration-flow';
-
   @override
   State<RegistrationFlow> createState() => _RegistrationFlowState();
 }
@@ -58,8 +56,10 @@ class _RegistrationFlowState extends State<RegistrationFlow> {
 
     handlePhoneNumber(String value) async {
       phoneNumber = value;
-      country = value.substring(0, 3);
-      number = value.substring(3);
+      setState(() {
+        country = value.substring(0, 3);
+        number = value.substring(3);
+      });
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         //todo: remove debug value
@@ -122,45 +122,47 @@ class _RegistrationFlowState extends State<RegistrationFlow> {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
 
-    return PageView(
-      controller: controller,
-      onPageChanged: (value) {
-        if (value == 3) reachedUsername = true;
-        if (reachedUsername && value < 3) {
-          controller.animateToPage(3,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeIn);
-          if (value == 2) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('You can\'t go back there'),
-                duration: Duration(milliseconds: 500),
-              ),
-            );
+    return SafeArea(
+      child: PageView(
+        controller: controller,
+        onPageChanged: (value) {
+          if (value == 3) reachedUsername = true;
+          if (reachedUsername && value < 3) {
+            controller.animateToPage(3,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeIn);
+            if (value == 2) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('You can\'t go back there'),
+                  duration: Duration(milliseconds: 500),
+                ),
+              );
+            }
           }
-        }
-      },
-      children: <Widget>[
-        RegistrationFlow0(
-          handleName: (name) => handleName(name),
-          name: name,
-        ),
-        RegistrationFlow1(
-          name: name,
-          handlePhoneNumber: (phoneNumber) => handlePhoneNumber(phoneNumber),
-        ),
-        RegistrationFlow2(
-          name: name,
-          handleVerificationCode: handleVerificationCode,
-          number: number,
-          countryCode: country,
-          verificationCode: verificationCode,
-        ),
-        RegistrationFlow3(handleUsername: handleUsername, username: username),
-        RegistrationFlow4(
-          handleBirthday: handleBirthday,
-        ),
-      ],
+        },
+        children: <Widget>[
+          RegistrationFlow0(
+            handleName: (name) => handleName(name),
+            name: name,
+          ),
+          RegistrationFlow1(
+            name: name,
+            handlePhoneNumber: (phoneNumber) => handlePhoneNumber(phoneNumber),
+          ),
+          RegistrationFlow2(
+            name: name,
+            handleVerificationCode: handleVerificationCode,
+            number: number,
+            countryCode: country,
+            verificationCode: verificationCode,
+          ),
+          RegistrationFlow3(handleUsername: handleUsername, username: username),
+          RegistrationFlow4(
+            handleBirthday: handleBirthday,
+          ),
+        ],
+      ),
     );
   }
 }
