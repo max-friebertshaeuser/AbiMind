@@ -57,19 +57,36 @@ class StarScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   "2024",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child:CircularPercentIndicator(
+                                    //TODO set Values in Stat
+                                    radius: 80.0,
+                                    lineWidth: 12.0,
+                                    percent: 0.65,
+                                    center: Text("65%", style: percentageStyle),
+                                    circularStrokeCap: CircularStrokeCap.round,
+                                  ),
                                 ),
 
-                                CircularPercentIndicator(
-                                  //TODO set Values in Stat
-                                  radius: 80.0,
-                                  lineWidth: 12.0,
-                                  percent: 0.65,
-                                  center: Text("65%", style: percentageStyle),
-                                  circularStrokeCap: CircularStrokeCap.round,
-                                ),
+
 
                                 Divider(thickness: 2),
+                                Container(
+                                  width: double.infinity,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: const [
+                                        CathegorieProgress(title: 'Stochastik', done: 5, total: 10),
+                                        CathegorieProgress(title: 'Analysis', done: 8, total: 10),
+                                        CathegorieProgress(title: 'Geometrie', done: 10, total: 10),
+                                      ],
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -123,7 +140,7 @@ class StarScreen extends StatelessWidget {
                   Expanded(
                     flex: 2,
                     child: Container(
-                      margin: const EdgeInsets.all(20.0),
+                      margin: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0),
                       decoration: BoxDecoration(
                         color: Colors.green,
                         borderRadius: BorderRadius.circular(20),
@@ -155,8 +172,8 @@ class CathegorieProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = done / total;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+    return Container(
+      margin: const EdgeInsets.all(10.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -165,7 +182,7 @@ class CathegorieProgress extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 11,
                   color: Color(0xFF584178),
                   fontWeight: FontWeight.w400,
                 ),
@@ -173,11 +190,11 @@ class CathegorieProgress extends StatelessWidget {
               const Spacer(),
               Text(
                 "$done/$total",
-                style: const TextStyle(fontSize: 16, color: Color(0xFF584178)),
+                style: const TextStyle(fontSize: 11, color: Color(0xFF584178)),
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 2),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
