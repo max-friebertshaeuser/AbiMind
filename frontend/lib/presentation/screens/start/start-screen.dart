@@ -28,11 +28,53 @@ class StarScreen extends StatelessWidget {
           children: [
             Expanded(
               flex: 1,
-              child:Flex(
+              child: Flex(
                 direction: Axis.vertical,
                 children: [
-                  Card(title: 'Current Exercise', boxFlex: 2,child:Text('Content') ),
-                  Card(title: 'Current Exercise', boxFlex: 1, child:Text('Content'))
+                  Card(
+                    title: 'Current Exercise',
+                    boxFlex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            margin: const EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              color: Colors.yellow,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            margin: const EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Card(
+                    title: 'Streak',
+                    boxFlex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -74,7 +116,12 @@ class StarScreen extends StatelessWidget {
 }
 
 class Card extends StatelessWidget {
-  const Card({super.key, required this.title, required this.boxFlex, required this.child});
+  const Card({
+    super.key,
+    required this.title,
+    required this.boxFlex,
+    required this.child,
+  });
 
   final String title;
   final int boxFlex;
@@ -82,20 +129,13 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ColorScheme colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: boxFlex,
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(30.0, 0, 0, 0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Container(
@@ -104,7 +144,7 @@ class Card extends StatelessWidget {
                 color: Colors.red,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: child,// Rand um das Feld
+              child: child,
             ),
           ),
         ],
