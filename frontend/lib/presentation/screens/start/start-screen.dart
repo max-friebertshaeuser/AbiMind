@@ -113,19 +113,53 @@ class StarScreen extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Container(
-                            margin: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child:ExerciseCards(
-                              year: 2024,
-                              percent: 0.65,
-                              topics: {
-                                'Stochastik': [7, 10],
-                                'Analysis': [8, 10],
-                                'Geometrie': [10, 10],
-                              },
+                          child: SingleChildScrollView(
+                            child: Container(
+                              margin: const EdgeInsets.all(20.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                // <- Wrap your cards inside a Column
+                                children: [
+                                  ExerciseCards(
+                                    year: 2023,
+                                    percent: 0.65,
+                                    topics: {
+                                      'Stochastik': [7, 10],
+                                      'Analysis': [8, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                  ExerciseCards(
+                                    year: 2024,
+                                    percent: 0.65,
+                                    topics: {
+                                      'Stochastik': [7, 10],
+                                      'Analysis': [8, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                  ExerciseCards(
+                                    year: 2025,
+                                    percent: 0.75,
+                                    topics: {
+                                      'Stochastik': [8, 10],
+                                      'Analysis': [9, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                  ExerciseCards(
+                                    year: 2026,
+                                    percent: 0.85,
+                                    topics: {
+                                      'Stochastik': [9, 10],
+                                      'Analysis': [10, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -257,35 +291,36 @@ class ExerciseCards extends StatelessWidget {
                   // Topics List
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: topics.entries.map((entry) {
-                      final String topic = entry.key;
-                      final int done = entry.value[0];
-                      final int total = entry.value[1];
+                    children:
+                        topics.entries.map((entry) {
+                          final String topic = entry.key;
+                          final int done = entry.value[0];
+                          final int total = entry.value[1];
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "$done/$total ",
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF4C3A64),
-                                fontWeight: FontWeight.bold,
-                              ),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "$done/$total ",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF4C3A64),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  topic,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF4C3A64),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(
-                              topic,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF4C3A64),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                          );
+                        }).toList(),
                   ),
                 ],
               ),
@@ -296,8 +331,6 @@ class ExerciseCards extends StatelessWidget {
     );
   }
 }
-
-
 
 class CathegorieProgress extends StatelessWidget {
   final String title;
