@@ -57,16 +57,26 @@ class StarScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   statistic['currentYear'].toString(),
-                                  style: kHeaderStyle
+                                  style: kHeaderStyle,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child:CircularPercentIndicator(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CircularPercentIndicator(
+                                    backgroundColor:
+                                        colorScheme.surfaceContainerHigh,
+                                    progressColor:
+                                        colorScheme.onPrimaryFixedVariant,
                                     // TODO : Change Import Stats
-                                    radius: 80.0,
+                                    radius: 70.0,
                                     lineWidth: 12.0,
-                                    percent: double.parse(statistic['solvedPercentageNumeric'].toString()),
-                                    center: Text("${(statistic['solvedPercentage']).toString()}%", style: percentageStyle),
+                                    percent: double.parse(
+                                      statistic['solvedPercentageNumeric']
+                                          .toString(),
+                                    ),
+                                    center: Text(
+                                      "${(statistic['solvedPercentage']).toString()}%",
+                                      style: percentageStyle,
+                                    ),
                                     circularStrokeCap: CircularStrokeCap.round,
                                   ),
                                 ),
@@ -76,13 +86,25 @@ class StarScreen extends StatelessWidget {
                                   child: SingleChildScrollView(
                                     child: Column(
                                       children: const [
-                                        CathegorieProgress(title: 'Stochastik', done: 7, total: 10),
-                                        CathegorieProgress(title: 'Analysis', done: 8, total: 10),
-                                        CathegorieProgress(title: 'Geometrie', done: 10, total: 10),
+                                        CathegorieProgress(
+                                          title: 'Stochastik',
+                                          done: 7,
+                                          total: 10,
+                                        ),
+                                        CathegorieProgress(
+                                          title: 'Analysis',
+                                          done: 8,
+                                          total: 10,
+                                        ),
+                                        CathegorieProgress(
+                                          title: 'Geometrie',
+                                          done: 10,
+                                          total: 10,
+                                        ),
                                       ],
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -178,17 +200,16 @@ class CathegorieProgress extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
-                  color: Color(0xFF584178),
+                  color: colorScheme.onPrimaryFixedVariant,
                   fontWeight: FontWeight.w400,
                 ),
               ),
               const Spacer(),
               Text(
                 "$done/$total",
-                style: const TextStyle(fontSize: 11, color: Color(0xFF584178)),
-              ),
+                style: TextStyle(fontSize: 11, color: colorScheme.onPrimaryFixedVariant,)),
             ],
           ),
           const SizedBox(height: 2),
@@ -197,10 +218,8 @@ class CathegorieProgress extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 8,
-              backgroundColor: const Color(0xFFD3BFFF), // Light pastel purple
-              valueColor: const AlwaysStoppedAnimation(
-                Color(0xFF584178),
-              ), // Deep purple
+              backgroundColor: colorScheme.surfaceContainerHigh,
+              color:  colorScheme.onPrimaryFixedVariant,
             ),
           ),
         ],
@@ -228,10 +247,7 @@ class Card extends StatelessWidget {
       flex: boxFlex,
       child: Column(
         children: [
-          Text(
-            title,
-            style: kHeaderStyle
-          ),
+          Text(title, style: kHeaderStyle),
           Expanded(
             child: Container(
               margin: const EdgeInsets.all(20.0),
