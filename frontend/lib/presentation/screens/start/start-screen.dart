@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:frontend/core/utils/constants.dart';
 
 class StarScreen extends StatelessWidget {
   const StarScreen({super.key});
@@ -57,17 +58,16 @@ class StarScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   "2024",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                  style: kAchievdHeaderStyle
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
                                   child:CircularPercentIndicator(
-                                    //TODO set Values in Stat
+                                    // TODO : Change Import Stats
                                     radius: 80.0,
                                     lineWidth: 12.0,
-                                    percent: 0.65,
-                                    center: Text("65%", style: percentageStyle),
+                                    percent: double.parse(statistic['solvedPercentageNumeric'].toString()),
+                                    center: Text("${(statistic['solvedPercentage']).toString()}%", style: percentageStyle),
                                     circularStrokeCap: CircularStrokeCap.round,
                                   ),
                                 ),

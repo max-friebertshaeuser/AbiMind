@@ -7,7 +7,7 @@ const kAchievdHeaderStyle = TextStyle(
 const kHeaderStyle = TextStyle(
     fontSize: 32, fontFamily: 'Montserrat');
 
-const texamleExeciese ={
+const texamleExeciese = {
   'id': 'example',
   'name': 'example',
   'description': 'example description',
@@ -17,4 +17,27 @@ const texamleExeciese ={
   'duration': 30,
   'reps': 10,
   'sets': 3,
+};
+const statistic = {
+  'currentYear': 2025,
+  'solvedPercentageNumeric': 0.65,
+  'solvedPercentage': 65,
+  'examParts' : {
+    {
+      'name': 'Analysis',
+      'done': 10,
+      'total': 10,
+    },
+    {
+      'name': 'Stochastik',
+      'done': 5,
+      'total': 10,
+    },
+    {
+      'name': 'Geometrie',
+      'done': 10,
+      'total': 10,
+    },
+
+  }
 };
