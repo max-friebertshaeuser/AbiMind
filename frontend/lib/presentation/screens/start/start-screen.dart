@@ -10,11 +10,6 @@ class StarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    const TextStyle percentageStyle = TextStyle(
-      fontSize: 32,
-      fontWeight: FontWeight.bold,
-      color: Color(0xFF584178),
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -108,6 +103,13 @@ class StarScreen extends StatelessWidget {
                               ],
                             ),
                           ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 20.0,
+                          ),
+                          child: VerticalDivider(thickness: 2, width: 10),
                         ),
                         Expanded(
                           flex: 1,
@@ -209,7 +211,11 @@ class CathegorieProgress extends StatelessWidget {
               const Spacer(),
               Text(
                 "$done/$total",
-                style: TextStyle(fontSize: 11, color: colorScheme.onPrimaryFixedVariant,)),
+                style: TextStyle(
+                  fontSize: 11,
+                  color: colorScheme.onPrimaryFixedVariant,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 2),
@@ -219,7 +225,7 @@ class CathegorieProgress extends StatelessWidget {
               value: progress,
               minHeight: 8,
               backgroundColor: colorScheme.surfaceContainerHigh,
-              color:  colorScheme.onPrimaryFixedVariant,
+              color: colorScheme.onPrimaryFixedVariant,
             ),
           ),
         ],

@@ -7,6 +7,12 @@ const kAchievdHeaderStyle = TextStyle(
 const kHeaderStyle = TextStyle(
     fontSize: 24, fontFamily: 'Montserrat');
 
+const percentageStyle = TextStyle(
+  fontSize: 32,
+  fontWeight: FontWeight.bold,
+  color: Color(0xFF584178),
+);
+
 const texamleExeciese = {
   'id': 'example',
   'name': 'example',
