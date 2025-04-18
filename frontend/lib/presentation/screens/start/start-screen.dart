@@ -118,13 +118,13 @@ class StarScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: const ExerciseCards(
+                            child:ExerciseCards(
                               year: 2024,
                               percent: 0.65,
                               topics: {
-                                'Stochastik': {0: 7, 1: 10},
-                                'Analysis': {0: 8, 1: 10},
-                                'Geometrie': {0: 10, 1: 10},
+                                'Stochastik': [7, 10],
+                                'Analysis': [8, 10],
+                                'Geometrie': [10, 10],
                               },
                             ),
                           ),
@@ -187,8 +187,8 @@ class StarScreen extends StatelessWidget {
 
 class ExerciseCards extends StatelessWidget {
   final int year;
-  final double percent; // between 0.0 and 1.0
-  final Map<String, Map<int, int>> topics; // e.g. {'Stochastik': [2, 8]}
+  final double percent;
+  final Map<String, List<int>> topics;
 
   const ExerciseCards({
     Key? key,
@@ -199,55 +199,105 @@ class ExerciseCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(year.toString(), style: kHeaderStyle),
-          Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: CircularPercentIndicator(
-              backgroundColor:
-                  Theme.of(context).colorScheme.surfaceContainerHigh,
-              progressColor:
-                  Theme.of(context).colorScheme.onPrimaryFixedVariant,
-              radius: 70.0,
-              lineWidth: 12.0,
-              percent: percent,
-              center: Text(
-                "${(percent * 100).toStringAsFixed(0)}%",
-                style: percentageStyle,
+    return IntrinsicWidth(
+      child: IntrinsicHeight(
+        child: Container(
+          margin: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFEDE0FF),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.deepPurple.shade200, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(2, 2),
+                blurRadius: 5,
               ),
-              circularStrokeCap: CircularStrokeCap.round,
-            ),
+            ],
           ),
-          Divider(thickness: 2),
-          Container(
-            width: double.infinity,
-            child: SingleChildScrollView(
-              child: Column(
-                children:
-                    topics.entries.map((entry) {
-                      return CathegorieProgress(
-                        title: entry.key,
-                        done: entry.value[0] ?? 0,
-                        total: entry.value[1] ?? 1, // Avoid division by zero
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Year Centered
+              Text(
+                "— $year —",
+                style: const TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 16,
+                  letterSpacing: 1,
+                  color: Color(0xFF2E1A47),
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Row for Progress and Text Content
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Progress Circle
+                  CircularPercentIndicator(
+                    radius: 32.0,
+                    lineWidth: 6.0,
+                    percent: percent,
+                    center: Text(
+                      "${(percent * 100).round()}%",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Color(0xFF2E1A47),
+                      ),
+                    ),
+                    backgroundColor: Colors.grey.shade200,
+                    progressColor: Colors.purpleAccent,
+                    circularStrokeCap: CircularStrokeCap.round,
+                  ),
+                  const SizedBox(width: 16),
+                  // Topics List
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: topics.entries.map((entry) {
+                      final String topic = entry.key;
+                      final int done = entry.value[0];
+                      final int total = entry.value[1];
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "$done/$total ",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF4C3A64),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              topic,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF4C3A64),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }).toList(),
+                  ),
+                ],
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
+
+
 
 class CathegorieProgress extends StatelessWidget {
   final String title;
