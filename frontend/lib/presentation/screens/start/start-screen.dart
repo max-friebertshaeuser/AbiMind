@@ -116,8 +116,16 @@ class StarScreen extends StatelessWidget {
                           child: Container(
                             margin: const EdgeInsets.all(20.0),
                             decoration: BoxDecoration(
-                              color: Colors.blue,
                               borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: const ExerciseCards(
+                              year: 2024,
+                              percent: 0.65,
+                              topics: {
+                                'Stochastik': {0: 7, 1: 10},
+                                'Analysis': {0: 8, 1: 10},
+                                'Geometrie': {0: 10, 1: 10},
+                              },
                             ),
                           ),
                         ),
@@ -172,6 +180,70 @@ class StarScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ExerciseCards extends StatelessWidget {
+  final int year;
+  final double percent; // between 0.0 and 1.0
+  final Map<String, Map<int, int>> topics; // e.g. {'Stochastik': [2, 8]}
+
+  const ExerciseCards({
+    Key? key,
+    required this.year,
+    required this.percent,
+    required this.topics,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(20.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(year.toString(), style: kHeaderStyle),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: CircularPercentIndicator(
+              backgroundColor:
+                  Theme.of(context).colorScheme.surfaceContainerHigh,
+              progressColor:
+                  Theme.of(context).colorScheme.onPrimaryFixedVariant,
+              radius: 70.0,
+              lineWidth: 12.0,
+              percent: percent,
+              center: Text(
+                "${(percent * 100).toStringAsFixed(0)}%",
+                style: percentageStyle,
+              ),
+              circularStrokeCap: CircularStrokeCap.round,
+            ),
+          ),
+          Divider(thickness: 2),
+          Container(
+            width: double.infinity,
+            child: SingleChildScrollView(
+              child: Column(
+                children:
+                    topics.entries.map((entry) {
+                      return CathegorieProgress(
+                        title: entry.key,
+                        done: entry.value[0] ?? 0,
+                        total: entry.value[1] ?? 1, // Avoid division by zero
+                      );
+                    }).toList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
