@@ -49,7 +49,6 @@ class StarScreen extends StatelessWidget {
                           child: Container(
                             margin: const EdgeInsets.all(20.0),
                             decoration: BoxDecoration(
-                              color: Colors.yellow,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Column(
@@ -57,8 +56,8 @@ class StarScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "2024",
-                                  style: kAchievdHeaderStyle
+                                  statistic['currentYear'].toString(),
+                                  style: kHeaderStyle
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(20.0),
@@ -71,16 +70,13 @@ class StarScreen extends StatelessWidget {
                                     circularStrokeCap: CircularStrokeCap.round,
                                   ),
                                 ),
-
-
-
                                 Divider(thickness: 2),
                                 Container(
                                   width: double.infinity,
                                   child: SingleChildScrollView(
                                     child: Column(
                                       children: const [
-                                        CathegorieProgress(title: 'Stochastik', done: 5, total: 10),
+                                        CathegorieProgress(title: 'Stochastik', done: 7, total: 10),
                                         CathegorieProgress(title: 'Analysis', done: 8, total: 10),
                                         CathegorieProgress(title: 'Geometrie', done: 10, total: 10),
                                       ],
@@ -172,6 +168,7 @@ class CathegorieProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = done / total;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.all(10.0),
       child: Column(
@@ -226,19 +223,20 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: boxFlex,
       child: Column(
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: kHeaderStyle
           ),
           Expanded(
             child: Container(
               margin: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: child,
