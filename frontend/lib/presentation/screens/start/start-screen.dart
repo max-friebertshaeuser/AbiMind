@@ -233,15 +233,16 @@ class ExerciseCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return IntrinsicWidth(
       child: IntrinsicHeight(
         child: Container(
-          margin: const EdgeInsets.all(12),
-          padding: const EdgeInsets.all(12),
+          margin: const EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
             color: const Color(0xFFEDE0FF),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.deepPurple.shade200, width: 2),
+            border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
             boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
@@ -257,11 +258,11 @@ class ExerciseCards extends StatelessWidget {
               // Year Centered
               Text(
                 "— $year —",
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 16,
                   letterSpacing: 1,
-                  color: Color(0xFF2E1A47),
+                  color: colorScheme.onPrimaryFixedVariant,
                 ),
               ),
               const SizedBox(height: 12),
@@ -272,19 +273,19 @@ class ExerciseCards extends StatelessWidget {
                 children: [
                   // Progress Circle
                   CircularPercentIndicator(
-                    radius: 32.0,
+                    radius: 20.0,
                     lineWidth: 6.0,
                     percent: percent,
                     center: Text(
                       "${(percent * 100).round()}%",
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: Color(0xFF2E1A47),
+                        fontSize: 12,
+                        color: colorScheme.onPrimaryFixedVariant,
                       ),
                     ),
-                    backgroundColor: Colors.grey.shade200,
-                    progressColor: Colors.purpleAccent,
+                    backgroundColor:colorScheme.surfaceContainerHigh,
+                    progressColor:colorScheme.onPrimaryFixedVariant,
                     circularStrokeCap: CircularStrokeCap.round,
                   ),
                   const SizedBox(width: 16),
@@ -298,14 +299,14 @@ class ExerciseCards extends StatelessWidget {
                           final int total = entry.value[1];
 
                           return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.symmetric(vertical: 2),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
                                   "$done/$total ",
                                   style: const TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 10,
                                     color: Color(0xFF4C3A64),
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -313,7 +314,7 @@ class ExerciseCards extends StatelessWidget {
                                 Text(
                                   topic,
                                   style: const TextStyle(
-                                    fontSize: 14,
+                                    fontSize: 10,
                                     color: Color(0xFF4C3A64),
                                   ),
                                 ),
