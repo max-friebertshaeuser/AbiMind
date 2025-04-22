@@ -81,17 +81,17 @@ class StarScreen extends StatelessWidget {
                                   child: SingleChildScrollView(
                                     child: Column(
                                       children: const [
-                                        CathegorieProgress(
+                                        CategoryProgress(
                                           title: 'Stochastik',
                                           done: 7,
                                           total: 10,
                                         ),
-                                        CathegorieProgress(
+                                        CategoryProgress(
                                           title: 'Analysis',
                                           done: 8,
                                           total: 10,
                                         ),
-                                        CathegorieProgress(
+                                        CategoryProgress(
                                           title: 'Geometrie',
                                           done: 10,
                                           total: 10,
@@ -184,32 +184,18 @@ class StarScreen extends StatelessWidget {
             ),
             Expanded(
               flex: 1,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30.0, 0, 0, 0),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Statistics',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+              child: Card(
+                title: 'Streak',
+                boxFlex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [],
                     ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Container(
-                      margin: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -261,8 +247,8 @@ class ExerciseCards extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Center(
-
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,7 +270,8 @@ class ExerciseCards extends StatelessWidget {
                   progressColor: colorScheme.onPrimaryFixedVariant,
                   circularStrokeCap: CircularStrokeCap.round,
                 ),
-                const SizedBox(width: 30),
+
+                const SizedBox(width: 50),
                 // Topics List
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -328,12 +315,12 @@ class ExerciseCards extends StatelessWidget {
   }
 }
 
-class CathegorieProgress extends StatelessWidget {
+class CategoryProgress extends StatelessWidget {
   final String title;
   final int done;
   final int total;
 
-  const CathegorieProgress({
+  const CategoryProgress({
     super.key,
     required this.title,
     required this.done,
