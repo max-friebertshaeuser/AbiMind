@@ -115,7 +115,8 @@ class StarScreen extends StatelessWidget {
                           flex: 1,
                           child: SingleChildScrollView(
                             child: Container(
-                              margin: const EdgeInsets.all(20.0),
+                              margin: const EdgeInsets.all(10.0),
+                              width: double.infinity,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -234,102 +235,92 @@ class ExerciseCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return IntrinsicWidth(
-      child: IntrinsicHeight(
-        child: Container(
-          margin: const EdgeInsets.all(4),
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHigh,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
+        boxShadow: const [
+          BoxShadow(color: Colors.black26, offset: Offset(2, 2), blurRadius: 5),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Year Centered
+          Text(
+            "— $year —",
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
+              letterSpacing: 1,
               color: colorScheme.onPrimaryFixedVariant,
-              width: 2,
             ),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(2, 2),
-                blurRadius: 5,
-              ),
-            ],
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          const SizedBox(height: 12),
+          Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Year Centered
-              Text(
-                "— $year —",
-                style: TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                  letterSpacing: 1,
-                  color: colorScheme.onPrimaryFixedVariant,
+              // Progress Circle
+              CircularPercentIndicator(
+                radius: 20.0,
+                lineWidth: 6.0,
+                percent: percent,
+                center: Text(
+                  "${(percent * 100).round()}%",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    color: colorScheme.onPrimaryFixedVariant,
+                  ),
                 ),
+                backgroundColor: colorScheme.surfaceContainerHigh,
+                progressColor: colorScheme.onPrimaryFixedVariant,
+                circularStrokeCap: CircularStrokeCap.round,
               ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+              const SizedBox(width: 16),
+              // Topics List
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Progress Circle
-                  CircularPercentIndicator(
-                    radius: 20.0,
-                    lineWidth: 6.0,
-                    percent: percent,
-                    center: Text(
-                      "${(percent * 100).round()}%",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                        color: colorScheme.onPrimaryFixedVariant,
-                      ),
-                    ),
-                    backgroundColor: colorScheme.surfaceContainerHigh,
-                    progressColor: colorScheme.onPrimaryFixedVariant,
-                    circularStrokeCap: CircularStrokeCap.round,
-                  ),
-                  const SizedBox(width: 16),
-                  // Topics List
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:
-                        topics.entries.map((entry) {
-                          final String topic = entry.key;
-                          final int done = entry.value[0];
-                          final int total = entry.value[1];
+                children:
+                    topics.entries.map((entry) {
+                      final String topic = entry.key;
+                      final int done = entry.value[0];
+                      final int total = entry.value[1];
 
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 2),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "$done/$total ",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: colorScheme.onPrimaryFixedVariant,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  topic,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: colorScheme.onPrimaryFixedVariant,
-                                  ),
-                                ),
-                              ],
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "$done/$total ",
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: colorScheme.onPrimaryFixedVariant,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        }).toList(),
-                  ),
-                ],
+                            Text(
+                              topic,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: colorScheme.onPrimaryFixedVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }
