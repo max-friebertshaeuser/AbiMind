@@ -121,7 +121,6 @@ class StarScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Column(
-                                // <- Wrap your cards inside a Column
                                 children: [
                                   ExerciseCards(
                                     year: 2023,
@@ -240,7 +239,7 @@ class ExerciseCards extends StatelessWidget {
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHigh,
+        color: colorScheme.primaryFixed,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
         boxShadow: const [
@@ -262,63 +261,66 @@ class ExerciseCards extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Progress Circle
-              CircularPercentIndicator(
-                radius: 20.0,
-                lineWidth: 6.0,
-                percent: percent,
-                center: Text(
-                  "${(percent * 100).round()}%",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    color: colorScheme.onPrimaryFixedVariant,
-                  ),
-                ),
-                backgroundColor: colorScheme.surfaceContainerHigh,
-                progressColor: colorScheme.onPrimaryFixedVariant,
-                circularStrokeCap: CircularStrokeCap.round,
-              ),
-              const SizedBox(width: 16),
-              // Topics List
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    topics.entries.map((entry) {
-                      final String topic = entry.key;
-                      final int done = entry.value[0];
-                      final int total = entry.value[1];
+          Center(
 
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "$done/$total ",
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: colorScheme.onPrimaryFixedVariant,
-                                fontWeight: FontWeight.bold,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Progress Circle
+                CircularPercentIndicator(
+                  radius: 30.0,
+                  lineWidth: 6.0,
+                  percent: percent,
+                  center: Text(
+                    "${(percent * 100).round()}%",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: colorScheme.onPrimaryFixedVariant,
+                    ),
+                  ),
+                  backgroundColor: colorScheme.surfaceContainerHigh,
+                  progressColor: colorScheme.onPrimaryFixedVariant,
+                  circularStrokeCap: CircularStrokeCap.round,
+                ),
+                const SizedBox(width: 30),
+                // Topics List
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children:
+                      topics.entries.map((entry) {
+                        final String topic = entry.key;
+                        final int done = entry.value[0];
+                        final int total = entry.value[1];
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "$done/$total ",
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Text(
-                              topic,
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: colorScheme.onPrimaryFixedVariant,
+                              Text(
+                                topic,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-              ),
-            ],
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                ),
+              ],
+            ),
           ),
         ],
       ),
