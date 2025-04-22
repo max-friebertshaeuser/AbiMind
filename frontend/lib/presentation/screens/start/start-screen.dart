@@ -240,9 +240,12 @@ class ExerciseCards extends StatelessWidget {
           margin: const EdgeInsets.all(4),
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: const Color(0xFFEDE0FF),
+            color: colorScheme.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
+            border: Border.all(
+              color: colorScheme.onPrimaryFixedVariant,
+              width: 2,
+            ),
             boxShadow: const [
               BoxShadow(
                 color: Colors.black26,
@@ -266,7 +269,6 @@ class ExerciseCards extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              // Row for Progress and Text Content
               Row(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,8 +286,8 @@ class ExerciseCards extends StatelessWidget {
                         color: colorScheme.onPrimaryFixedVariant,
                       ),
                     ),
-                    backgroundColor:colorScheme.surfaceContainerHigh,
-                    progressColor:colorScheme.onPrimaryFixedVariant,
+                    backgroundColor: colorScheme.surfaceContainerHigh,
+                    progressColor: colorScheme.onPrimaryFixedVariant,
                     circularStrokeCap: CircularStrokeCap.round,
                   ),
                   const SizedBox(width: 16),
@@ -305,17 +307,17 @@ class ExerciseCards extends StatelessWidget {
                               children: [
                                 Text(
                                   "$done/$total ",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 10,
-                                    color: Color(0xFF4C3A64),
+                                    color: colorScheme.onPrimaryFixedVariant,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
                                   topic,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 10,
-                                    color: Color(0xFF4C3A64),
+                                    color: colorScheme.onPrimaryFixedVariant,
                                   ),
                                 ),
                               ],
