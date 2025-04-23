@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:frontend/core/utils/constants.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class StarScreen extends StatelessWidget {
   const StarScreen({super.key});
@@ -170,22 +171,110 @@ class StarScreen extends StatelessWidget {
                     title: 'Streak',
                     boxFlex: 1,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [],
+                        // Left side: Fire icon and streak info
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '17',
+                                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Icon(
+                                    Icons.local_fire_department,
+                                    color: Colors.deepPurple,
+                                    size: 32,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Du hast dein\nLernziel 17 Tage\nlang erreicht',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Right side: Dots and line chart
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.deepPurple.shade100),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+
+                              child:LineChart(
+                                LineChartData(
+                                  gridData: FlGridData(show: false),
+                                  titlesData: FlTitlesData(show: false),
+                                  borderData: FlBorderData(show: false),
+                                  minY: -1,  // allows room below baseline
+                                  maxY: 2,   // allows room above baseline
+                                  lineBarsData: [
+                                    LineChartBarData(
+                                      spots: [
+                                        FlSpot(0, 1),
+                                        FlSpot(1, 0),
+                                        FlSpot(2, 1),
+                                        FlSpot(3, 1),
+                                        FlSpot(4, 0),
+                                        FlSpot(5, 1),
+                                        FlSpot(6, 0),
+                                        FlSpot(6, 0),
+                                        FlSpot(6, 0),
+                                      ],
+                                      isCurved: false,
+                                      isStrokeCapRound: false,
+                                      barWidth: 0, // <-- hide the line
+                                      color: Colors.transparent, // make sure the line is invisible
+                                      dotData: FlDotData(
+                                        show: true,
+                                        getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
+                                          radius: 4,
+                                          color: Colors.deepPurple,
+                                          strokeWidth: 0,
+                                        ),
+                                      ),
+                                      belowBarData: BarAreaData(show: false),
+                                    ),
+                                  ],
+                                  extraLinesData: ExtraLinesData(
+                                    horizontalLines: [
+                                      HorizontalLine(
+                                        y: 0.5, // baseline in the middle between 0 and 1
+                                        color: Colors.deepPurple.shade200,
+                                        strokeWidth: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+
+
+                          ),
                         ),
                       ],
                     ),
-                  ),
+                  )
+
                 ],
               ),
             ),
             Expanded(
               flex: 1,
               child: Card(
-                title: 'Streak',
+                title: 'Exercises',
                 boxFlex: 1,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
