@@ -48,9 +48,9 @@ const statistic = {
   }
 };
 
-const Streak = {
+const streak = {
   'streak': 5,
-  'goal': 90,
+  'goal': 90.0,
   'tenDayLearnProgress' : {
     {
       'day': '2023-10-01',
@@ -97,6 +97,11 @@ const Streak = {
 
   }
 };
+
+final tenDayLearnProgress = (streak['tenDayLearnProgress'] as Set).toList();
+final minutesList = tenDayLearnProgress.map((entry) => entry['minutes'] as int).toList();
+final maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
+final minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
 
 
 const String kSampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
