@@ -48,6 +48,56 @@ const statistic = {
   }
 };
 
+const Streak = {
+  'streak': 5,
+  'goal': 90,
+  'tenDayLearnProgress' : {
+    {
+      'day': '2023-10-01',
+      'minutes': 100,
+    },
+    {
+      'day': '2023-10-02',
+      'minutes': 120,
+    },
+    {
+      'day': '2023-10-03',
+      'minutes': 95,
+    },
+    {
+      'day': '2023-10-04',
+      'minutes': 105,
+    },
+    {
+      'day': '2023-10-05',
+      'minutes': 109,
+    },
+    {
+      'day': '2023-10-06',
+      'minutes': 95,
+    },
+    {
+      'day': '2023-10-07',
+      'minutes': 100,
+    },
+    {
+      'day': '2023-10-08',
+      'minutes': 120,
+    },
+    {
+      'day': '2023-10-09',
+      'minutes': 100,
+    },
+    {
+      'day': '2023-10-10',
+      'minutes': 10,
+    },
+
+
+
+  }
+};
+
 
 const String kSampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
     'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '

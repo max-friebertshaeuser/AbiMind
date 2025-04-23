@@ -10,7 +10,9 @@ class StarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,9 +61,9 @@ class StarScreen extends StatelessWidget {
                                   padding: const EdgeInsets.all(5.0),
                                   child: CircularPercentIndicator(
                                     backgroundColor:
-                                        colorScheme.surfaceContainerHigh,
+                                    colorScheme.surfaceContainerHigh,
                                     progressColor:
-                                        colorScheme.onPrimaryFixedVariant,
+                                    colorScheme.onPrimaryFixedVariant,
                                     // TODO : Change Import Stats
                                     radius: 70.0,
                                     lineWidth: 12.0,
@@ -70,7 +72,8 @@ class StarScreen extends StatelessWidget {
                                           .toString(),
                                     ),
                                     center: Text(
-                                      "${(statistic['solvedPercentage']).toString()}%",
+                                      "${(statistic['solvedPercentage'])
+                                          .toString()}%",
                                       style: percentageStyle,
                                     ),
                                     circularStrokeCap: CircularStrokeCap.round,
@@ -183,12 +186,15 @@ class StarScreen extends StatelessWidget {
                                 children: [
                                   Text(
                                     '17',
-                                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   SizedBox(width: 8),
                                   Icon(
                                     Icons.local_fire_department,
-                                    color: Colors.deepPurple,
+                                    color: colorScheme.onPrimaryFixedVariant,
                                     size: 32,
                                   ),
                                 ],
@@ -207,67 +213,77 @@ class StarScreen extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 12),
-                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            margin: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.deepPurple.shade100),
+                              border: Border.all(
+                                color: colorScheme.onPrimaryFixedVariant,
+                              ),
                               borderRadius: BorderRadius.circular(16),
                             ),
-
-                              child:LineChart(
-                                LineChartData(
-                                  gridData: FlGridData(show: false),
-                                  titlesData: FlTitlesData(show: false),
-                                  borderData: FlBorderData(show: false),
-                                  minY: -1,  // allows room below baseline
-                                  maxY: 2,   // allows room above baseline
-                                  lineBarsData: [
-                                    LineChartBarData(
-                                      spots: [
-                                        FlSpot(0, 1),
-                                        FlSpot(1, 0),
-                                        FlSpot(2, 1),
-                                        FlSpot(3, 1),
-                                        FlSpot(4, 0),
-                                        FlSpot(5, 1),
-                                        FlSpot(6, 0),
-                                        FlSpot(6, 0),
-                                        FlSpot(6, 0),
-                                      ],
-                                      isCurved: false,
-                                      isStrokeCapRound: false,
-                                      barWidth: 0, // <-- hide the line
-                                      color: Colors.transparent, // make sure the line is invisible
-                                      dotData: FlDotData(
-                                        show: true,
-                                        getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-                                          radius: 4,
-                                          color: Colors.deepPurple,
-                                          strokeWidth: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: LineChart(
+                                  LineChartData(
+                                    gridData: FlGridData(show: false),
+                                    titlesData: FlTitlesData(show: false),
+                                    borderData: FlBorderData(show: false),
+                                    minY: -1,
+                                    // allows room below baseline
+                                    maxY: 2,
+                                    // allows room above baseline
+                                    lineBarsData: [
+                                      LineChartBarData(
+                                        spots: [
+                                          FlSpot(0, 1),
+                                          FlSpot(1, 0),
+                                          FlSpot(2, 1),
+                                          FlSpot(3, 1),
+                                          FlSpot(4, 0),
+                                          FlSpot(5, 1),
+                                          FlSpot(6, 0),
+                                          FlSpot(6, 0),
+                                          FlSpot(6, 0),
+                                        ],
+                                        isCurved: false,
+                                        isStrokeCapRound: false,
+                                        barWidth: 0,
+                                        // <-- hide the line
+                                        color: Colors.transparent,
+                                        // make sure the line is invisible
+                                        dotData: FlDotData(
+                                          show: true,
+                                          getDotPainter:
+                                              (spot, percent, barData, index) =>
+                                              FlDotCirclePainter(
+                                                radius: 4,
+                                                color: colorScheme.onPrimaryFixedVariant,
+                                                strokeWidth: 0,
+                                              ),
                                         ),
-                                      ),
-                                      belowBarData: BarAreaData(show: false),
-                                    ),
-                                  ],
-                                  extraLinesData: ExtraLinesData(
-                                    horizontalLines: [
-                                      HorizontalLine(
-                                        y: 0.5, // baseline in the middle between 0 and 1
-                                        color: Colors.deepPurple.shade200,
-                                        strokeWidth: 2,
+                                        belowBarData: BarAreaData(show: false),
                                       ),
                                     ],
-                                  ),
-                                ),
-                              )
-
-
+                                    extraLinesData: ExtraLinesData(
+                                      horizontalLines: [
+                                        HorizontalLine(
+                                          y: 0.5,
+                                          // baseline in the middle between 0 and 1
+                                          color: colorScheme.onPrimaryFixedVariant,
+                                          strokeWidth: 2,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  )
-
+                  ),
                 ],
               ),
             ),
@@ -308,7 +324,9 @@ class ExerciseCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -365,35 +383,35 @@ class ExerciseCards extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children:
-                      topics.entries.map((entry) {
-                        final String topic = entry.key;
-                        final int done = entry.value[0];
-                        final int total = entry.value[1];
+                  topics.entries.map((entry) {
+                    final String topic = entry.key;
+                    final int done = entry.value[0];
+                    final int total = entry.value[1];
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "$done/$total ",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: colorScheme.onPrimaryFixedVariant,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                topic,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: colorScheme.onPrimaryFixedVariant,
-                                ),
-                              ),
-                            ],
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "$done/$total ",
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: colorScheme.onPrimaryFixedVariant,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        );
-                      }).toList(),
+                          Text(
+                            topic,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: colorScheme.onPrimaryFixedVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -419,7 +437,9 @@ class CategoryProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = done / total;
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Container(
       margin: const EdgeInsets.all(10.0),
       child: Column(
@@ -475,7 +495,9 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Expanded(
       flex: boxFlex,
       child: Column(
