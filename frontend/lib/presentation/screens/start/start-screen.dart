@@ -182,7 +182,7 @@ class StarScreen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '17',
+                                    ,
                                     style: TextStyle(
                                       fontSize: 32,
                                       fontWeight: FontWeight.bold,
@@ -233,23 +233,19 @@ class StarScreen extends StatelessWidget {
                                   // allows room above baseline
                                   lineBarsData: [
                                     LineChartBarData(
-                                      spots: [
-                                        FlSpot(0, 1),
-                                        FlSpot(1, 0),
-                                        FlSpot(2, 1),
-                                        FlSpot(3, 1),
-                                        FlSpot(4, 0),
-                                        FlSpot(5, 1),
-                                        FlSpot(6, 0),
-                                        FlSpot(6, 0),
-                                        FlSpot(6, 0),
-                                      ],
+                                      spots:tenDayLearnProgress
+                                              .asMap()
+                                              .entries
+                                              .map((entry) {
+                                                final index = entry.key.toDouble();
+                                                final minutes = entry.value['minutes'] as int;
+                                                return FlSpot( index, minutes.toDouble(),);
+                                              })
+                                              .toList(),
                                       isCurved: false,
                                       isStrokeCapRound: false,
                                       barWidth: 0,
-                                      // <-- hide the line
                                       color: Colors.transparent,
-                                      // make sure the line is invisible
                                       dotData: FlDotData(
                                         show: true,
                                         getDotPainter:
@@ -272,8 +268,9 @@ class StarScreen extends StatelessWidget {
                                   extraLinesData: ExtraLinesData(
                                     horizontalLines: [
                                       HorizontalLine(
-                                        y: double.parse(streak['goal'].toString()),
-                                        // baseline in the middle between 0 and 1
+                                        y: double.parse(
+                                          streak['goal'].toString(),
+                                        ),
                                         color:
                                             colorScheme.onPrimaryFixedVariant,
                                         strokeWidth: 2,
