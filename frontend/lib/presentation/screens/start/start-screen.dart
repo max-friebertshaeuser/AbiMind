@@ -10,9 +10,7 @@ class StarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,330 +29,334 @@ class StarScreen extends StatelessWidget {
         child: Flex(
           direction: Axis.horizontal,
           children: [
-          Expanded(
-          flex: 1,
-          child: Flex(
-            direction: Axis.vertical,
-            children: [
-              Card(
-                title: 'Current Exercise',
-                boxFlex: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        margin: const EdgeInsets.all(20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              statistic['currentYear'].toString(),
-                              style: kHeaderStyle,
+            Expanded(
+              flex: 1,
+              child: Flex(
+                direction: Axis.vertical,
+                children: [
+                  Card(
+                    title: 'Current Exercise',
+                    boxFlex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            margin: const EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: CircularPercentIndicator(
-                                backgroundColor:
-                                colorScheme.surfaceContainerHigh,
-                                progressColor:
-                                colorScheme.onPrimaryFixedVariant,
-                                // TODO : Change Import Stats
-                                radius: 70.0,
-                                lineWidth: 12.0,
-                                percent: double.parse(
-                                  statistic['solvedPercentageNumeric']
-                                      .toString(),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  statistic['currentYear'].toString(),
+                                  style: kHeaderStyle,
                                 ),
-                                center: Text(
-                                  "${(statistic['solvedPercentage'])
-                                      .toString()}%",
-                                  style: percentageStyle,
-                                ),
-                                circularStrokeCap: CircularStrokeCap.round,
-                              ),
-                            ),
-                            Divider(thickness: 2),
-                            Container(
-                              width: double.infinity,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: const [
-                                    CategoryProgress(
-                                      title: 'Stochastik',
-                                      done: 7,
-                                      total: 10,
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: CircularPercentIndicator(
+                                    backgroundColor:
+                                        colorScheme.surfaceContainerHigh,
+                                    progressColor:
+                                        colorScheme.onPrimaryFixedVariant,
+                                    // TODO : Change Import Stats
+                                    radius: 70.0,
+                                    lineWidth: 12.0,
+                                    percent: double.parse(
+                                      statistic['solvedPercentageNumeric']
+                                          .toString(),
                                     ),
-                                    CategoryProgress(
-                                      title: 'Analysis',
-                                      done: 8,
-                                      total: 10,
+                                    center: Text(
+                                      "${(statistic['solvedPercentage']).toString()}%",
+                                      style: percentageStyle,
                                     ),
-                                    CategoryProgress(
-                                      title: 'Geometrie',
-                                      done: 10,
-                                      total: 10,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                        vertical: 20.0,
-                      ),
-                      child: VerticalDivider(thickness: 2, width: 10),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: SingleChildScrollView(
-                        child: Container(
-                          margin: const EdgeInsets.all(10.0),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Column(
-                            children: [
-                              ExerciseCards(
-                                year: 2023,
-                                percent: 0.65,
-                                topics: {
-                                  'Stochastik': [7, 10],
-                                  'Analysis': [8, 10],
-                                  'Geometrie': [10, 10],
-                                },
-                              ),
-                              ExerciseCards(
-                                year: 2024,
-                                percent: 0.65,
-                                topics: {
-                                  'Stochastik': [7, 10],
-                                  'Analysis': [8, 10],
-                                  'Geometrie': [10, 10],
-                                },
-                              ),
-                              ExerciseCards(
-                                year: 2025,
-                                percent: 0.75,
-                                topics: {
-                                  'Stochastik': [8, 10],
-                                  'Analysis': [9, 10],
-                                  'Geometrie': [10, 10],
-                                },
-                              ),
-                              ExerciseCards(
-                                year: 2026,
-                                percent: 0.85,
-                                topics: {
-                                  'Stochastik': [9, 10],
-                                  'Analysis': [10, 10],
-                                  'Geometrie': [10, 10],
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Card(
-                title: 'Streak',
-                boxFlex: 1,
-                child: Row(
-                  children: [
-                    // Left side: Fire icon and streak info
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(streak['streak'].toString(),
-                                  style: kHeaderStyle),
-                              SizedBox(width: 8),
-                              Icon(
-                                Icons.local_fire_department,
-                                color: colorScheme.onPrimaryFixedVariant,
-                                size: 32,
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Center(
-                            child: Text(
-                              'Du hast dein\nLernziel ${streak['streak']
-                                  .toString()
-                              } Tage\nlang erreicht',
-                              style: smallTextStyle,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Right side: Dots and line chart
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: colorScheme.onPrimaryFixedVariant,
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: LineChart(
-                            LineChartData(
-                              gridData: FlGridData(show: false),
-                              titlesData: FlTitlesData(show: false),
-                              borderData: FlBorderData(show: false),
-                              minY: minMinutes - 10,
-                              // allows room below baseline
-                              maxY: maxMinutes + 10,
-                              // allows room above baseline
-                              lineBarsData: [
-                                LineChartBarData(
-                                  spots:
-                                  tenDayLearnProgress
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                    final index =
-                                    entry.key.toDouble();
-                                    final minutes =
-                                    entry.value['minutes']
-                                    as int;
-                                    return FlSpot(
-                                      index,
-                                      minutes.toDouble(),
-                                    );
-                                  })
-                                      .toList(),
-                                  isCurved: false,
-                                  isStrokeCapRound: false,
-                                  barWidth: 0,
-                                  color: Colors.transparent,
-                                  dotData: FlDotData(
-                                    show: true,
-                                    getDotPainter:
-                                        (spot,
-                                        percent,
-                                        barData,
-                                        index,) =>
-                                        FlDotCirclePainter(
-                                          radius: 4,
-                                          color:
-                                          colorScheme
-                                              .onPrimaryFixedVariant,
-                                          strokeWidth: 0,
-                                        ),
+                                    circularStrokeCap: CircularStrokeCap.round,
                                   ),
-                                  belowBarData: BarAreaData(show: false),
+                                ),
+                                Divider(thickness: 2),
+                                Container(
+                                  width: double.infinity,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: const [
+                                        CategoryProgress(
+                                          title: 'Stochastik',
+                                          done: 7,
+                                          total: 10,
+                                        ),
+                                        CategoryProgress(
+                                          title: 'Analysis',
+                                          done: 8,
+                                          total: 10,
+                                        ),
+                                        CategoryProgress(
+                                          title: 'Geometrie',
+                                          done: 10,
+                                          total: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
-                              extraLinesData: ExtraLinesData(
-                                horizontalLines: [
-                                  HorizontalLine(
-                                    y: double.parse(
-                                      streak['goal'].toString(),
-                                    ),
-                                    color:
-                                    colorScheme.onPrimaryFixedVariant,
-                                    strokeWidth: 2,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 20.0,
+                          ),
+                          child: VerticalDivider(thickness: 2, width: 10),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: SingleChildScrollView(
+                            child: Container(
+                              margin: const EdgeInsets.all(10.0),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  ExerciseCards(
+                                    year: 2023,
+                                    percent: 0.65,
+                                    topics: {
+                                      'Stochastik': [7, 10],
+                                      'Analysis': [8, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                  ExerciseCards(
+                                    year: 2024,
+                                    percent: 0.65,
+                                    topics: {
+                                      'Stochastik': [7, 10],
+                                      'Analysis': [8, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                  ExerciseCards(
+                                    year: 2025,
+                                    percent: 0.75,
+                                    topics: {
+                                      'Stochastik': [8, 10],
+                                      'Analysis': [9, 10],
+                                      'Geometrie': [10, 10],
+                                    },
+                                  ),
+                                  ExerciseCards(
+                                    year: 2026,
+                                    percent: 0.85,
+                                    topics: {
+                                      'Stochastik': [9, 10],
+                                      'Analysis': [10, 10],
+                                      'Geometrie': [10, 10],
+                                    },
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  Card(
+                    title: 'Streak',
+                    boxFlex: 1,
+                    child: Row(
+                      children: [
+                        // Left side: Fire icon and streak info
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    streak['streak'].toString(),
+                                    style: kHeaderStyle,
+                                  ),
+                                  SizedBox(width: 8),
+                                  Icon(
+                                    Icons.local_fire_department,
+                                    color: colorScheme.onPrimaryFixedVariant,
+                                    size: 32,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 8),
+                              Center(
+                                child: Text(
+                                  'Du hast dein\nLernziel ${streak['streak'].toString()} Tage\nlang erreicht',
+                                  style: smallTextStyle,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Right side: Dots and line chart
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: colorScheme.onPrimaryFixedVariant,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: LineChart(
+                                LineChartData(
+                                  gridData: FlGridData(show: false),
+                                  titlesData: FlTitlesData(show: false),
+                                  borderData: FlBorderData(show: false),
+                                  minY: minMinutes - 10,
+                                  // allows room below baseline
+                                  maxY: maxMinutes + 10,
+                                  // allows room above baseline
+                                  lineBarsData: [
+                                    LineChartBarData(
+                                      spots:
+                                          tenDayLearnProgress
+                                              .asMap()
+                                              .entries
+                                              .map((entry) {
+                                                final index =
+                                                    entry.key.toDouble();
+                                                final minutes =
+                                                    entry.value['minutes']
+                                                        as int;
+                                                return FlSpot(
+                                                  index,
+                                                  minutes.toDouble(),
+                                                );
+                                              })
+                                              .toList(),
+                                      isCurved: false,
+                                      isStrokeCapRound: false,
+                                      barWidth: 0,
+                                      color: Colors.transparent,
+                                      dotData: FlDotData(
+                                        show: true,
+                                        getDotPainter:
+                                            (
+                                              spot,
+                                              percent,
+                                              barData,
+                                              index,
+                                            ) => FlDotCirclePainter(
+                                              radius: 4,
+                                              color:
+                                                  colorScheme
+                                                      .onPrimaryFixedVariant,
+                                              strokeWidth: 0,
+                                            ),
+                                      ),
+                                      belowBarData: BarAreaData(show: false),
+                                    ),
+                                  ],
+                                  extraLinesData: ExtraLinesData(
+                                    horizontalLines: [
+                                      HorizontalLine(
+                                        y: double.parse(
+                                          streak['goal'].toString(),
+                                        ),
+                                        color:
+                                            colorScheme.onPrimaryFixedVariant,
+                                        strokeWidth: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Card(
+                title: 'Exercises',
+                boxFlex: 1,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CustomTaskCard(
+                              title: 'Textaufgabe',
+                              description:
+                                  'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
+                              tags: [
+                                'Finished',
+                                'Geometrie',
+                                'Keine Hilfsmittel',
+                              ],
+                            ),
+                            CustomTaskCard(
+                              title: 'Ohne Anwendung',
+                              description:
+                                  'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
+                              tags: ['Analysis', 'Alle Hilfsmittel'],
+                            ),
+                            CustomTaskCard(
+                              title: 'Textaufgabe',
+                              description:
+                                  'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
+                              tags: ['Geometrie', 'Keine Hilfsmittel'],
+                            ),
+                            CustomTaskCard(
+                              title: 'Ohne Anwendung',
+                              description:
+                                  'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
+                              tags: ['Analysis', 'Alle Hilfsmittel'],
+                            ),
+                            CustomTaskCard(
+                              title: 'Textaufgabe',
+                              description:
+                                  'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
+                              tags: ['Geometrie', 'Keine Hilfsmittel'],
+                            ),
+                            CustomTaskCard(
+                              title: 'Ohne Anwendung',
+                              description:
+                                  'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
+                              tags: ['Analysis', 'Alle Hilfsmittel'],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Card(
-            title: 'Exercises',
-            boxFlex: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomTaskCard(
-                          title: 'Textaufgabe',
-                          description:
-                          'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
-                          tags: ['Finished', 'Geometrie', 'Keine Hilfsmittel'],
-                        ),
-                        CustomTaskCard(
-                          title: 'Ohne Anwendung',
-                          description:
-                          'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
-                          tags: ['Analysis', 'Alle Hilfsmittel'],
-                        ),
-                        CustomTaskCard(
-                          title: 'Textaufgabe',
-                          description:
-                          'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
-                          tags: ['Geometrie', 'Keine Hilfsmittel'],
-                        ),
-                        CustomTaskCard(
-                          title: 'Ohne Anwendung',
-                          description:
-                          'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
-                          tags: ['Analysis', 'Alle Hilfsmittel'],
-                        ),
-                        CustomTaskCard(
-                          title: 'Textaufgabe',
-                          description:
-                          'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
-                          tags: ['Geometrie', 'Keine Hilfsmittel'],
-                        ),
-                        CustomTaskCard(
-                          title: 'Ohne Anwendung',
-                          description:
-                          'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
-                          tags: ['Analysis', 'Alle Hilfsmittel'],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
             ),
-          ),
+          ],
         ),
-      ],
-    ),)
-    ,
+      ),
     );
   }
 }
@@ -373,9 +375,7 @@ class ExerciseCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -432,28 +432,28 @@ class ExerciseCards extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children:
-                  topics.entries.map((entry) {
-                    final String topic = entry.key;
-                    final int done = entry.value[0];
-                    final int total = entry.value[1];
+                      topics.entries.map((entry) {
+                        final String topic = entry.key;
+                        final int done = entry.value[0];
+                        final int total = entry.value[1];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("$done/$total ", style: smallTextStyle),
-                          Text(
-                            topic,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: colorScheme.onPrimaryFixedVariant,
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("$done/$total ", style: smallTextStyle),
+                              Text(
+                                topic,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
                 ),
               ],
             ),
@@ -479,9 +479,7 @@ class CategoryProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = done / total;
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.all(10.0),
       child: Column(
@@ -524,9 +522,7 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: boxFlex,
       child: Column(
@@ -562,9 +558,7 @@ class CustomTaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     final tagColors = {
       'Finished': Colors.indigo,
       'Geometrie': Colors.indigo,
@@ -579,10 +573,7 @@ class CustomTaskCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: colorScheme.primaryContainer,
-        border: Border.all(
-          color: colorScheme.onPrimaryFixedVariant,
-          width: 2,
-        ),
+        border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -590,31 +581,25 @@ class CustomTaskCard extends StatelessWidget {
         children: [
           Wrap(
             spacing: 8,
-            children: tags.map((tag) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: tagColors[tag],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  tag,
-                  style: lableTextStyle,
-                ),
-              );
-            }).toList(),
+            children:
+                tags.map((tag) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: tagColors[tag],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(tag, style: lableTextStyle),
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 10),
-          Text(
-            title,
-            style: kHeaderStyle
-          ),
+          Text(title, style: kHeaderStyle),
           const SizedBox(height: 6),
-          Text(
-            description,
-            style: middleTextStyle,
-          ),
+          Text(description, style: middleTextStyle),
         ],
       ),
     );
