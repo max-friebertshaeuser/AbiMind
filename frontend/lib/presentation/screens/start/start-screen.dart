@@ -181,13 +181,7 @@ class StarScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    ,
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                                  Text(streak['streak'].toString(), style: kHeaderStyle),
                                   SizedBox(width: 8),
                                   Icon(
                                     Icons.local_fire_department,
@@ -197,10 +191,12 @@ class StarScreen extends StatelessWidget {
                                 ],
                               ),
                               SizedBox(height: 8),
-                              Text(
-                                'Du hast dein\nLernziel 17 Tage\nlang erreicht',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14),
+                              Center(
+                                child: Text(
+                                  'Du hast dein\nLernziel ${streak['streak'].toString()
+                                  } Tage\nlang erreicht',
+                                  style: smallTextStyle,
+                                ),
                               ),
                             ],
                           ),
@@ -233,13 +229,20 @@ class StarScreen extends StatelessWidget {
                                   // allows room above baseline
                                   lineBarsData: [
                                     LineChartBarData(
-                                      spots:tenDayLearnProgress
+                                      spots:
+                                          tenDayLearnProgress
                                               .asMap()
                                               .entries
                                               .map((entry) {
-                                                final index = entry.key.toDouble();
-                                                final minutes = entry.value['minutes'] as int;
-                                                return FlSpot( index, minutes.toDouble(),);
+                                                final index =
+                                                    entry.key.toDouble();
+                                                final minutes =
+                                                    entry.value['minutes']
+                                                        as int;
+                                                return FlSpot(
+                                                  index,
+                                                  minutes.toDouble(),
+                                                );
                                               })
                                               .toList(),
                                       isCurved: false,
@@ -392,14 +395,7 @@ class ExerciseCards extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                "$done/$total ",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: colorScheme.onPrimaryFixedVariant,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              Text("$done/$total ", style: smallTextStyle),
                               Text(
                                 topic,
                                 style: TextStyle(
@@ -444,22 +440,9 @@ class CategoryProgress extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: colorScheme.onPrimaryFixedVariant,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
+              Text(title, style: smallTextStyle),
               const Spacer(),
-              Text(
-                "$done/$total",
-                style: TextStyle(
-                  fontSize: 11,
-                  color: colorScheme.onPrimaryFixedVariant,
-                ),
-              ),
+              Text("$done/$total", style: smallTextStyle),
             ],
           ),
           const SizedBox(height: 2),

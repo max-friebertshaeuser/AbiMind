@@ -13,6 +13,11 @@ const percentageStyle = TextStyle(
   color: Color(0xFF584178),
 );
 
+const smallTextStyle = TextStyle(
+  fontSize: 11,
+  color: Color(0xFF584178)
+);
+
 const texamleExeciese = {
   'id': 'example',
   'name': 'example',
@@ -28,7 +33,7 @@ const statistic = {
   'currentYear': 2025,
   'solvedPercentageNumeric': 0.65,
   'solvedPercentage': 65,
-  'examParts' : {
+  'examParts': {
     {
       'name': 'Analysis',
       'done': 10,
@@ -51,7 +56,7 @@ const statistic = {
 const streak = {
   'streak': 5,
   'goal': 90.0,
-  'tenDayLearnProgress' : {
+  'tenDayLearnProgress': {
     {
       'day': '2023-10-01',
       'minutes': 100,
@@ -90,12 +95,14 @@ const streak = {
     },
     {
       'day': '2023-10-10',
-      'minutes': 10,
+      'minutes': 100,
     },
   }
 };
 
 final tenDayLearnProgress = (streak['tenDayLearnProgress'] as Set).toList();
-final minutesList = tenDayLearnProgress.map((entry) => entry['minutes'] as int).toList();
+final minutesList = tenDayLearnProgress
+    .map((entry) => entry['minutes'] as int)
+    .toList();
 final maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
 final minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
