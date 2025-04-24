@@ -1,0 +1,96 @@
+\documentclass[10pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+
+\title{Hauptprüfung Abiturprüfung 2024 - Leistungsfach }
+
+\author{Alexander Schwarz\\
+www.mathe-aufgaben.com}
+\date{}
+
+
+\begin{document}
+\maketitle
+ Baden-Württemberg
+
+\section*{Aufgabe III 2}
+Eine Berghütte wird von Gästen mit Mountainbike und ohne Mountainbike besucht. Es gibt Gäste, die eigene Verpflegung mitbringen. Erfahrungsgemäß kommen 44\% der Gäste mit dem Mountainbike. 73\% der Gäste bringen keine eigene Verpflegung mit. $11 \%$ der Gäste kommen mit dem Mountainbike und bringen eigene Verpflegung mit.\\
+Ein Gast wird zufällig ausgewählt. Betrachtet werden die folgenden Ereignisse: M: „Der Gast kommt mit dem Mountainbike."\\
+V : „Der Gast bringt eigene Verpflegung mit."\\
+a) Stellen Sie den Sachverhalt in einer vollständig ausgefüllten Vierfeldertafel dar.\\
+b) Untersuchen Sie, ob der Anteil der Gäste, die eigene Verpflegung mitbringen, unter den Gästen mit Mountainbike gleich groß ist wie unter den Gästen ohne Mountainbike.\\
+c) Berechnen Sie die Wahrscheinlichkeit des Ereignisses $\overline{\mathrm{M}} \cup \mathrm{V}$.\\
+d) Geben Sie jeweils einen Wert für die Parameter $a$ und $b$ an ( $a>0, b>0$ ), sodass mit dem Term $a \cdot 0,44 \cdot 0,56^{b}+0,56^{10}$ die Wahrscheinlichkeit eines Ereignisses im Sachzusammenhang berechnet werden kann. Beschreiben Sie das zugehörige Zufallsexperiment und das Ereignis.\\
+(4 BE)\\
+Auf der Berghütte werden Bananen, Birnen und Äpfel angeboten. Die Masse der Bananen wird als normalverteilt mit einem Erwartungswert von 120 g und einer Standardabweichung von 10 g angenommen.\\
+e) Berechnen Sie die Wahrscheinlichkeit dafür, dass die Masse einer zufällig ausgewählten Banane um höchstens 10\% vom Erwartungswert abweicht.\\
+f) Die Wahrscheinlichkeit, dass eine zufällig ausgewählte Banane eine größere Masse als $m$ hat, beträgt 69\% (m in Gramm). Ermitteln Sie den Wert von m.\\
+g) Die Masse der Birnen wird ebenfalls als normalverteilt mit einem ganzzahligen Erwartungswert in Gramm und einer Standardabweichung von 25 g angenommen. Die Wahrscheinlichkeit dafür, dass eine zufällig ausgewählte Birne eine Masse von höchstens 121 g hat, beträgt 10\%. Bestimmen Sie die Wahrscheinlichkeit dafür, dass eine zufällig ausgewählte Birne mindestens 180 g wiegt.\\
+h) Die Masse eines Apfels wird als normalverteilt mit $\mu_{\mathrm{A}}$ und $\sigma_{\mathrm{A}}$ angenommen. Berechnen Sie die Wahrscheinlichkeit dafür, dass von vier zufällig ausgewählten Äpfeln zwei eine kleinere Masse als $\mu_{\mathrm{A}}$ und zwei eine größere Masse als $\mu_{\mathrm{A}}$ haben.\\
+(3 BE)
+
+\section*{Lösungen}
+\section*{Aufgabe III 2}
+a) Aus dem Text ergibt sich:\\
+$\mathrm{P}(\overline{\mathrm{V}})=0,73$ und $\mathrm{P}(\mathrm{M})=0,44$ und $\mathrm{P}(\mathrm{M} \cap \mathrm{V})=0,11$
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & V & $\overline{\mathrm{V}}$ &  \\
+\hline
+M & 0,11 & 0,33 & 0,44 \\
+\hline
+$\overline{\mathrm{M}}$ & 0,16 & 0,4 & 0,56 \\
+\hline
+ & 0,27 & 0,73 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+b) Anteil der Gäste, die eigene Verpflegung mitbringen, unter den Gästen mit
+
+Mountainbike: $\mathrm{P}_{\mathrm{M}}(\mathrm{V})=\frac{\mathrm{P}(\mathrm{M} \cap \mathrm{V})}{\mathrm{P}(\mathrm{M})}=\frac{0,11}{0,44}=\frac{1}{4}$\\
+Anteil der Gäste, die eigene Verpflegung mitbringen, unter den Gästen ohne\\
+Mountainbike: $P_{\bar{M}}(\mathrm{~V})=\frac{\mathrm{P}(\overline{\mathrm{M}} \cap \mathrm{V})}{\mathrm{P}(\overline{\mathrm{M}})}=\frac{0,16}{0,56}=\frac{2}{7}$\\
+Die Anteile sind nicht gleich.\\
+c) $P(\bar{M} \cup V)=0,11+0,16+0,4=0,67$\\
+d) Der Term a $\cdot 0,44 \cdot 0,56^{b}+0,56^{10}$ stellt die Summe zweier Formeln von Bernoulli dar.
+
+Aus $0,56^{10}$ ergibt sich $n=10$ Versuche.\\
+Aus dem Term a $\cdot 0,44^{1} \cdot 0,56^{b}$ folgt dass die Trefferwahrscheinlichkeit $p=0,44$ ist und $\mathrm{k}=1$. Daraus folgt $\mathrm{b}=\mathrm{n}-\mathrm{k}=9$ und $\mathrm{a}=\binom{10}{1}=10$.\\
+Wegen $p=0,44$ werden als Treffer die Gäste gezählt, die mit Mountainbike kommen.\\
+Der Term stellt die Wahrscheinlichkeit dar, dass von 10 Gästen genau ein Gast oder gar kein Gast (also höchstens ein Gast) mit dem Mountainbike kommt.
+
+Umgekehrt könnte man es auch so formulieren, dass von 10 Gästen genau 9 oder alle 10 Gäste (also mindestens 9 Gäste) nicht mit dem Mountainbike kommen.\\
+e) Die Zufallsgröße X beschreibt die Masse einer Banane in Gramm.\\
+$P(0,9 \cdot 120 \leq X \leq 1,1 \cdot 120)=P(108 \leq X \leq 132) \approx 0,77$\\
+f) Bedingung: $\mathrm{P}(\mathrm{X}>\mathrm{m})=0,69$\\
+$\Leftrightarrow 1-P(X \leq m)=0,69$\\
+$\Leftrightarrow P(X \leq m)=0,31$\\
+Mit dem TR-Befehl „normInv" oder „invNorm" erhält man den Wert m $\approx 115$.\\
+g) Die Zufallsgröße Y beschreibt die Masse einer Birne in Gramm.
+
+Bedingung: $\mathrm{P}(\mathrm{Y} \leq 121) \approx 0,1$\\
+Nun müssen mit dem Taschenrechner Werte für $\mu$ ausprobiert werden, sodass die obige Bedingung erfüllt ist.\\
+$\mu=152: P(Y \leq 121) \approx 0,107$\\
+$\mu=153: P(Y \leq 121) \approx 0,100$\\
+$\mu=154: P(Y \leq 121) \approx 0,093$\\
+Daraus folgt als Erwartungswert $\mu=153$.\\
+Damit gilt $P(Y \geq 180) \approx 0,14$.\\
+h) Die Wahrscheinlichkeit, dass die Masse eines Apfels kleiner als $\mu_{\mathrm{A}}$ ist, beträgt 0,5 (aufgrund der Symmetrie der Glockenkurve).
+
+Die Wahrscheinlichkeit, dass die Masse eines Apfels größer als $\mu_{\mathrm{A}}$ ist, beträgt entsprechend 0,5.
+
+Die Zufallsgröße Z zählt die Äpfel mit einer Masse, die kleiner als $\mu_{\mathrm{A}}$ sind. $Z$ ist binomialverteilt mit $n=4$ und $p=0,5$.\\
+$P(Z=2)=0,375$.\\
+Die Wahrscheinlichkeit, dass zwei Äpfel eine kleinere und zwei Äpfel eine größere Masse als $\mu_{\mathrm{A}}$ besitzen beträgt 0,375 .
+
+
+\end{document}

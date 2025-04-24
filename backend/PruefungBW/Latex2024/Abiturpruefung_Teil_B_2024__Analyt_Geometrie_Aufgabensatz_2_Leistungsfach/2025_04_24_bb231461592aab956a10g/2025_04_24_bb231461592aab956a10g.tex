@@ -1,0 +1,118 @@
+\documentclass[10pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+
+\title{Hauptprüfung Abiturprüfung 2024 - Leistungsfach }
+
+\author{Alexander Schwarz\\
+www.mathe-aufgaben.com}
+\date{}
+
+
+\begin{document}
+\maketitle
+ Baden-Württemberg
+
+\section*{Aufgabe II 2}
+Gegeben sind die Ebene $\mathrm{E}: 3 \mathrm{x}_{1}-6 \mathrm{x}_{2}+2 \mathrm{x}_{3}=12$ und die Schar der Geraden $g_{a}: \vec{x}=\left(\begin{array}{l}1 \\ 2 \\ 5\end{array}\right)+t \cdot\left(\begin{array}{c}a \\ 1 \\ a-2\end{array}\right), t \in \mathbb{R}, a \in \mathbb{R}$.\\
+a) Untersuchen Sie, ob $g_{4}$ orthogonal $z u g_{0,5}$ ist.\\
+b) Berechnen Sie die Größe des Winkels, den $g_{4}$ mit $E$ einschließt.\\
+c) Untersuchen Sie, ob eine Gerade der Schar den Ursprung enthält.\\
+d) Alle Geraden der Schar liegen in der Ebene F. Ermitteln Sie eine Koordinatengleichung von F .\\
+(zur Kontrolle: $\mathrm{x}_{1}-2 \mathrm{x}_{2}-\mathrm{x}_{3}=-8$ )
+
+Betrachtet werden die Punkte $P_{r}(1+r|2-2 r| 5-r)$ mit $r \in \mathbb{R}_{0}^{+}$.\\
+e) Begründen Sie, dass die Punkte $P_{r}$ auf einer zu F orthogonalen Gerade liegen.\\
+f) Beurteilen Sie die folgende Aussage:
+
+Jeder Punkt $P_{r}$ hat von jeder Gerade der Schar den Abstand $\sqrt{6} \cdot r$.\\
+g) Gegeben ist die Gerade $\mathrm{k}: \overrightarrow{\mathrm{x}}=\left(\begin{array}{l}1 \\ 2 \\ 5\end{array}\right)+\mathrm{s} \cdot\left(\begin{array}{l}1 \\ 0 \\ 1\end{array}\right), \mathrm{s} \in \mathbb{R}$.
+
+Zeigen Sie, dass k in F liegt, aber nicht zur Schar gehört.\\
+h) Die Schnittpunkte aller Gerade $g_{a}$ mit der $x_{1} x_{2}$-Ebene liegen auf der Gerade $h$. Auf $h$ gibt es einen Punkt, der auf keiner Gerade $g_{a}$ liegt. Bestimmen Sie die Koordinaten dieses Punkts.
+
+\section*{Aufgabe II 2}
+a) Richtungsvektor von $\mathrm{g}_{4}:\left(\begin{array}{l}4 \\ 1 \\ 2\end{array}\right) \quad$ Richtungsvektor von $\mathrm{g}_{0,5}:\left(\begin{array}{c}0,5 \\ 1 \\ -1,5\end{array}\right)$
+
+Es gilt: $\left(\begin{array}{l}4 \\ 1 \\ 2\end{array}\right) \cdot\left(\begin{array}{c}0,5 \\ 1 \\ -1,5\end{array}\right)=2+1-3=0$\\
+Somit sind die Geraden orthogonal.\\
+b) $\sin (\alpha)=\frac{\left.\left(\begin{array}{l}4 \\ 1 \\ 2\end{array}\right) \cdot\left(\begin{array}{c}3 \\ -6 \\ 2\end{array}\right) \right\rvert\,}{\sqrt{16+1+4} \cdot \sqrt{9+36+4}}=\frac{10}{\sqrt{21} \cdot 7} \approx 0,312$\\
+$\alpha=\sin ^{-1}(0,312)=18,2^{\circ}$\\
+c) Punktprobe mit $\mathrm{O}(0|0| 0)$ :
+
+$$
+\left(\begin{array}{l}
+0 \\
+0 \\
+0
+\end{array}\right)=\left(\begin{array}{l}
+1 \\
+2 \\
+5
+\end{array}\right)+t \cdot\left(\begin{array}{c}
+a \\
+1 \\
+a-2
+\end{array}\right) \quad \begin{array}{ccc}
+1 & +a t & =0 \\
+2 & +t & =0 \\
+5 & +t(a-2) & =0
+\end{array}
+$$
+
+Aus Zeile 2 folgt: $\mathrm{t}=-2$\\
+Aus der Zeile 1 folgt: $1-2 a=0 \Leftrightarrow a=0,5$\\
+Kontrolle mit Zeile 3: $5-2(0,5-2)=0$ ist eine falsche Aussage\\
+Es gibt keine Gerade, die den Ursprung enthält.\\
+d) Wähle zwei beliebige Geraden: $g_{0}: \vec{x}=\left(\begin{array}{l}1 \\ 2 \\ 5\end{array}\right)+t \cdot\left(\begin{array}{c}0 \\ 1 \\ -2\end{array}\right)$ und $g_{2}: \vec{x}=\left(\begin{array}{l}1 \\ 2 \\ 5\end{array}\right)+t \cdot\left(\begin{array}{l}2 \\ 1 \\ 0\end{array}\right)$
+
+Gleichung der Ebene F, die die beiden sich schneidenden Geraden enthält:\\
+$F: \vec{x}=\left(\begin{array}{l}1 \\ 2 \\ 5\end{array}\right)+t \cdot\left(\begin{array}{c}0 \\ 1 \\ -2\end{array}\right)+s \cdot\left(\begin{array}{l}2 \\ 1 \\ 0\end{array}\right)$
+
+Normalenvektor von F: $\overrightarrow{\mathrm{n}}=\left(\begin{array}{c}0 \\ 1 \\ -2\end{array}\right) \times\left(\begin{array}{l}2 \\ 1 \\ 0\end{array}\right)=\left(\begin{array}{c}2 \\ -4 \\ -2\end{array}\right)$ bzw. $\overrightarrow{\mathrm{n}^{*}}=\left(\begin{array}{c}1 \\ -2 \\ -1\end{array}\right)$\\
+Ansatz für die Koordinatengleichung F: $\mathrm{x}_{1}-2 \mathrm{x}_{2}-\mathrm{x}_{3}=\mathrm{d}$\\
+Einsetzen von $P(1|2| 5)$ ergibt $d=-8$.\\
+Koordinatengleichung: $F: x_{1}-2 x_{2}-x_{3}=-8$\\
+e) Die Punkte $P_{r}(1+r|2-2 r| 5-r)$ liegen auf einer Gerade mit folgender Gleichung:\\
+$\mathrm{n}: \overrightarrow{\mathrm{x}}=\left(\begin{array}{c}1+\mathrm{r} \\ 2-2 \mathrm{r} \\ 5-\mathrm{r}\end{array}\right)=\left(\begin{array}{l}1 \\ 2 \\ 5\end{array}\right)+\mathrm{r} \cdot\left(\begin{array}{c}1 \\ -2 \\ -1\end{array}\right)$\\
+Der Richtungsvektor der Geraden ist ein Normalenvektor von F.\\
+Damit ist die Gerade orthogonal zur Ebene F.\\
+f) Aus d) folgt: Alle Geraden $g_{a}$ liegen in der Ebene $F$ und enthalten den Punkt $Q(1|2| 5)$.\\
+Die Punkte $P_{r}$ liegen auf der Gerade $n$ aus e). Auch die Gerade $h$ enthält den Punkt $Q(1|2| 5)$.\\
+Somit ist der gesuchte Abstand $\left|\overrightarrow{Q P_{r}}\right|=\left|\left(\begin{array}{c}r \\ -2 r \\ -r\end{array}\right)\right|=\sqrt{r^{2}+4 r^{2}+r^{2}}=\sqrt{6 r^{2}}=r \cdot \sqrt{6}$\\
+Die Aussage ist wahr.\\
+g) Einsetzen der Gerade k in die Koordinatengleichung von F :
+
+$$
+\begin{aligned}
+& (1+s)-2 \cdot 2-(5+s)=-8 \\
+& \Leftrightarrow 1+s-4-5-s=-8 \Leftrightarrow-8=-8
+\end{aligned}
+$$
+
+Da sich eine wahre Aussage ergibt, liegt die Gerade k in der Ebene F.\\
+Die Gerade k ist parallel zur $\mathrm{x}_{1} \mathrm{x}_{3}$-Ebene, da die zweite Koordinate im Richtungsvektor 0 ist.
+
+Da bei der Geradenschar $g_{a}$ die zweite Koordinate im Richtungsvektor nicht null ist, gibt es keine Schargerade, die parallel zur $\mathrm{x}_{1} \mathrm{x}_{3}$-Ebene ist.\\
+h) Alle Geraden $\mathrm{g}_{\mathrm{a}}$ liegen in der Ebene F . Somit ist h die Schnittgerade von F mit der $\mathrm{x}_{1} \mathrm{x}_{2}$-Ebene.
+
+Die Spurpunkte von $F$ lauten $S_{1}(-8|0| 0)$ und $S_{2}(0|4| 0)$.\\
+Somit lautet die Gleichung von $\mathrm{h}: \overrightarrow{\mathrm{x}}=\left(\begin{array}{c}-8 \\ 0 \\ 0\end{array}\right)+\mathrm{t} \cdot\left(\begin{array}{l}8 \\ 4 \\ 0\end{array}\right)$\\
+Die Gerade $k$ aus $g$ ) liegt in der Ebene $F$. Die Gerade $k$ hat mit jeder Gerade $g_{a}$ aber nur den Punkt $P(1|2| 5)$ gemeinsam und liegt nicht in der Schar $g_{a}$.
+
+Berechnung des Schnittpunktes von k mit der $\mathrm{x}_{1} \mathrm{x}_{2}$-Ebene:\\
+$\mathrm{x}_{3}=5+\mathrm{s}=0 \Leftrightarrow \mathbf{s}=-5$\\
+Einsetzen von s = -5 in k ergibt Punkt S(-4|2|0).\\
+Kontrolle, dass der Punkt S auf h liegt:\\
+$\left(\begin{array}{c}-4 \\ 2 \\ 0\end{array}\right)=\left(\begin{array}{c}-8 \\ 0 \\ 0\end{array}\right)+t \cdot\left(\begin{array}{l}8 \\ 4 \\ 0\end{array}\right)$ ist eine wahre Aussage für $t=0,5$.\\
+Somit ist S der gesuchte Punkt.
+
+
+\end{document}

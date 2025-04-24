@@ -1,0 +1,109 @@
+\documentclass[10pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\graphicspath{ {./images/} }
+
+\title{Hauptprüfung Abiturprüfung 2021 - Leistungsfach }
+
+\author{Alexander Schwarz\\
+www.mathe-aufgaben.com}
+\date{}
+
+
+\begin{document}
+\maketitle
+ Baden-WürttembergAugust 2021
+
+\section*{Aufgabe C1}
+Ein Unternehmen füllt Honig in Gläser mit der Aufschrift 250 g ab. Die Füllmenge $X$ eines Glases wird als normalverteilt angenommen mit dem Erwartungswert $\mu=252$ und der Standardabweichung $\sigma=2$ (alle Angaben in g).\\
+a) Ein Glas wird zufällig ausgewählt.
+
+Bestimmen Sie die Wahrscheinlichkeit dafür, dass weniger als 250 g Honig in diesem Glas sind.
+
+Ermitteln Sie die Wahrscheinlichkeit dafür, dass die Füllmenge dieses Glases um höchstens $2 \%$ von 250 g abweicht.\\
+(1,5 VP)\\
+b) Gesucht ist ein Wert $\mathrm{a} \neq 245$ mit $\mathrm{P}(\mathrm{a} \leq \mathrm{X} \leq \mathrm{a}+5)=\mathrm{P}(245 \leq \mathrm{X} \leq 250)$.
+
+Begründen Sie, dass es solch einen Wert von a gibt und geben Sie diesen Wert an.\\
+(1,5 VP)\\
+c) Bei einer neuen Abfüllanlage beträgt die Standardabweichung der Füllmenge 1g.
+
+Bei ihr kann man durch einen Regler den Erwartungswert der Füllmenge mit einer Genauigkeit von $0,1 \mathrm{~g}$ einstellen. Die Wahrscheinlichkeit dafür, dass ein zufällig ausgewähltes Glas weniger als 250 g enthält, soll höchstens $15 \%$ betragen. Ermitteln Sie, auf welchen Wert der Erwartungswert der Füllmenge mindestens eingestellt werden muss.\\
+(1,5 VP)
+
+Bei einer Sonderaktion wird jedes fünfte Glas auf der Deckelinnenseite mit einem von außen nicht sichtbaren Gutschein versehen.\\
+d) Lena kauft während der Sonderaktion sechs Gläser und stellt sie in einer Reihe auf. Bestimmen Sie die Wahrscheinlichkeit der folgenden Ereignisse:\\
+A: „Genau drei dieser Gläser enthalten jeweils einen Gutschein." ( $0,5 \mathrm{VP}$ )\\
+B: „Die beiden ersten Gläser enthalten jeweils einen Gutschein." (1 VP)\\
+C: „In genau zwei Gläsern befindet sich jeweils ein Gutschein, und diese Gläser stehen nicht unmittelbar nebeneinander."\\
+(1,5 VP)\\
+e) Die Gläser werden in Kartons abgepackt und an Lebensmittelgeschäfte ausgeliefert. Jeder Karton enthält 30 Gläser. Ein Kunde nimmt drei Gläser aus dem Karton und hofft, mit einer Wahrscheinlichkeit von mindestens 50\% mindestens einen Gutschein zu erhalten.\\
+Ermitteln Sie die Anzahl der Gläser mit Gutschein, die sich dafür mindestens in dem Karton befinden müssen.\\
+(2 VP)
+
+\section*{Lösungen}
+\section*{Aufgabe C1}
+a) Bestimmen Sie die Wahrscheinlichkeit dafür, dass weniger als 250g Honig in diesem Glas sind.
+
+Die Zufallsgröße $X$ ist normalverteilt mit $\mu=252$ und $\sigma=2$.\\
+$\mathrm{P}(\mathrm{X}<250) \approx 0,159$ (WTR)
+
+Ermitteln Sie die Wahrscheinlichkeit dafür, dass die Füllmenge dieses Glases um höchstens $2 \%$ von 250g abweicht.\\
+$\mathrm{P}(0,98 \cdot 250 \leq \mathrm{X} \leq 1,02 \cdot 250)=\mathrm{P}(245 \leq \mathrm{X} \leq 255) \approx 0,933$\\
+b) Begründen Sie, dass es solch einen Wert von a gibt und geben Sie diesen Wert an.
+
+Die Dichtefunktion der Normalverteilung (die Glockenkurve) ist symmetrisch zur Geraden mit der Gleichung x=252.\\
+Der Inhalt der linken grauen Fläche entspricht der Wahrscheinlichkeit $\mathrm{P}(245 \leq \mathrm{X} \leq 250)$.\\
+\includegraphics[max width=\textwidth, center]{2025_04_24_18d6afd63db9e92363e9g-3}
+
+Aufgrund der Symmetrie hat die rechte graue Fläche denselben Inhalt. Somit gilt $\mathrm{P}(245 \leq \mathrm{X} \leq 250)=\mathrm{P}(254 \leq \mathrm{X} \leq 259)$.\\
+Es gibt also einen solchen Wert von a, dieser ist a $=254$.\\
+c) Ermitteln Sie, auf welchen Wert der Erwartungswert der Füllmenge mindestens eingestellt werden muss.
+
+Die Zufallsgröße Y gibt die Füllmenge der neuen Anlage in g an.\\
+Y ist normalverteilt mit $\sigma=1$ und unbekanntem Parameter $\mu$.\\
+Gesucht ist der kleinste Wert von $\mu$ mit $\mathrm{P}(\mathrm{X}<250) \leq 0,15$.\\
+WTR: (ausprobieren)\\
+Für $\mu=251,0$ gilt $\mathrm{P}(\mathrm{X}<250) \approx 0,159$\\
+Für $\mu=251,1$ gilt $\mathrm{P}(\mathrm{X}<250) \approx 0,136$\\
+Der Erwartungswert der Füllmenge muss mindestens 251,1g betragen.\\
+d) Die Zufallsgröße X gibt die Anzahl der Gläser an, welche einen Gutschein enthalten.\\
+X ist binomialverteilt mit $\mathrm{n}=6$ und $\mathrm{p}=0,2$.\\
+Ereignis A:\\
+$\mathrm{P}(\mathrm{A})=\mathrm{P}(\mathrm{X}=3) \approx 0,082$ (WTR)\\
+Ereignis B :\\
+$P(B)=0,2^{2}=0,04$\\
+Begründung: Es gibt nur für die ersten beiden Gläser eine Vorgabe, dass diese einen Gutschein enthalten sollen.
+
+Ereignis C:\\
+Es gilt $\mathrm{P}(\mathrm{X}=2) \approx 0,246$\\
+Die Wahrscheinlichkeit, dass zwei Gläser mit Gutschein unmittelbar nebeneinander stehen, beträgt $0,2^{2} \cdot 0,8^{4} \cdot 5$.\\
+Der Faktor 5 entsteht dadurch, dass es 5 verschiedene Anordnungen gibt, bei denen die beiden Gläser mit Gutschein nebeneinander stehen:\\
+Platz 1 und 2\\
+Platz 2 und 3\\
+Platz 3 und 4\\
+Platz 4 und 5\\
+Platz 5 und 6\\
+Nun gilt: $P(C)=P(X=2)-0,2^{2} \cdot 0,8^{4} \cdot 5 \approx 0,164$\\
+e) Ermitteln Sie die Anzahl der Gläser mit Gutschein, die sich dafür mindestens in dem Karton befinden müssen.
+
+In dem Karton befinden sich x Gläser mit einem Gutschein.\\
+Es soll gelten: P (mindestens ein Glas mit Gutschein) $\geq 0,5$\\
+bzw. 1 - $P$ (kein Glas mit Gutschein) $\geq 0,5$\\
+$f(x)=1-\frac{30-x}{30} \cdot \frac{29-x}{29} \cdot \frac{28-x}{28} \geq 0,5$\\
+Probe mit WTR:\\
+$x=4: f(4) \approx 0,36$\\
+$x=5: f(5) \approx 0,4335$\\
+$x=6: f(6) \approx 0,501$\\
+Es müssen also mindestens 6 Gläser mit Gutschein im Karton sein.
+
+
+\end{document}

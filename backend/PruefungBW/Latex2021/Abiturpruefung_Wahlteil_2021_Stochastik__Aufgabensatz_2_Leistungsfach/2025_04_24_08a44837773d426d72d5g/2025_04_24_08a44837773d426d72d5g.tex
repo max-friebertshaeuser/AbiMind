@@ -1,0 +1,98 @@
+\documentclass[10pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{eurosym}
+
+\title{Hauptprüfung Abiturprüfung 2021 - Leistungsfach }
+
+\author{Alexander Schwarz\\
+www.mathe-aufgaben.com}
+\date{}
+
+
+\DeclareUnicodeCharacter{20AC}{\ifmmode\text{\euro}\else\euro\fi}
+
+\begin{document}
+\maketitle
+ Baden-WürttembergAugust 2021
+
+\section*{Aufgabe C2.1}
+Bei einem Glücksrad gibt es drei farbige Sektoren. Beim einmaligen Drehen beträgt die Wahrscheinlichkeit für rot $60 \%$, für blau $30 \%$ und für grün $10 \%$.\\
+a) Das Glücksrad wird 20-mal gedreht. Bestimmen Sie für folgende Ereignisse jeweils die Wahrscheinlichkeit:\\
+A: „Genau 15-mal erscheint rot."\\
+B: „Bei den ersten zehn Drehungen erscheint genau zweimal blau, insgesamt erscheint höchstens fünfmal blau."\\
+b) Bei einem Glücksspiel darf man für einen Einsatz von $6 €$ das Glücksrad zweimal drehen. Wenn dabei genau einmal rot erscheint, dann erhält man einen bestimmten Auszahlungsbetrag. Wenn zweimal rot erscheint, dann erhält man das Siebenfache dieses Auszahlungsbetrags. Andernfalls erfolgt keine Auszahlung. Das Spiel ist fair.\\
+Bestimmen Sie den Auszahlungsbetrag für den Fall, dass genau einmal rot erscheint.\\
+c) Jemand vermutet, dass die Wahrscheinlichkeit für rot in Wirklichkeit geringer als $60 \%$ ist. Deshalb soll ein Hypothesentest durchgeführt werden. Dabei soll möglichst vermieden werden, dass irrtümlich von einer zu hohen Wahrscheinlichkeit für rot ausgegangen wird. Formulieren Sie eine Nullhypothese, die dieser Zielsetzung entspricht, und begründen Sie Ihre Wahl.\\
+(1,5 VP)
+
+\section*{Aufgabe C2.2}
+Bei einem Spielautomaten wird vermutet, dass die Gewinnwahrscheinlichkeit p größer als 10\% ist.\\
+Die Vermutung wird mit Hilfe eines Hypothesentests mit dem Stichprobenumfang von $\mathrm{n}=200$ und einem Signifikanzniveau von 5\% getestet.\\
+Als Nullhypothese wird $H_{0}: p \geq 0,1$ gewählt.\\
+Formulieren Sie die Entscheidungsregel.\\
+Tatsächlich gilt p=0,08.\\
+Bestimmen Sie die Wahrscheinlichkeit für den Fehler zweiter Art.
+
+\section*{Aufgabe C2.1}
+a) Ereignis $A$ :
+
+Die Zufallsgröße X gibt die Anzahl der Drehungen an, bei denen rot erscheint.\\
+$X$ ist binomialverteilt mit $n=20$ und $p=0,6$.\\
+$\mathrm{P}(\mathrm{A})=\mathrm{P}(\mathrm{X}=15) \approx 0,075$\\
+Ereignis B:\\
+Die Zufallsgröße Y gibt die Anzahl der Drehungen unter den ersten zehn an, bei denen blau erscheint.\\
+Y ist binomialverteilt mit $\mathrm{n}=10$ und $\mathrm{p}=0,3$.\\
+Die Zufallsgröße Z gibt die Anzahl der Drehungen unter den letzten zehn an, bei denen blau erscheint.\\
+$Z$ ist binomialverteilt mit $\mathrm{n}=10$ und $\mathrm{p}=0,3$.\\
+$P(B)=P(Y=2) \cdot P(Z \leq 3) \approx 0,233 \cdot 0,65=0,151$\\
+Hinweis: Man hätte die Rechnung auch mit einer Zufallsgröße durchführen können, da beide Zufallsgrößen die gleiche Verteilung besitzen.\\
+Also $P(B)=P(Y=2) \cdot P(Y \leq 3) \approx 0,233 \cdot 0,65=0,151$\\
+b) Bestimmen Sie den Auszahlungsbetrag für den Fall, dass genau einmal rot erscheint.
+
+Die Zufallsgröße X gibt die Auszahlung pro Spiel in Euro an. a sei die Auszahlung, die man für genau einmal rot erhält.\\
+$P($ zweimal rot $)=0,6^{2}$\\
+$P($ genau einmal rot $)=0,6 \cdot 0,4+0,4 \cdot 0,6=0,48$\\
+$P(Y=7 a)=0,6^{2}=0,36$\\
+$\mathrm{P}(\mathrm{Y}=\mathrm{a})=0,48$\\
+Erwartungswert von $\mathrm{Y}: \mathrm{E}(\mathrm{Y})=7 \mathrm{a} \cdot 0,36+\mathrm{a} \cdot 0,48=3 \mathrm{a}$\\
+Bedingung für faires Spiel: $\mathrm{E}(\mathrm{Y})=6 € \Leftrightarrow 3 \mathrm{a}=6 \Leftrightarrow \mathrm{a}=2$\\
+Der Auszahlungsbetrag für genau einmal rot muss $2 €$ betragen.\\
+c) Formulieren Sie eine Nullhypothese, die dieser Zielsetzung entspricht, und begründen Sie Ihre Wahl.
+
+Die Nullhypothese lautet: „Die Wahrscheinlichkeit für rot beträgt höchstens 60\%."\\
+Begründung:\\
+Durch einen Hypothesentest soll die Wahrscheinlichkeit für das irrtümliche Ablehnen der Nullhypothese $\mathrm{H}_{0}$ (also ein Fehler 1.Art) beschränkt werden.\\
+Bei der obigen Nullhypothese bedeutet ein Fehler 1.Art, dass man sich dafür entscheidet, dass die Wahrscheinlichkeit für rot höher als 60\% ist, obwohl in Wahrheit die Nullhypothese richtig ist. Dieser Fehler 1.Art soll laut Aufgabenstellung möglichst vermieden werden.\\
+(Hinweis: Die ersten beiden Sätze der Aufgabenstellung sind aus Sicht der Autoren leider verwirrend gestellt).
+
+\section*{Aufgabe C2.2}
+Formulieren Sie die Entscheidungsregel.\\
+Die Zufallsgröße X gibt die Anzahl der Spiele an, die gewonnen werden.\\
+$H_{0}: p \geq 0,1$\\
+$H_{1}: p<0,1$\\
+$X$ ist im Extremfall binomialverteilt mit $n=200$ und $p=0,1$.\\
+Es handelt sich um einen linksseitigen Test mit Signifikanzniveau 5\%.\\
+Ablehnungsbereich: $\overline{\mathrm{A}}=\{0, \ldots, \mathrm{~g}\}$\\
+Gesucht ist ein möglichst großer Wert von g , so dass gilt: $\mathrm{P}(\mathrm{X} \leq \mathrm{g}) \leq 0,05$\\
+WTR:\\
+$P(X \leq 12) \approx 0,032$\\
+$\mathrm{P}(\mathrm{X} \leq 13) \approx 0,057$\\
+Somit ist $\mathrm{g}=12$ und der Ablehnungsbereich lautet $\overline{\mathrm{A}}=\{0, \ldots, 12\}$.\\
+Entscheidungsregel: Werden höchstens 12 Spiele gewonnen, so wird die Nullhypothese abgelehnt, ansonsten kann sie nicht abgelehnt werden.
+
+\section*{Bestimmen Sie die Wahrscheinlichkeit für den Fehler zweiter Art.}
+Die Zufallsgröße Y gibt die Anzahl der Spiele an, die gewonnen werden. $Y$ ist binomialverteilt mit $n=200$ und $p=0,08$.
+
+Wahrscheinlichkeit, dass $Y$ nicht im Ablehnungsbereich des Hypothesentests landet: $P(Y \geq 13)=1-P(Y \leq 12) \approx 0,818$
+
+Die Wahrscheinlichkeit für den Fehler zweiter Art beträgt 81,8\%.
+
+
+\end{document}
