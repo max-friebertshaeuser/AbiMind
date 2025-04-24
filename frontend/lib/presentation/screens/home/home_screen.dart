@@ -34,7 +34,7 @@ class HomeScreen extends StatelessWidget {
                     context, AppRoutes.welcome, (route) => false);
               },
               icon: const Icon(Icons.logout), label: const Text('Log out'),
-            )
+            ),
           ],
         ),
       ),
