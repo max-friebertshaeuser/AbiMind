@@ -1,5 +1,30 @@
 import re
 from pathlib import Path
+import firebase_admin
+from firebase_admin import credentials, storage
+
+def init_firebase():
+    cred = credentials.Certificate("path/to/serviceAccountKey.json")
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': 'dein-projekt-id.appspot.com'
+    })
+
+def upload_image_to_firebase(image_path: str, firebase_path: str) -> str:
+    bucket = storage.bucket()
+    blob = bucket.blob(firebase_path)
+    blob.upload_from_filename(image_path)
+    blob.make_public()
+    return blob.public_url
+
+def replace_graphics_with_firebase_links(latex_text: str, image_dir="./images") -> str:
+    def replacer(match):
+        original_path = match.group(2)
+        local_file = f"{image_dir}/{original_path}.png"  # z. B. ./images/2025_04_24_xyz-3.png
+        firebase_path = f"abitur_bilder/{original_path}.png"
+        public_url = upload_image_to_firebase(local_file, firebase_path)
+        return f"{match.group(1)}{{{public_url}}}"
+
+    return re.sub(r'(\\includegraphics[^\{]*\{)(?!https?://)([^}]+)\}', replacer, latex_text)
 
 
 def get_year(path_name: str):
@@ -39,6 +64,9 @@ def split_into_exercises(latex_text: str, path_name: str):
     parts = re.split(r'(\\section\*\{[^\}]*\})', latex_text)
 
     for part in parts:
+
+        if "includegraphics" in part:
+            replace_graphics_with_firebase_links(part, Path.joinpath(Path(path_name).parent,"images").as_posix())
 
         if first:
             exercises.append([name, part])
