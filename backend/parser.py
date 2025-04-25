@@ -119,14 +119,14 @@ def main():
 \usepackage[export]{adjustbox}
 
 \begin{document}
-""" + exercise[1] + "\n\\end{document}"
+""" + "\section*{" + year + ", " + exercise[0] + "}\n" + exercise[1] + "\n\\end{document}"
 
             array.append((subject, year, task, exercise[0], latex_exercise, exercise[2]))
 
     for entry in array:
         print(entry)
-        print("\n")
-        print(entry[4])
+        # print("\n")
+        # print(entry[4])
 
 
 if __name__ == '__main__':
