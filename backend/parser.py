@@ -14,9 +14,7 @@ def get_year(path_name: str):
 def get_task(path_name: str):
     task = ""
     if "Pflichtaufgaben" in path_name or "Wahlaufgabe" in path_name or "Pflichtteil" in path_name:
-        task = "Pflichtaufgaben"
-
-
+        task = "Pflichtteil"
 
     if "Analysis" in path_name:
         task = "Analysis"
@@ -107,10 +105,29 @@ def main():
         exercises = split_into_exercises(latex_text, exam)
 
         for exercise in exercises:
-            array.append((subject, year, task, exercise[0], exercise[1], exercise[2]))
+            latex_exercise = r"""\documentclass[10pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\graphicspath{{./images/}}
+
+\begin{document}
+""" + exercise[1] + "\n\\end{document}"
+
+            array.append((subject, year, task, exercise[0], latex_exercise, exercise[2]))
 
     for entry in array:
         print(entry)
+        print("\n")
+        print(entry[4])
 
 
 if __name__ == '__main__':
