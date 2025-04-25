@@ -312,37 +312,41 @@ class StarScreen extends StatelessWidget {
                                   CustomTaskCard(
                                     title: 'Textaufgabe',
                                     description:
-                                    'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
-                                    tags: ['Finished', 'Geometrie', 'Keine Hilfsmittel'],
+                                        'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
+                                    tags: [
+                                      'Finished',
+                                      'Geometrie',
+                                      'Keine Hilfsmittel',
+                                    ],
                                   ),
                                   CustomTaskCard(
                                     title: 'Ohne Anwendung',
                                     description:
-                                    'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
+                                        'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
                                     tags: ['Analysis', 'Alle Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Textaufgabe',
                                     description:
-                                    'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
+                                        'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
                                     tags: ['Geometrie', 'Keine Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Ohne Anwendung',
                                     description:
-                                    'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
+                                        'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
                                     tags: ['Analysis', 'Alle Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Textaufgabe',
                                     description:
-                                    'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
+                                        'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
                                     tags: ['Geometrie', 'Keine Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Ohne Anwendung',
                                     description:
-                                    'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
+                                        'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
                                     tags: ['Analysis', 'Alle Hilfsmittel'],
                                   ),
                                 ],
@@ -360,10 +364,8 @@ class StarScreen extends StatelessWidget {
                         print('Selected categories: $selected');
                       },
                     ),
-
                   ],
                 ),
-
               ),
             ),
           ],
@@ -594,53 +596,66 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.deepPurple, width: 2),
+        border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
         borderRadius: BorderRadius.circular(40),
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: colorScheme.primaryContainer,
       ),
       child: Row(
-        children: widget.categories.map((category) {
-          final isSelected = selected.contains(category);
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => toggleCategory(category),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: isSelected ? Colors.deepPurple : Colors.transparent,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check,
-                      size: 18,
-                      color: isSelected ? Colors.white : Colors.deepPurple,
+        children:
+            widget.categories.map((category) {
+              final isSelected = selected.contains(category);
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => toggleCategory(category),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? colorScheme.onPrimaryFixedVariant
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(32),
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      category,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.deepPurple,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check,
+                          size: 18,
+                          color:
+                              isSelected
+                                  ? Colors.white
+                                  : colorScheme.onPrimaryFixedVariant,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          category,
+                          style: TextStyle(
+                            color:
+                                isSelected
+                                    ? Colors.white
+                                    : colorScheme.onPrimaryFixedVariant,
+                            fontWeight:
+                                isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
 }
-
 
 class CustomTaskCard extends StatelessWidget {
   final String title;
@@ -657,15 +672,6 @@ class CustomTaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final tagColors = {
-      'Finished': Colors.indigo,
-      'Geometrie': Colors.indigo,
-      'Analysis': Colors.indigo,
-      'Keine Hilfsmittel': Colors.deepPurple,
-      'Alle Hilfsmittel': Colors.deepPurple,
-      'Statistics': Colors.indigo,
-    };
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
       padding: const EdgeInsets.all(12),
