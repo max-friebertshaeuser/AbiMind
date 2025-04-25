@@ -117,7 +117,6 @@ def main():
 \usepackage{bbold}
 \usepackage{graphicx}
 \usepackage[export]{adjustbox}
-\graphicspath{{./images/}}
 
 \begin{document}
 """ + exercise[1] + "\n\\end{document}"
