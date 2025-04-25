@@ -298,60 +298,72 @@ class StarScreen extends StatelessWidget {
               child: Card(
                 title: 'Exercises',
                 boxFlex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Column(
                   children: [
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CustomTaskCard(
-                              title: 'Textaufgabe',
-                              description:
-                                  'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
-                              tags: [
-                                'Finished',
-                                'Geometrie',
-                                'Keine Hilfsmittel',
-                              ],
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomTaskCard(
+                                    title: 'Textaufgabe',
+                                    description:
+                                    'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
+                                    tags: ['Finished', 'Geometrie', 'Keine Hilfsmittel'],
+                                  ),
+                                  CustomTaskCard(
+                                    title: 'Ohne Anwendung',
+                                    description:
+                                    'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
+                                    tags: ['Analysis', 'Alle Hilfsmittel'],
+                                  ),
+                                  CustomTaskCard(
+                                    title: 'Textaufgabe',
+                                    description:
+                                    'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
+                                    tags: ['Geometrie', 'Keine Hilfsmittel'],
+                                  ),
+                                  CustomTaskCard(
+                                    title: 'Ohne Anwendung',
+                                    description:
+                                    'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
+                                    tags: ['Analysis', 'Alle Hilfsmittel'],
+                                  ),
+                                  CustomTaskCard(
+                                    title: 'Textaufgabe',
+                                    description:
+                                    'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
+                                    tags: ['Geometrie', 'Keine Hilfsmittel'],
+                                  ),
+                                  CustomTaskCard(
+                                    title: 'Ohne Anwendung',
+                                    description:
+                                    'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
+                                    tags: ['Analysis', 'Alle Hilfsmittel'],
+                                  ),
+                                ],
+                              ),
                             ),
-                            CustomTaskCard(
-                              title: 'Ohne Anwendung',
-                              description:
-                                  'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
-                              tags: ['Analysis', 'Alle Hilfsmittel'],
-                            ),
-                            CustomTaskCard(
-                              title: 'Textaufgabe',
-                              description:
-                                  'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
-                              tags: ['Geometrie', 'Keine Hilfsmittel'],
-                            ),
-                            CustomTaskCard(
-                              title: 'Ohne Anwendung',
-                              description:
-                                  'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
-                              tags: ['Analysis', 'Alle Hilfsmittel'],
-                            ),
-                            CustomTaskCard(
-                              title: 'Textaufgabe',
-                              description:
-                                  'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
-                              tags: ['Geometrie', 'Keine Hilfsmittel'],
-                            ),
-                            CustomTaskCard(
-                              title: 'Ohne Anwendung',
-                              description:
-                                  'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
-                              tags: ['Analysis', 'Alle Hilfsmittel'],
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
+                    CategoryToggleBar(
+                      categories: ['Geometrie', 'Analysis', 'Statistics'],
+                      selected: ['Geometrie', 'Analysis'], // initial selected
+                      onSelectionChanged: (selected) {
+                        // TODO: update your filtering logic here
+                        print('Selected categories: $selected');
+                      },
+                    ),
+
                   ],
                 ),
+
               ),
             ),
           ],
@@ -543,6 +555,92 @@ class Card extends StatelessWidget {
     );
   }
 }
+
+class CategoryToggleBar extends StatefulWidget {
+  final List<String> categories;
+  final List<String> selected;
+  final void Function(List<String>) onSelectionChanged;
+
+  const CategoryToggleBar({
+    super.key,
+    required this.categories,
+    required this.selected,
+    required this.onSelectionChanged,
+  });
+
+  @override
+  State<CategoryToggleBar> createState() => _CategoryToggleBarState();
+}
+
+class _CategoryToggleBarState extends State<CategoryToggleBar> {
+  late List<String> selected;
+
+  @override
+  void initState() {
+    super.initState();
+    selected = [...widget.selected];
+  }
+
+  void toggleCategory(String category) {
+    setState(() {
+      if (selected.contains(category)) {
+        selected.remove(category);
+      } else {
+        selected.add(category);
+      }
+      widget.onSelectionChanged(selected);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.deepPurple, width: 2),
+        borderRadius: BorderRadius.circular(40),
+        color: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      child: Row(
+        children: widget.categories.map((category) {
+          final isSelected = selected.contains(category);
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => toggleCategory(category),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: isSelected ? Colors.deepPurple : Colors.transparent,
+                  borderRadius: BorderRadius.circular(32),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check,
+                      size: 18,
+                      color: isSelected ? Colors.white : Colors.deepPurple,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      category,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.deepPurple,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
 
 class CustomTaskCard extends StatelessWidget {
   final String title;
