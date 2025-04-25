@@ -16,8 +16,17 @@ const percentageStyle = TextStyle(
 
 const smallTextStyle = TextStyle(fontSize: 11, color: Color(0xFF584178));
 const lableTextStyle = TextStyle(color: Colors.white, fontSize: 12);
-
 const middleTextStyle = TextStyle(fontSize: 15, color: Color(0xFF584178));
+
+final Map<String, Color> tagColors = {
+  'Finished': Colors.green.shade200,         // Soft mint green
+  'Geometrie': Colors.blueGrey.shade400,     // Muted slate blue
+  'Analysis': Colors.deepOrange.shade200,    // Soft orange
+  'Keine Hilfsmittel': Colors.red.shade200,  // Gentle red
+  'Alle Hilfsmittel': Colors.teal.shade200,  // Calm turquoise
+  'Statistics': Colors.deepPurple.shade200,  // Muted violet
+};
+
 
 const texamleExeciese = {
   'id': 'example',
@@ -30,6 +39,7 @@ const texamleExeciese = {
   'reps': 10,
   'sets': 3,
 };
+
 const statistic = {
   'currentYear': 2025,
   'solvedPercentageNumeric': 0.65,
