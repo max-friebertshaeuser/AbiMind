@@ -16,15 +16,15 @@ def get_task(path_name: str):
     if "Pflichtaufgaben" in path_name or "Wahlaufgabe" in path_name or "Pflichtteil" in path_name:
         task = "Pflichtaufgaben"
 
-    elif "Wahlteil" in path_name:
 
-        if "Analysis" in path_name:
-            task = "Analysis"
 
-        elif "Analytische_Geometrie" in path_name:
-            task = "Geometrie"
+    if "Analysis" in path_name:
+        task = "Analysis"
 
-        elif "Stochastik" in path_name:
+    elif "Analytische_Geometrie" in path_name or "Analyt_Geometrie" in path_name:
+        task = "Geometrie"
+
+    elif "Stochastik" in path_name:
             task = "Stochastik"
 
     return task
