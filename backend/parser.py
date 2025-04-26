@@ -1,30 +1,67 @@
 import re
-from pathlib import Path
+from dbm import error
+
 import firebase_admin
-from firebase_admin import credentials, storage
+from firebase_admin import credentials, storage, firestore
+from pathlib import Path
+import base64
+
 
 def init_firebase():
-    cred = credentials.Certificate("path/to/serviceAccountKey.json")
-    firebase_admin.initialize_app(cred, {
-        'storageBucket': 'dein-projekt-id.appspot.com'
-    })
+    cred = credentials.Certificate("F:/Python/AbiMind/firebase/abimind-2caf8-firebase-adminsdk-fbsvc-aec7ccfb5d.json")
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+    return db
 
-def upload_image_to_firebase(image_path: str, firebase_path: str) -> str:
-    bucket = storage.bucket()
-    blob = bucket.blob(firebase_path)
-    blob.upload_from_filename(image_path)
-    blob.make_public()
-    return blob.public_url
 
-def replace_graphics_with_firebase_links(latex_text: str, image_dir="./images") -> str:
-    def replacer(match):
-        original_path = match.group(2)
-        local_file = f"{image_dir}/{original_path}.png"  # z. B. ./images/2025_04_24_xyz-3.png
-        firebase_path = f"abitur_bilder/{original_path}.png"
-        public_url = upload_image_to_firebase(local_file, firebase_path)
-        return f"{match.group(1)}{{{public_url}}}"
+def encode_image_to_base64(image_path: Path) -> str:
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    return encoded_string
 
-    return re.sub(r'(\\includegraphics[^\{]*\{)(?!https?://)([^}]+)\}', replacer, latex_text)
+
+def save_exercise_to_firestore(db, fach: str, jahr: str, teil: str, aufgabe_name: str,
+                               aufgabe_text: str, aufgabe_bild_pfade, loesung_text: str, loesung_bild_pfade):
+    aufgabe_bilder_base64 = [encode_image_to_base64(path) for path in aufgabe_bild_pfade]
+    loesung_bilder_base64 = [encode_image_to_base64(path) for path in loesung_bild_pfade]
+
+    doc_ref = db.collection("Abitur").document(f"{fach}_{jahr}")
+
+    # Merke: Teil wie Pflichtteil/Analysis usw. wird als verschachtelte Map gespeichert
+    doc_ref.set({
+        teil: {
+            aufgabe_name: {
+                "aufgabe_text": aufgabe_text,
+                "aufgabe_bilder": aufgabe_bilder_base64,
+                "loesung_text": loesung_text,
+                "loesung_bilder": loesung_bilder_base64
+            }
+        }
+    }, merge=True)  # merge=True damit vorhandene Aufgaben nicht überschrieben werden
+
+
+def find_image_paths_from_latex(latex_text: str, tex_file_path: str):
+    image_paths = []
+
+    tex_dir = Path(tex_file_path).parent  # Ordner, in dem die .tex-Datei liegt
+
+    # Regex: Nur lokale Bilder, keine URLs
+    pattern = r'\\includegraphics[^\{]*\{(?!https?://)([^}]+)\}'
+
+    for match in re.finditer(pattern, latex_text):
+        image_name = match.group(1)
+        image_path_jpg = tex_dir.joinpath("images", (image_name + ".jpg"))
+        image_path_png = tex_dir.joinpath("images", (image_name + ".png"))
+
+        if image_path_jpg.exists():
+            image_paths.append(image_path_jpg)
+        elif image_path_png.exists():
+            image_paths.append(image_path_png)
+        else:
+            print(f"Bilddatei nicht gefunden: {image_name}")
+            raise FileNotFoundError
+
+    return image_paths
 
 
 def get_year(path_name: str):
@@ -61,27 +98,40 @@ def split_into_exercises(latex_text: str, path_name: str):
     annex: bool = False
     name = ""
 
+
     parts = re.split(r'(\\section\*\{[^\}]*\})', latex_text)
 
     for part in parts:
 
+        first_paths = []
+        second_paths = []
+        annex_paths = []
+
         if "includegraphics" in part:
-            replace_graphics_with_firebase_links(part, Path.joinpath(Path(path_name).parent,"images").as_posix())
+            paths = find_image_paths_from_latex(part, path_name)
+            if first:
+                first_paths = paths
+            if second:
+                second_paths = paths
+            if annex:
+                annex_paths = paths
 
         if first:
-            exercises.append([name, part])
+            exercises.append([name, part, first_paths])
             first = False
 
         if second:
             for exercise in exercises:
                 if exercise[0] == name:
                     exercise.append(part)
+                    exercise.append(second_paths)
             second = False
 
         if annex:
             for exercise in exercises:
                 if exercise[0] == name:
                     exercise[1] += "\n" + part
+                    exercise[2].extend(annex_paths)
                     annex = False
                     break
 
@@ -110,6 +160,7 @@ def split_into_exercises(latex_text: str, path_name: str):
 
 def main():
     file = Path(__file__)
+    db = init_firebase()
     exams = Path.joinpath(file.parent,"PruefungBW").rglob("*.tex")
 
     # array contains tuples ("Mathe", "2024", "Pflichtteil/Analysis/Analytische Geometrie/Stochastik", Aufgabe, AufgabenText, Loesung), [Bilder]? noch offen
@@ -147,15 +198,18 @@ def main():
 \usepackage[export]{adjustbox}
 
 \begin{document}
-""" + "\section*{" + year + ", " + exercise[0] + "}\n" + exercise[1] + "\n\\end{document}"
+""" + "\\section*{" + year + ", " + exercise[0] + "}\n" + exercise[1] + "\n\\end{document}"
 
-            array.append((subject, year, task, exercise[0], latex_exercise, exercise[2]))
+            array.append((subject, year, task, exercise[0], latex_exercise, exercise[2], exercise[3], exercise[4]))
 
     for entry in array:
         print(entry)
         # print("\n")
         # print(entry[4])
 
+    for entry in array:
+        fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade, loesung_text, loesung_bild_pfade = entry
+        save_exercise_to_firestore(db, fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade, loesung_text, loesung_bild_pfade)
 
 if __name__ == '__main__':
     main()
