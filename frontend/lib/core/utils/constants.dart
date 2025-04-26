@@ -16,7 +16,10 @@ const percentageStyle = TextStyle(
 
 const smallTextStyle = TextStyle(fontSize: 11, color: Color(0xFF584178));
 const lableTextStyle = TextStyle(color: Colors.white, fontSize: 12);
-const middleTextStyle = TextStyle(fontSize: 15, color: Color(0xFF584178));
+var middleTextStyle = TextStyle(fontSize: 15);
+
+const whiteColor = Color(0xFFFFFFFF);
+const flameColor = Color(0xFFFFAB91);
 
 final Map<String, Color> tagColors = {
   'Finished': Colors.green.shade200,         // Soft mint green
