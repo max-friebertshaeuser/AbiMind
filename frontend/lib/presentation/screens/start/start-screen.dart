@@ -62,7 +62,6 @@ class StarScreen extends StatelessWidget {
                                         colorScheme.surfaceContainerHigh,
                                     progressColor:
                                         colorScheme.onPrimaryFixedVariant,
-                                    // TODO : Change Import Stats
                                     radius: 70.0,
                                     lineWidth: 12.0,
                                     percent: double.parse(
@@ -188,7 +187,7 @@ class StarScreen extends StatelessWidget {
                                   SizedBox(width: 8),
                                   Icon(
                                     Icons.local_fire_department,
-                                    color: colorScheme.onPrimaryFixedVariant,
+                                    color: flameColor,
                                     size: 32,
                                   ),
                                 ],
@@ -629,7 +628,7 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
                           size: 18,
                           color:
                               isSelected
-                                  ? Colors.white
+                                  ? whiteColor
                                   : colorScheme.onPrimaryFixedVariant,
                         ),
                         const SizedBox(width: 6),
@@ -638,7 +637,7 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
                           style: TextStyle(
                             color:
                                 isSelected
-                                    ? Colors.white
+                                    ? whiteColor
                                     : colorScheme.onPrimaryFixedVariant,
                             fontWeight:
                                 isSelected
