@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:frontend/core/utils/constants.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StarScreen extends StatelessWidget {
   const StarScreen({super.key});
@@ -294,80 +297,91 @@ class StarScreen extends StatelessWidget {
                 ],
               ),
             ),
+            ExerciseCardList()
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ExerciseCardList extends StatefulWidget {
+  @override
+  _ExerciseCardListState createState() => _ExerciseCardListState();
+}
+
+class _ExerciseCardListState extends State<ExerciseCardList> {
+  // Store selected categories
+  List<String> selectedCategories = ['Geometrie', 'Analysis'];
+
+  // All tasks (you can also move this outside if you prefer)
+  final List<Map<String, dynamic>> taskCardsData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadTaskCardsData();
+  }
+
+  Future<void> loadTaskCardsData() async {
+    try {
+      String jsonString = await rootBundle.loadString('assets/data.json');
+      List<dynamic> jsonData = json.decode(jsonString);
+      setState(() {
+        taskCardsData.addAll(jsonData.cast<Map<String, dynamic>>());
+      });
+    } catch (e) {
+      print('Error loading task cards data: $e');
+    }
+  }
+
+  // Filter logic based on selected categories
+  List<Map<String, dynamic>> get filteredTasks {
+    return taskCardsData.where((task) {
+      return task['tags'].any((tag) => selectedCategories.contains(tag));
+    }).toList();
+  }
+
+  void onCategorySelectionChanged(List<String> newSelection) {
+    setState(() {
+      selectedCategories = newSelection;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Card(
+        title: 'Exercises',
+        boxFlex: 1,
+        child: Column(
+          children: [
             Expanded(
-              flex: 1,
-              child: Card(
-                title: 'Exercises',
-                boxFlex: 1,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Expanded(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomTaskCard(
-                                    title: 'Textaufgabe',
-                                    description:
-                                    'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
-                                    tags: [
-                                      'Finished',
-                                      'Geometrie',
-                                      'Keine Hilfsmittel',
-                                    ],
-                                  ),
-                                  CustomTaskCard(
-                                    title: 'Ohne Anwendung',
-                                    description:
-                                    'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
-                                    tags: ['Analysis', 'Alle Hilfsmittel'],
-                                  ),
-                                  CustomTaskCard(
-                                    title: 'Textaufgabe',
-                                    description:
-                                    'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
-                                    tags: ['Geometrie', 'Keine Hilfsmittel'],
-                                  ),
-                                  CustomTaskCard(
-                                    title: 'Ohne Anwendung',
-                                    description:
-                                    'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
-                                    tags: ['Analysis', 'Alle Hilfsmittel'],
-                                  ),
-                                  CustomTaskCard(
-                                    title: 'Textaufgabe',
-                                    description:
-                                    'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
-                                    tags: ['Geometrie', 'Keine Hilfsmittel'],
-                                  ),
-                                  CustomTaskCard(
-                                    title: 'Ohne Anwendung',
-                                    description:
-                                    'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
-                                    tags: ['Analysis', 'Alle Hilfsmittel'],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: filteredTasks.map((task) {
+                          return CustomTaskCard(
+                            title: task['title'],
+                            description: task['description'],
+                            tags: List<String>.from(task['tags']),
+                          );
+                        }).toList(),
                       ),
                     ),
-                    CategoryToggleBar(
-                      categories: ['Geometrie', 'Analysis', 'Statistics'],
-                      selected: ['Geometrie', 'Analysis'], // initial selected
-                      onSelectionChanged: (selected) {
-                        // TODO: update your filtering logic here
-                        print('Selected categories: $selected');
-                      },
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
+            CategoryToggleBar(
+              categories: ['Geometrie', 'Analysis', 'Statistics'],
+              selected: selectedCategories,
+              onSelectionChanged: onCategorySelectionChanged,
             ),
           ],
         ),
@@ -375,6 +389,7 @@ class StarScreen extends StatelessWidget {
     );
   }
 }
+
 
 class ExerciseCards extends StatelessWidget {
   final int year;
