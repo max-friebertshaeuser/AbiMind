@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:frontend/core/utils/constants.dart';
@@ -10,7 +11,9 @@ class StarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -59,9 +62,9 @@ class StarScreen extends StatelessWidget {
                                   padding: const EdgeInsets.all(5.0),
                                   child: CircularPercentIndicator(
                                     backgroundColor:
-                                        colorScheme.surfaceContainerHigh,
+                                    colorScheme.surfaceContainerHigh,
                                     progressColor:
-                                        colorScheme.onPrimaryFixedVariant,
+                                    colorScheme.onPrimaryFixedVariant,
                                     radius: 70.0,
                                     lineWidth: 12.0,
                                     percent: double.parse(
@@ -69,7 +72,8 @@ class StarScreen extends StatelessWidget {
                                           .toString(),
                                     ),
                                     center: Text(
-                                      "${(statistic['solvedPercentage']).toString()}%",
+                                      "${(statistic['solvedPercentage'])
+                                          .toString()}%",
                                       style: percentageStyle,
                                     ),
                                     circularStrokeCap: CircularStrokeCap.round,
@@ -122,24 +126,22 @@ class StarScreen extends StatelessWidget {
                               ),
                               child: Column(
                                 children: [
-                                  ExerciseCards(
-                                    year: 2023,
-                                    percent: 0.65,
-                                    topics: {
-                                      'Stochastik': [7, 10],
-                                      'Analysis': [8, 10],
-                                      'Geometrie': [10, 10],
+                                  GestureDetector(
+                                    onTap: () {
+
                                     },
+                                    child: ExerciseCards(
+                                      year: 2024,
+                                      percent: 0.65,
+                                      topics: {
+                                        'Stochastik': [7, 10],
+                                        'Analysis': [8, 10],
+                                        'Geometrie': [10, 10],
+                                      },
+                                    ),
                                   ),
-                                  ExerciseCards(
-                                    year: 2024,
-                                    percent: 0.65,
-                                    topics: {
-                                      'Stochastik': [7, 10],
-                                      'Analysis': [8, 10],
-                                      'Geometrie': [10, 10],
-                                    },
-                                  ),
+
+
                                   ExerciseCards(
                                     year: 2025,
                                     percent: 0.75,
@@ -195,7 +197,8 @@ class StarScreen extends StatelessWidget {
                               SizedBox(height: 8),
                               Center(
                                 child: Text(
-                                  'Du hast dein\nLernziel ${streak['streak'].toString()} Tage\nlang erreicht',
+                                  'Du hast dein\nLernziel ${streak['streak']
+                                      .toString()} Tage\nlang erreicht',
                                   style: smallTextStyle,
                                 ),
                               ),
@@ -231,21 +234,21 @@ class StarScreen extends StatelessWidget {
                                   lineBarsData: [
                                     LineChartBarData(
                                       spots:
-                                          tenDayLearnProgress
-                                              .asMap()
-                                              .entries
-                                              .map((entry) {
-                                                final index =
-                                                    entry.key.toDouble();
-                                                final minutes =
-                                                    entry.value['minutes']
-                                                        as int;
-                                                return FlSpot(
-                                                  index,
-                                                  minutes.toDouble(),
-                                                );
-                                              })
-                                              .toList(),
+                                      tenDayLearnProgress
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                        final index =
+                                        entry.key.toDouble();
+                                        final minutes =
+                                        entry.value['minutes']
+                                        as int;
+                                        return FlSpot(
+                                          index,
+                                          minutes.toDouble(),
+                                        );
+                                      })
+                                          .toList(),
                                       isCurved: false,
                                       isStrokeCapRound: false,
                                       barWidth: 0,
@@ -253,16 +256,15 @@ class StarScreen extends StatelessWidget {
                                       dotData: FlDotData(
                                         show: true,
                                         getDotPainter:
-                                            (
-                                              spot,
-                                              percent,
-                                              barData,
-                                              index,
-                                            ) => FlDotCirclePainter(
+                                            (spot,
+                                            percent,
+                                            barData,
+                                            index,) =>
+                                            FlDotCirclePainter(
                                               radius: 4,
                                               color:
-                                                  colorScheme
-                                                      .onPrimaryFixedVariant,
+                                              colorScheme
+                                                  .onPrimaryFixedVariant,
                                               strokeWidth: 0,
                                             ),
                                       ),
@@ -276,7 +278,7 @@ class StarScreen extends StatelessWidget {
                                           streak['goal'].toString(),
                                         ),
                                         color:
-                                            colorScheme.onPrimaryFixedVariant,
+                                        colorScheme.onPrimaryFixedVariant,
                                         strokeWidth: 2,
                                       ),
                                     ],
@@ -311,7 +313,7 @@ class StarScreen extends StatelessWidget {
                                   CustomTaskCard(
                                     title: 'Textaufgabe',
                                     description:
-                                        'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
+                                    'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
                                     tags: [
                                       'Finished',
                                       'Geometrie',
@@ -321,31 +323,31 @@ class StarScreen extends StatelessWidget {
                                   CustomTaskCard(
                                     title: 'Ohne Anwendung',
                                     description:
-                                        'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
+                                    'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
                                     tags: ['Analysis', 'Alle Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Textaufgabe',
                                     description:
-                                        'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
+                                    'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
                                     tags: ['Geometrie', 'Keine Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Ohne Anwendung',
                                     description:
-                                        'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
+                                    'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
                                     tags: ['Analysis', 'Alle Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Textaufgabe',
                                     description:
-                                        'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
+                                    'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
                                     tags: ['Geometrie', 'Keine Hilfsmittel'],
                                   ),
                                   CustomTaskCard(
                                     title: 'Ohne Anwendung',
                                     description:
-                                        'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
+                                    'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
                                     tags: ['Analysis', 'Alle Hilfsmittel'],
                                   ),
                                 ],
@@ -388,7 +390,9 @@ class ExerciseCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -445,28 +449,28 @@ class ExerciseCards extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children:
-                      topics.entries.map((entry) {
-                        final String topic = entry.key;
-                        final int done = entry.value[0];
-                        final int total = entry.value[1];
+                  topics.entries.map((entry) {
+                    final String topic = entry.key;
+                    final int done = entry.value[0];
+                    final int total = entry.value[1];
 
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("$done/$total ", style: smallTextStyle),
-                              Text(
-                                topic,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: colorScheme.onPrimaryFixedVariant,
-                                ),
-                              ),
-                            ],
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text("$done/$total ", style: smallTextStyle),
+                          Text(
+                            topic,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: colorScheme.onPrimaryFixedVariant,
+                            ),
                           ),
-                        );
-                      }).toList(),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -492,7 +496,9 @@ class CategoryProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = done / total;
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Container(
       margin: const EdgeInsets.all(10.0),
       child: Column(
@@ -535,7 +541,9 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Expanded(
       flex: boxFlex,
       child: Column(
@@ -595,7 +603,9 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       padding: const EdgeInsets.all(4),
@@ -606,51 +616,51 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
       ),
       child: Row(
         children:
-            widget.categories.map((category) {
-              final isSelected = selected.contains(category);
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => toggleCategory(category),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color:
-                          isSelected
-                              ? colorScheme.onPrimaryFixedVariant
-                              : Colors.transparent,
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.check,
-                          size: 18,
-                          color:
-                              isSelected
-                                  ? whiteColor
-                                  : colorScheme.onPrimaryFixedVariant,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          category,
-                          style: TextStyle(
-                            color:
-                                isSelected
-                                    ? whiteColor
-                                    : colorScheme.onPrimaryFixedVariant,
-                            fontWeight:
-                                isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+        widget.categories.map((category) {
+          final isSelected = selected.contains(category);
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => toggleCategory(category),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color:
+                  isSelected
+                      ? colorScheme.onPrimaryFixedVariant
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(32),
                 ),
-              );
-            }).toList(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.check,
+                      size: 18,
+                      color:
+                      isSelected
+                          ? whiteColor
+                          : colorScheme.onPrimaryFixedVariant,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      category,
+                      style: TextStyle(
+                        color:
+                        isSelected
+                            ? whiteColor
+                            : colorScheme.onPrimaryFixedVariant,
+                        fontWeight:
+                        isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -670,7 +680,9 @@ class CustomTaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
       padding: const EdgeInsets.all(12),
@@ -685,19 +697,19 @@ class CustomTaskCard extends StatelessWidget {
           Wrap(
             spacing: 8,
             children:
-                tags.map((tag) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: tagColors[tag],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(tag, style: lableTextStyle),
-                  );
-                }).toList(),
+            tags.map((tag) {
+              return Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: tagColors[tag],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(tag, style: lableTextStyle),
+              );
+            }).toList(),
           ),
           const SizedBox(height: 10),
           Text(title, style: kHeaderStyle),
