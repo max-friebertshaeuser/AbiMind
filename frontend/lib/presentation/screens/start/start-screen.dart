@@ -743,9 +743,15 @@ class _ProgressCardState extends State<ProgressCard> {
                           ),
                           padding: const EdgeInsets.all(16.0),
                           decoration: BoxDecoration(
+                            border: Border.all(
+                              color: colorScheme.onPrimaryFixedVariant,
+                              width: 2,
+                            ),
                             color:
                                 isSelected
-                                    ? colorScheme.primaryContainer.withOpacity(0.5)
+                                    ? colorScheme.primaryContainer.withOpacity(
+                                      0.5,
+                                    )
                                     : colorScheme.primaryContainer,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
