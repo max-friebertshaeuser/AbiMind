@@ -325,7 +325,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
 
   Future<void> loadTaskCardsData() async {
     try {
-      String jsonString = await rootBundle.loadString('assets/data.json');
+      String jsonString = await rootBundle.loadString('assets/exerciseData.json');
       List<dynamic> jsonData = json.decode(jsonString);
       setState(() {
         taskCardsData.addAll(jsonData.cast<Map<String, dynamic>>());
