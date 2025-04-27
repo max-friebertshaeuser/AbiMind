@@ -39,7 +39,7 @@ class StarScreen extends StatelessWidget {
                 direction: Axis.vertical,
                 children: [
                   ProgressCard(),
-                  Card(
+                  MainSurfaceCard(
                     title: 'Streak',
                     boxFlex: 1,
                     child: Row(
@@ -222,7 +222,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   Widget build(BuildContext context) {
     return Expanded(
       flex: 1,
-      child: Card(
+      child: MainSurfaceCard(
         title: 'Exercises',
         boxFlex: 1,
         child: Column(
@@ -408,8 +408,8 @@ class CategoryProgress extends StatelessWidget {
   }
 }
 
-class Card extends StatelessWidget {
-  const Card({
+class MainSurfaceCard extends StatelessWidget {
+  const MainSurfaceCard({
     super.key,
     required this.title,
     required this.boxFlex,
@@ -644,7 +644,7 @@ class _ProgressCardState extends State<ProgressCard> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Card(
+    return MainSurfaceCard(
       title: 'Current Exercise',
       boxFlex: 2,
       child: Row(
