@@ -14,9 +14,7 @@ class StarScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -40,137 +38,7 @@ class StarScreen extends StatelessWidget {
               child: Flex(
                 direction: Axis.vertical,
                 children: [
-                  Card(
-                    title: 'Current Exercise',
-                    boxFlex: 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            margin: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  statistic['currentYear'].toString(),
-                                  style: kHeaderStyle,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CircularPercentIndicator(
-                                    backgroundColor:
-                                    colorScheme.surfaceContainerHigh,
-                                    progressColor:
-                                    colorScheme.onPrimaryFixedVariant,
-                                    radius: 70.0,
-                                    lineWidth: 12.0,
-                                    percent: double.parse(
-                                      statistic['solvedPercentageNumeric']
-                                          .toString(),
-                                    ),
-                                    center: Text(
-                                      "${(statistic['solvedPercentage'])
-                                          .toString()}%",
-                                      style: percentageStyle,
-                                    ),
-                                    circularStrokeCap: CircularStrokeCap.round,
-                                  ),
-                                ),
-                                Divider(thickness: 2),
-                                Container(
-                                  width: double.infinity,
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      children: const [
-                                        CategoryProgress(
-                                          title: 'Stochastik',
-                                          done: 7,
-                                          total: 10,
-                                        ),
-                                        CategoryProgress(
-                                          title: 'Analysis',
-                                          done: 8,
-                                          total: 10,
-                                        ),
-                                        CategoryProgress(
-                                          title: 'Geometrie',
-                                          done: 10,
-                                          total: 10,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                            horizontal: 10.0,
-                            vertical: 20.0,
-                          ),
-                          child: VerticalDivider(thickness: 2, width: 10),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: SingleChildScrollView(
-                            child: Container(
-                              margin: const EdgeInsets.all(10.0),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-
-                                    },
-                                    child: ExerciseCards(
-                                      year: 2024,
-                                      percent: 0.65,
-                                      topics: {
-                                        'Stochastik': [7, 10],
-                                        'Analysis': [8, 10],
-                                        'Geometrie': [10, 10],
-                                      },
-                                    ),
-                                  ),
-
-
-                                  ExerciseCards(
-                                    year: 2025,
-                                    percent: 0.75,
-                                    topics: {
-                                      'Stochastik': [8, 10],
-                                      'Analysis': [9, 10],
-                                      'Geometrie': [10, 10],
-                                    },
-                                  ),
-                                  ExerciseCards(
-                                    year: 2026,
-                                    percent: 0.85,
-                                    topics: {
-                                      'Stochastik': [9, 10],
-                                      'Analysis': [10, 10],
-                                      'Geometrie': [10, 10],
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ProgressCard(),
                   Card(
                     title: 'Streak',
                     boxFlex: 1,
@@ -200,8 +68,7 @@ class StarScreen extends StatelessWidget {
                               SizedBox(height: 8),
                               Center(
                                 child: Text(
-                                  'Du hast dein\nLernziel ${streak['streak']
-                                      .toString()} Tage\nlang erreicht',
+                                  'Du hast dein\nLernziel ${streak['streak'].toString()} Tage\nlang erreicht',
                                   style: smallTextStyle,
                                 ),
                               ),
@@ -237,21 +104,21 @@ class StarScreen extends StatelessWidget {
                                   lineBarsData: [
                                     LineChartBarData(
                                       spots:
-                                      tenDayLearnProgress
-                                          .asMap()
-                                          .entries
-                                          .map((entry) {
-                                        final index =
-                                        entry.key.toDouble();
-                                        final minutes =
-                                        entry.value['minutes']
-                                        as int;
-                                        return FlSpot(
-                                          index,
-                                          minutes.toDouble(),
-                                        );
-                                      })
-                                          .toList(),
+                                          tenDayLearnProgress
+                                              .asMap()
+                                              .entries
+                                              .map((entry) {
+                                                final index =
+                                                    entry.key.toDouble();
+                                                final minutes =
+                                                    entry.value['minutes']
+                                                        as int;
+                                                return FlSpot(
+                                                  index,
+                                                  minutes.toDouble(),
+                                                );
+                                              })
+                                              .toList(),
                                       isCurved: false,
                                       isStrokeCapRound: false,
                                       barWidth: 0,
@@ -259,15 +126,16 @@ class StarScreen extends StatelessWidget {
                                       dotData: FlDotData(
                                         show: true,
                                         getDotPainter:
-                                            (spot,
-                                            percent,
-                                            barData,
-                                            index,) =>
-                                            FlDotCirclePainter(
+                                            (
+                                              spot,
+                                              percent,
+                                              barData,
+                                              index,
+                                            ) => FlDotCirclePainter(
                                               radius: 4,
                                               color:
-                                              colorScheme
-                                                  .onPrimaryFixedVariant,
+                                                  colorScheme
+                                                      .onPrimaryFixedVariant,
                                               strokeWidth: 0,
                                             ),
                                       ),
@@ -281,7 +149,7 @@ class StarScreen extends StatelessWidget {
                                           streak['goal'].toString(),
                                         ),
                                         color:
-                                        colorScheme.onPrimaryFixedVariant,
+                                            colorScheme.onPrimaryFixedVariant,
                                         strokeWidth: 2,
                                       ),
                                     ],
@@ -297,7 +165,7 @@ class StarScreen extends StatelessWidget {
                 ],
               ),
             ),
-            ExerciseCardList()
+            ExerciseCardList(),
           ],
         ),
       ),
@@ -325,7 +193,9 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
 
   Future<void> loadTaskCardsData() async {
     try {
-      String jsonString = await rootBundle.loadString('assets/exerciseData.json');
+      String jsonString = await rootBundle.loadString(
+        'assets/exerciseData.json',
+      );
       List<dynamic> jsonData = json.decode(jsonString);
       setState(() {
         taskCardsData.addAll(jsonData.cast<Map<String, dynamic>>());
@@ -365,13 +235,14 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                     child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: filteredTasks.map((task) {
-                          return CustomTaskCard(
-                            title: task['title'],
-                            description: task['description'],
-                            tags: List<String>.from(task['tags']),
-                          );
-                        }).toList(),
+                        children:
+                            filteredTasks.map((task) {
+                              return CustomTaskCard(
+                                title: task['title'],
+                                description: task['description'],
+                                tags: List<String>.from(task['tags']),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -390,7 +261,6 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   }
 }
 
-
 class ExerciseCards extends StatelessWidget {
   final int year;
   final double percent;
@@ -405,9 +275,7 @@ class ExerciseCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -464,28 +332,28 @@ class ExerciseCards extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children:
-                  topics.entries.map((entry) {
-                    final String topic = entry.key;
-                    final int done = entry.value[0];
-                    final int total = entry.value[1];
+                      topics.entries.map((entry) {
+                        final String topic = entry.key;
+                        final int done = entry.value[0];
+                        final int total = entry.value[1];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("$done/$total ", style: smallTextStyle),
-                          Text(
-                            topic,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: colorScheme.onPrimaryFixedVariant,
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("$done/$total ", style: smallTextStyle),
+                              Text(
+                                topic,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
                 ),
               ],
             ),
@@ -511,9 +379,7 @@ class CategoryProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double progress = done / total;
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.all(10.0),
       child: Column(
@@ -556,9 +422,7 @@ class Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Expanded(
       flex: boxFlex,
       child: Column(
@@ -618,9 +482,7 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       padding: const EdgeInsets.all(4),
@@ -631,51 +493,51 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
       ),
       child: Row(
         children:
-        widget.categories.map((category) {
-          final isSelected = selected.contains(category);
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => toggleCategory(category),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color:
-                  isSelected
-                      ? colorScheme.onPrimaryFixedVariant
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(32),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check,
-                      size: 18,
+            widget.categories.map((category) {
+              final isSelected = selected.contains(category);
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => toggleCategory(category),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
                       color:
-                      isSelected
-                          ? whiteColor
-                          : colorScheme.onPrimaryFixedVariant,
+                          isSelected
+                              ? colorScheme.onPrimaryFixedVariant
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(32),
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      category,
-                      style: TextStyle(
-                        color:
-                        isSelected
-                            ? whiteColor
-                            : colorScheme.onPrimaryFixedVariant,
-                        fontWeight:
-                        isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.check,
+                          size: 18,
+                          color:
+                              isSelected
+                                  ? whiteColor
+                                  : colorScheme.onPrimaryFixedVariant,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          category,
+                          style: TextStyle(
+                            color:
+                                isSelected
+                                    ? whiteColor
+                                    : colorScheme.onPrimaryFixedVariant,
+                            fontWeight:
+                                isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -695,9 +557,7 @@ class CustomTaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
       padding: const EdgeInsets.all(12),
@@ -712,24 +572,285 @@ class CustomTaskCard extends StatelessWidget {
           Wrap(
             spacing: 8,
             children:
-            tags.map((tag) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: tagColors[tag],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(tag, style: lableTextStyle),
-              );
-            }).toList(),
+                tags.map((tag) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: tagColors[tag],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(tag, style: lableTextStyle),
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 10),
           Text(title, style: kHeaderStyle),
           const SizedBox(height: 6),
           Text(description, style: middleTextStyle),
+        ],
+      ),
+    );
+  }
+}
+
+class ProgressCard extends StatefulWidget {
+  const ProgressCard({Key? key}) : super(key: key);
+
+  @override
+  State<ProgressCard> createState() => _ProgressCardState();
+}
+
+class _ProgressCardState extends State<ProgressCard> {
+  List<Map<String, dynamic>> statisticsData = [];
+  late Map<String, dynamic> selectedStatistic;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadStatistics();
+  }
+
+  Future<void> loadStatistics() async {
+    final String response = await rootBundle.loadString(
+      'assets/exerciseProgress.json',
+    );
+    final List<dynamic> data = jsonDecode(response);
+
+    setState(() {
+      statisticsData = List<Map<String, dynamic>>.from(data);
+      selectedStatistic = statisticsData.firstWhere(
+        (stat) => stat['currentYear'] == 2025,
+        orElse: () => statisticsData.first,
+      );
+      isLoading = false;
+    });
+  }
+
+  void selectStatistic(Map<String, dynamic> stat) {
+    setState(() {
+      selectedStatistic = stat;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return Card(
+      title: 'Current Exercise',
+      boxFlex: 2,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          /// Left: Big Selected Card
+          Expanded(
+            flex: 1,
+            child: Container(
+              margin: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    selectedStatistic['currentYear'].toString(),
+                    style: kHeaderStyle,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: CircularPercentIndicator(
+                      backgroundColor: colorScheme.surfaceContainerHigh,
+                      progressColor: colorScheme.onPrimaryFixedVariant,
+                      radius: 70.0,
+                      lineWidth: 12.0,
+                      percent: double.parse(
+                        selectedStatistic['solvedPercentageNumeric'].toString(),
+                      ),
+                      center: Text(
+                        "${selectedStatistic['solvedPercentage']}%",
+                        style: percentageStyle,
+                      ),
+                      circularStrokeCap: CircularStrokeCap.round,
+                    ),
+                  ),
+                  const Divider(thickness: 2),
+                  Container(
+                    width: double.infinity,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          CategoryProgress(
+                            title: 'Stochastik',
+                            done: selectedStatistic['stochastikDone'],
+                            total: selectedStatistic['stochastikTotal'],
+                          ),
+                          CategoryProgress(
+                            title: 'Analysis',
+                            done: selectedStatistic['analysisDone'],
+                            total: selectedStatistic['analysisTotal'],
+                          ),
+                          CategoryProgress(
+                            title: 'Geometrie',
+                            done: selectedStatistic['geometrieDone'],
+                            total: selectedStatistic['geometrieTotal'],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          /// Vertical Divider
+          Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 20.0,
+            ),
+            child: const VerticalDivider(thickness: 2, width: 10),
+          ),
+
+          /// Right: Scrollable Mini Cards
+          Expanded(
+            flex: 1,
+            child: SingleChildScrollView(
+              child: Column(
+                children:
+                    statisticsData.map((stat) {
+                      final isSelected =
+                          stat['currentYear'] ==
+                          selectedStatistic['currentYear'];
+                      return GestureDetector(
+                        onTap: () => selectStatistic(stat),
+
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 12.0,
+                          ),
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected
+                                    ? colorScheme.primaryContainer.withOpacity(0.5)
+                                    : colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            // Center the year
+                            children: [
+                              Text(
+                                "— ${stat['currentYear']} —",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      isSelected
+                                          ? colorScheme.onPrimaryContainer
+                                          : colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularPercentIndicator(
+                                    backgroundColor:
+                                        colorScheme.surfaceContainerHigh,
+                                    progressColor:
+                                        colorScheme.onPrimaryFixedVariant,
+                                    radius: 30.0,
+                                    lineWidth: 8.0,
+                                    percent: double.parse(
+                                      stat['solvedPercentageNumeric']
+                                          .toString(),
+                                    ),
+                                    center: Text(
+                                      "${stat['solvedPercentage']}%",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            isSelected
+                                                ? colorScheme.onPrimaryContainer
+                                                : colorScheme.onSurface,
+                                      ),
+                                    ),
+                                    circularStrokeCap: CircularStrokeCap.round,
+                                  ),
+
+                                  const SizedBox(width: 20),
+
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${stat['stochastikDone']}/${stat['stochastikTotal']} Stochastik",
+                                        style: TextStyle(
+                                          color:
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${stat['analysisDone']}/${stat['analysisTotal']} Analysis",
+                                        style: TextStyle(
+                                          color:
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${stat['geometrieDone']}/${stat['geometrieTotal']} Geometrie",
+                                        style: TextStyle(
+                                          color:
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          ),
         ],
       ),
     );
