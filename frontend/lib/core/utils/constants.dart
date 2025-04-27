@@ -77,36 +77,4 @@ final minutesList =
 final maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
 final minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
 
-final List<Map<String, dynamic>> taskCardsData = [
-  {
-    'title': 'Textaufgabe',
-    'description': 'Untersuche eine Pyramide geometrisch, bestimme Flächen, Symmetrien, Ebenen und einen speziellen Punkt, und beschreibe den entstehenden Rotationskörper.',
-    'tags': ['Finished', 'Geometrie', 'Keine Hilfsmittel'],
-  },
-  {
-    'title': 'Ohne Anwendung',
-    'description': 'Untersuche eine Funktion, bestimme Extremstellen, Wendepunkte und Flächeninhalte, und interpretiere alles im Sachzusammenhang.',
-    'tags': ['Analysis', 'Alle Hilfsmittel'],
-  },
-  {
-    'title': 'Textaufgabe',
-    'description': 'Beschreibe die geometrischen Eigenschaften einer Pyramide, analysiere Symmetrien und konstruiere den Rotationskörper.',
-    'tags': ['Geometrie', 'Keine Hilfsmittel'],
-  },
-  {
-    'title': 'Ohne Anwendung',
-    'description': 'Berechne die Extrempunkte und Wendepunkte einer Funktion und deute sie im gegebenen Kontext.',
-    'tags': ['Analysis', 'Alle Hilfsmittel'],
-  },
-  {
-    'title': 'Textaufgabe',
-    'description': 'Analysiere die Pyramidenstruktur geometrisch, leite Rotationskörper ab und bestimme charakteristische Punkte.',
-    'tags': ['Geometrie', 'Keine Hilfsmittel'],
-  },
-  {
-    'title': 'Ohne Anwendung',
-    'description': 'Finde die Flächeninhalte unter einer Kurve, berechne Extremwerte und interpretiere die Ergebnisse sachlich.',
-    'tags': ['Analysis', 'Alle Hilfsmittel'],
-  },
-];
 
