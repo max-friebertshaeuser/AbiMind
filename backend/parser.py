@@ -21,23 +21,26 @@ def encode_image_to_base64(image_path: Path) -> str:
 
 
 def save_exercise_to_firestore(db, fach: str, jahr: str, teil: str, aufgabe_name: str,
-                               aufgabe_text: str, aufgabe_bild_pfade, loesung_text: str, loesung_bild_pfade):
+                               aufgabe_text: str, aufgabe_bild_pfade, aufgabe_bildnamen,
+                               loesung_text: str, loesung_bild_pfade, loesung_bildnamen):
     aufgabe_bilder_base64 = [encode_image_to_base64(path) for path in aufgabe_bild_pfade]
     loesung_bilder_base64 = [encode_image_to_base64(path) for path in loesung_bild_pfade]
 
     doc_ref = db.collection("Abitur").document(f"{fach}_{jahr}")
 
-    # Merke: Teil wie Pflichtteil/Analysis usw. wird als verschachtelte Map gespeichert
     doc_ref.set({
         teil: {
             aufgabe_name: {
                 "aufgabe_text": aufgabe_text,
                 "aufgabe_bilder": aufgabe_bilder_base64,
+                "aufgabe_bildnamen": aufgabe_bildnamen,
                 "loesung_text": loesung_text,
-                "loesung_bilder": loesung_bilder_base64
+                "loesung_bilder": loesung_bilder_base64,
+                "loesung_bildnamen": loesung_bildnamen
             }
         }
-    }, merge=True)  # merge=True damit vorhandene Aufgaben nicht überschrieben werden
+    }, merge=True)
+
 
 
 def find_image_paths_from_latex(latex_text: str, tex_file_path: str):
@@ -200,7 +203,11 @@ def main():
 \begin{document}
 """ + "\\section*{" + year + ", " + exercise[0] + "}\n" + exercise[1] + "\n\\end{document}"
 
-            array.append((subject, year, task, exercise[0], latex_exercise, exercise[2], exercise[3], exercise[4]))
+            aufgabe_bildnamen = [path.name for path in exercise[2]]
+            loesung_bildnamen = [path.name for path in exercise[4]]
+
+            array.append((subject, year, task, exercise[0], latex_exercise, exercise[2], aufgabe_bildnamen, exercise[3], exercise[4], loesung_bildnamen))
+
 
     for entry in array:
         print(entry)
@@ -208,8 +215,10 @@ def main():
         # print(entry[4])
 
     for entry in array:
-        fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade, loesung_text, loesung_bild_pfade = entry
-        save_exercise_to_firestore(db, fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade, loesung_text, loesung_bild_pfade)
+        fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade, aufgabe_bildnamen, loesung_text, loesung_bild_pfade, loesung_bildnamen = entry
+        save_exercise_to_firestore(db, fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade,
+                                   aufgabe_bildnamen, loesung_text, loesung_bild_pfade, loesung_bildnamen)
+
 
 if __name__ == '__main__':
     main()
