@@ -10,178 +10,7 @@ import 'package:flutter_drawing_board/paint_contents.dart';
 import 'package:flutter_drawing_board/paint_extension.dart';
 
 import '../../../core/utils/constants.dart';
-
-// Future<ui.Image> _getImage(String path) async {
-//   final Completer<ImageInfo> completer = Completer<ImageInfo>();
-//   final NetworkImage img = NetworkImage(path);
-//   img
-//       .resolve(ImageConfiguration.empty)
-//       .addListener(
-//         ImageStreamListener((ImageInfo info, _) {
-//           completer.complete(info);
-//         }),
-//       );
-//
-//   final ImageInfo imageInfo = await completer.future;
-//
-//   return imageInfo.image;
-// }
-
-const Map<String, dynamic> _testLine1 = <String, dynamic>{
-  'type': 'StraightLine',
-  'startPoint': <String, dynamic>{'dx': 68.94337550070736, 'dy': 62.05980083656557},
-  'endPoint': <String, dynamic>{'dx': 277.1373386828114, 'dy': 277.32029957032194},
-  'paint': <String, dynamic>{
-    'blendMode': 3,
-    'color': 4294198070,
-    'filterQuality': 3,
-    'invertColors': false,
-    'isAntiAlias': false,
-    'strokeCap': 1,
-    'strokeJoin': 1,
-    'strokeWidth': 4.0,
-    'style': 1,
-  },
-};
-
-const Map<String, dynamic> _testLine2 = <String, dynamic>{
-  'type': 'StraightLine',
-  'startPoint': <String, dynamic>{'dx': 106.35164817830423, 'dy': 255.9575653134524},
-  'endPoint': <String, dynamic>{'dx': 292.76034659254094, 'dy': 92.125586665872},
-  'paint': <String, dynamic>{
-    'blendMode': 3,
-    'color': 4294198070,
-    'filterQuality': 3,
-    'invertColors': false,
-    'isAntiAlias': false,
-    'strokeCap': 1,
-    'strokeJoin': 1,
-    'strokeWidth': 4.0,
-    'style': 1,
-  },
-};
-
-/// Custom drawn triangles
-class Triangle extends PaintContent {
-  Triangle();
-
-  Triangle.data({required this.startPoint, required this.A, required this.B, required this.C, required Paint paint})
-    : super.paint(paint);
-
-  factory Triangle.fromJson(Map<String, dynamic> data) {
-    return Triangle.data(
-      startPoint: jsonToOffset(data['startPoint'] as Map<String, dynamic>),
-      A: jsonToOffset(data['A'] as Map<String, dynamic>),
-      B: jsonToOffset(data['B'] as Map<String, dynamic>),
-      C: jsonToOffset(data['C'] as Map<String, dynamic>),
-      paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
-    );
-  }
-
-  Offset startPoint = Offset.zero;
-
-  Offset A = Offset.zero;
-  Offset B = Offset.zero;
-  Offset C = Offset.zero;
-
-  @override
-  String get contentType => 'Triangle';
-
-  @override
-  void startDraw(Offset startPoint) => this.startPoint = startPoint;
-
-  @override
-  void drawing(Offset nowPoint) {
-    A = Offset(startPoint.dx + (nowPoint.dx - startPoint.dx) / 2, startPoint.dy);
-    B = Offset(startPoint.dx, nowPoint.dy);
-    C = nowPoint;
-  }
-
-  @override
-  void draw(Canvas canvas, Size size, bool deeper) {
-    final Path path =
-        Path()
-          ..moveTo(A.dx, A.dy)
-          ..lineTo(B.dx, B.dy)
-          ..lineTo(C.dx, C.dy)
-          ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  Triangle copy() => Triangle();
-
-  @override
-  Map<String, dynamic> toContentJson() {
-    return <String, dynamic>{
-      'startPoint': startPoint.toJson(),
-      'A': A.toJson(),
-      'B': B.toJson(),
-      'C': C.toJson(),
-      'paint': paint.toJson(),
-    };
-  }
-}
-
-// /// Custom drawn image
-// /// url: https://web-strapi.mrmilu.com/uploads/flutter_logo_470e9f7491.png
-// const String _imageUrl = 'https://web-strapi.mrmilu.com/uploads/flutter_logo_470e9f7491.png';
-//
-// class ImageContent extends PaintContent {
-//   ImageContent(this.image, {this.imageUrl = ''});
-//
-//   ImageContent.data({
-//     required this.startPoint,
-//     required this.size,
-//     required this.image,
-//     required this.imageUrl,
-//     required Paint paint,
-//   }) : super.paint(paint);
-//
-//   factory ImageContent.fromJson(Map<String, dynamic> data) {
-//     return ImageContent.data(
-//       startPoint: jsonToOffset(data['startPoint'] as Map<String, dynamic>),
-//       size: jsonToOffset(data['size'] as Map<String, dynamic>),
-//       imageUrl: data['imageUrl'] as String,
-//       image: data['image'] as ui.Image,
-//       paint: jsonToPaint(data['paint'] as Map<String, dynamic>),
-//     );
-//   }
-//
-//   Offset startPoint = Offset.zero;
-//   Offset size = Offset.zero;
-//   final String imageUrl;
-//   final ui.Image image;
-//
-//   @override
-//   String get contentType => 'ImageContent';
-//
-//   @override
-//   void startDraw(Offset startPoint) => this.startPoint = startPoint;
-//
-//   @override
-//   void drawing(Offset nowPoint) => size = nowPoint - startPoint;
-//
-//   @override
-//   void draw(Canvas canvas, Size size, bool deeper) {
-//     final Rect rect = Rect.fromPoints(startPoint, startPoint + this.size);
-//     paintImage(canvas: canvas, rect: rect, image: image, fit: BoxFit.fill);
-//   }
-//
-//   @override
-//   ImageContent copy() => ImageContent(image);
-//
-//   @override
-//   Map<String, dynamic> toContentJson() {
-//     return <String, dynamic>{
-//       'startPoint': startPoint.toJson(),
-//       'size': size.toJson(),
-//       'imageUrl': imageUrl,
-//       'paint': paint.toJson(),
-//     };
-//   }
-// }
+import 'custom_drawing_board.dart';
 
 class ExerciseScreen extends StatefulWidget {
   const ExerciseScreen({super.key});
@@ -204,70 +33,69 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     super.dispose();
   }
 
-  /// 获取画板数据 `getImageData()`
-  Future<void> _getImageData() async {
-    final Uint8List? data = (await _drawingController.getImageData())?.buffer.asUint8List();
-    if (data == null) {
-      debugPrint('获取图片数据失败');
-      return;
-    }
-
-    if (mounted) {
-      showDialog<void>(
-        context: context,
-        builder: (BuildContext c) {
-          return Material(
-            color: Colors.transparent,
-            child: InkWell(onTap: () => Navigator.pop(c), child: Image.memory(data)),
-          );
-        },
-      );
-    }
-  }
-
-  /// 获取画板内容 Json `getJsonList()`
-  Future<void> _getJson() async {
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext c) {
-        return Center(
-          child: Material(
-            color: Colors.white,
-            child: InkWell(
-              onTap: () => Navigator.pop(c),
-              child: Container(
-                constraints: const BoxConstraints(maxWidth: 500, maxHeight: 800),
-                padding: const EdgeInsets.all(20.0),
-                child: SelectableText(const JsonEncoder.withIndent('  ').convert(_drawingController.getJsonList())),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  /// 添加Json测试内容
-  void _addTestLine() {
-    _drawingController.addContent(StraightLine.fromJson(_testLine1));
-    _drawingController.addContents(<PaintContent>[StraightLine.fromJson(_testLine2)]);
-    // _drawingController.addContent(SimpleLine.fromJson(tData[0]));
-    // _drawingController.addContent(Eraser.fromJson(tData[1]));
-  }
-
-  void _restBoard() {
-    _transformationController.value = Matrix4.identity();
-  }
-
   bool exerciseExpanded = true;
+
+  List<Exercise> exercises = [
+    Exercise(
+      heading: 'Exercise 1',
+      description: 'A description of Exercise 1',
+      questions: [
+        Question(
+          title: 'a)',
+          description: 'Description of Exercise a), $kSampleText',
+          solution: 'Solution of Exercise a)',
+        ),
+        Question(
+          title: 'b)',
+          description: 'Description of Exercise b), $kSampleText',
+          solution: 'Solution of Exercise b)',
+        ),
+        Question(
+          title: 'c)',
+          description: 'Description of Exercise c), $kSampleText',
+          solution: 'Solution of Exercise c)',
+        ),
+        Question(
+          title: 'd)',
+          description: 'Description of Exercise d), $kSampleText',
+          solution: 'Solution of Exercise d)',
+        ),
+      ],
+    ),
+    Exercise(
+      heading: 'Exercise 2',
+      description: 'A description of Exercise 1',
+      questions: [
+        Question(
+          title: 'a)',
+          description: 'Description of Exercise a), $kSampleText',
+          solution: 'Solution of Exercise a)',
+        ),
+        Question(
+          title: 'b)',
+          description: 'Description of Exercise b), $kSampleText',
+          solution: 'Solution of Exercise b)',
+        ),
+        Question(
+          title: 'c)',
+          description: 'Description of Exercise c), $kSampleText',
+          solution: 'Solution of Exercise c)',
+        ),
+        Question(
+          title: 'd)',
+          description: 'Description of Exercise d), $kSampleText',
+          solution: 'Solution of Exercise d)',
+        ),
+      ],
+    ),
+  ];
+  int exerciseIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
+    Exercise currentExercise = exercises[exerciseIndex];
 
-    const visibleItems = ['a) $kSampleText', 'b) $kSampleText', 'c) $kSampleText', 'd) $kSampleText'];
-
-    const exerciseHeader = 'Exercise 1';
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -302,10 +130,10 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
         title: const Text('Drawing Test'),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         actions: <Widget>[
-          IconButton(icon: const Icon(Icons.line_axis), onPressed: _addTestLine),
-          IconButton(icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
-          IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
-          IconButton(icon: const Icon(Icons.restore_page_rounded), onPressed: _restBoard),
+          // IconButton(icon: const Icon(Icons.line_axis), onPressed: _addTestLine),
+          // IconButton(icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
+          // IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
+          // IconButton(icon: const Icon(Icons.restore_page_rounded), onPressed: _restBoard),
         ],
       ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -333,19 +161,26 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: const Text(
-                                exerciseHeader,
+                              child: Text(
+                                exercises[exerciseIndex].heading,
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                               ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Text(currentExercise.description, style: TextStyle(fontSize: 16)),
                             ),
                             Expanded(
                               child:
                                   exerciseExpanded
                                       ? ListView.builder(
-                                        itemCount: visibleItems.length,
+                                        itemCount: exercises.length,
                                         itemBuilder: (context, index) {
                                           return ListTile(
-                                            title: Text(visibleItems[index], style: TextStyle(fontSize: 16)),
+                                            title: Text(
+                                              '${currentExercise.questions[index].title} ${currentExercise.questions[index].description}',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
                                           );
                                         },
                                       )
@@ -395,6 +230,43 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                   ),
                 ),
               ),
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FloatingActionButton(
+                      mini: true,
+                      heroTag: "prev_page",
+                      onPressed: () {
+                        setState(() {
+                          if(exerciseIndex > 0) {
+                            exerciseIndex--;
+                            _drawingController.clear();
+                          }
+                        });
+                      },
+                      child: Icon(Icons.chevron_left),
+                    ),
+                    SizedBox(width: 8), // space between buttons
+                    FloatingActionButton(
+                      mini: true,
+                      heroTag: "next_page",
+                      onPressed: () {
+                        currentExercise.answer = _drawingController.getJsonList();
+                        setState(() {
+                          if(exerciseIndex < exercises.length-1) {
+                            exerciseIndex++;
+                            _drawingController.clear();
+                          }
+                        });
+                      },
+                      child: Icon(Icons.chevron_right),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -403,70 +275,40 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   }
 }
 
-class CustomDrawingBoard extends StatelessWidget {
-  const CustomDrawingBoard({
-    super.key,
-    required TransformationController transformationController,
-    required DrawingController drawingController,
-    required this.colorScheme,
-  }) : _transformationController = transformationController,
-       _drawingController = drawingController;
+class Exercise {
+  Exercise({required this.heading, required this.description, required this.questions});
 
-  final TransformationController _transformationController;
-  final DrawingController _drawingController;
-  final ColorScheme colorScheme;
+  final String heading;
+  final String description;
+  final List<Question> questions;
+  List<Map<String, dynamic>>? answer;
 
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        return DrawingBoard(
-          // boardPanEnabled: false,
-          // boardScaleEnabled: false,
-          transformationController: _transformationController,
-          controller: _drawingController,
-          background: Container(width: constraints.maxWidth, height: constraints.maxHeight, color: colorScheme.surface),
-          showDefaultActions: true,
-          showDefaultTools: true,
-          defaultToolsBuilder: (Type t, _) {
-            return DrawingBoard.defaultTools(t, _drawingController)
-              ..insert(
-                1,
-                DefToolItem(
-                  icon: Icons.change_history_rounded,
-                  isActive: t == Triangle,
-                  onTap: () => _drawingController.setPaintContent(Triangle()),
-                ),
-              );
-              // ..insert(
-              //   2,
-              //   DefToolItem(
-              //     icon: Icons.image_rounded,
-              //     isActive: t == ImageContent,
-              //     onTap: () async {
-              //       showDialog(
-              //         context: context,
-              //         barrierDismissible: false,
-              //         builder: (BuildContext c) {
-              //           return const Center(child: CircularProgressIndicator());
-              //         },
-              //       );
-              //
-              //       try {
-              //         _drawingController.setPaintContent(ImageContent(await _getImage(_imageUrl), imageUrl: _imageUrl));
-              //       } catch (e) {
-              //         //
-              //       } finally {
-              //         if (context.mounted) {
-              //           Navigator.pop(context);
-              //         }
-              //       }
-              //     },
-              //   ),
-              // );
-          },
-        );
-      },
-    );
-  }
+
 }
+
+class Question {
+  const Question({required this.title, required this.description, this.solution});
+
+  final String title;
+  final String description;
+  final String? solution;
+}
+
+
+
+// {
+//   images: {
+// asldkfjalskfjaslk: {
+// title: 2025.....jpg,
+// content: "base64:eklgnalknölf"
+// },
+// falksjfaklsjfö: {
+// title: 2025.....jpg,
+// content: "base64:eklgnalknölf"
+// },
+// dafklfjölajf: {
+// title: 2025.....jpg,
+// content: "base64:eklgnalknölf"
+// }
+// ]
+// }
