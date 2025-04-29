@@ -37,10 +37,7 @@ class StarScreen extends StatelessWidget {
               flex: 1,
               child: Flex(
                 direction: Axis.vertical,
-                children: [
-                  ProgressCard(),
-                  StreakCard(),
-                ],
+                children: [ProgressCard(), StreakCard()],
               ),
             ),
             ExerciseCardList(),
@@ -170,7 +167,6 @@ class ExerciseCards extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Year Centered
           Text(
             "— $year —",
             style: TextStyle(
@@ -741,7 +737,6 @@ class _ProgressCardState extends State<ProgressCard> {
   }
 }
 
-
 class StreakCard extends StatefulWidget {
   const StreakCard({super.key});
 
@@ -784,7 +779,7 @@ class _StreakCardState extends State<StreakCard> {
         final List<dynamic> tenDayLearnProgress = data['tenDayLearnProgress'];
 
         final List<int> minutesList =
-        tenDayLearnProgress.map((e) => e['minutes'] as int).toList();
+            tenDayLearnProgress.map((e) => e['minutes'] as int).toList();
         final int maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
         final int minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
 
@@ -801,10 +796,7 @@ class _StreakCardState extends State<StreakCard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          streak.toString(),
-                          style: kHeaderStyle,
-                        ),
+                        Text(streak.toString(), style: kHeaderStyle),
                         const SizedBox(width: 8),
                         Icon(
                           Icons.local_fire_department,
@@ -827,9 +819,14 @@ class _StreakCardState extends State<StreakCard> {
               Expanded(
                 flex: 2,
                 child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                  margin: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
+                  ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: colorScheme.onPrimaryFixedVariant),
+                    border: Border.all(
+                      color: colorScheme.onPrimaryFixedVariant,
+                    ),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
@@ -843,23 +840,28 @@ class _StreakCardState extends State<StreakCard> {
                         maxY: maxMinutes + 10,
                         lineBarsData: [
                           LineChartBarData(
-                            spots: tenDayLearnProgress.asMap().entries.map((entry) {
-                              final index = entry.key.toDouble();
-                              final minutes = entry.value['minutes'] as int;
-                              return FlSpot(index, minutes.toDouble());
-                            }).toList(),
+                            spots:
+                                tenDayLearnProgress.asMap().entries.map((
+                                  entry,
+                                ) {
+                                  final index = entry.key.toDouble();
+                                  final minutes = entry.value['minutes'] as int;
+                                  return FlSpot(index, minutes.toDouble());
+                                }).toList(),
                             isCurved: false,
                             isStrokeCapRound: false,
                             barWidth: 0,
                             color: Colors.transparent,
                             dotData: FlDotData(
                               show: true,
-                              getDotPainter: (spot, percent, barData, index) =>
-                                  FlDotCirclePainter(
-                                    radius: 4,
-                                    color: colorScheme.onPrimaryFixedVariant,
-                                    strokeWidth: 0,
-                                  ),
+                              getDotPainter:
+                                  (spot, percent, barData, index) =>
+                                      FlDotCirclePainter(
+                                        radius: 4,
+                                        color:
+                                            colorScheme.onPrimaryFixedVariant,
+                                        strokeWidth: 0,
+                                      ),
                             ),
                             belowBarData: BarAreaData(show: false),
                           ),
