@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:ffi';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:frontend/core/utils/constants.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StarScreen extends StatelessWidget {
   const StarScreen({super.key});
@@ -17,18 +15,19 @@ class StarScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        centerTitle: true,
-        title: const Text(
-          'AbiMind',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {}, // Optional drawer
-        ),
-      ),
+appBar: AppBar(
+  elevation: 0,
+  centerTitle: true,
+  backgroundColor: colorScheme.primaryContainer,
+  title: Image.asset(
+    'assets/logo.png', // Path to your logo
+    height: 40, // Adjust the height as needed
+  ),
+  leading: IconButton(
+    icon: const Icon(Icons.menu),
+    onPressed: () {}, // Optional drawer
+  ),
+),
       body: Container(
         child: Flex(
           direction: Axis.horizontal,
