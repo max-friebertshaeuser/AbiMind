@@ -15,31 +15,29 @@ class StarScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-appBar: AppBar(
-  elevation: 0,
-  centerTitle: true,
-  backgroundColor: colorScheme.primaryContainer,
-  title: Image.asset(
-    'assets/logo.png', // Path to your logo
-    height: 40, // Adjust the height as needed
-  ),
-  leading: IconButton(
-    icon: const Icon(Icons.menu),
-    onPressed: () {}, // Optional drawer
-  ),
-),
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: colorScheme.primaryContainer,
+        title: const Text('AbiMind'),
+        leading: Builder(
+          builder:
+              (context) => IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => Scaffold.of(context).openDrawer(),
+              ),
+        ),
+      ),
+      drawer: const SideBar(), // <- Add this
       body: Container(
         child: Flex(
           direction: Axis.horizontal,
           children: [
             Expanded(
               flex: 1,
-              child: Flex(
-                direction: Axis.vertical,
-                children: [ProgressCard(), StreakCard()],
-              ),
+              child: Column(children: const [ProgressCard(), StreakCard()]),
             ),
-            ExerciseCardList(),
+            Expanded(child: ExerciseCardList()),
           ],
         ),
       ),
@@ -886,3 +884,34 @@ class _StreakCardState extends State<StreakCard> {
     );
   }
 }
+
+class SideBar extends StatelessWidget {
+  const SideBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Container(
+        color: const Color(0xFFF9F4FC), // Soft background
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+          children: [
+            const Text("AbiMind", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 20),
+            const ListTile(title: Text("Profil")),
+            const Divider(),
+            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2024")),
+            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2020")),
+            const Divider(),
+            const Text("Korrekturen", style: TextStyle(fontWeight: FontWeight.bold)),
+            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2022")),
+            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2020")),
+            const Divider(),
+            const ListTile(leading: Icon(Icons.settings), title: Text("Settings")),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
