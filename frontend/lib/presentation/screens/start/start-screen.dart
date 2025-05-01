@@ -19,7 +19,7 @@ class StarScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         backgroundColor: colorScheme.primaryContainer,
-        title: const Text('AbiMind'),
+        title: Image.asset('assets/logo.png', height: 40),
         leading: Builder(
           builder:
               (context) => IconButton(
@@ -931,10 +931,7 @@ class _SideBarState extends State<SideBar> {
             child: ListView(
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
               children: [
-                const Text(
-                  "AbiMind",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                Image.asset('assets/logo.png', height: 30),
                 const SizedBox(height: 20),
                 ListTile(
                   leading: const Icon(Icons.person),
