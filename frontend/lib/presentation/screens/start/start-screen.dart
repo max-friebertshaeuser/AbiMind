@@ -903,7 +903,8 @@ class _SideBarState extends State<SideBar> {
 
   Future<Map<String, dynamic>> loadSidebarData() async {
     final String jsonString = await rootBundle.loadString(
-        'assets/sidebar.json');
+      'assets/sidebar.json',
+    );
     return json.decode(jsonString);
   }
 
@@ -935,28 +936,44 @@ class _SideBarState extends State<SideBar> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
-                const ListTile(
-                    leading: Icon(Icons.person), title: Text("Profil")),
+                ListTile(
+                  leading: const Icon(Icons.person),
+                  title: const Text("Profil"),
+                  onTap: () {
+                    print("Profil was clicked");
+                  },
+                ),
                 const Divider(),
-                ...inProgress.map((item) =>
-                    ListTile(
-                      leading: const Icon(Icons.description),
-                      title: Text(item['name']),
-                    )),
+                ...inProgress.map(
+                  (item) => ListTile(
+                    leading: const Icon(Icons.description),
+                    title: Text(item['name']),
+                    onTap: () {
+                      print("${item['name']} (in progress) was clicked");
+                    },
+                  ),
+                ),
                 const Divider(),
                 const Text(
                   "Korrekturen",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                ...corrected.map((item) =>
-                    ListTile(
-                      leading: const Icon(Icons.description),
-                      title: Text(item['name']),
-                    )),
+                ...corrected.map(
+                  (item) => ListTile(
+                    leading: const Icon(Icons.description),
+                    title: Text(item['name']),
+                    onTap: () {
+                      print("${item['name']} (corrected) was clicked");
+                    },
+                  ),
+                ),
                 const Divider(),
-                const ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text("Settings"),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text("Settings"),
+                  onTap: () {
+                    print("Settings was clicked");
+                  },
                 ),
               ],
             ),
