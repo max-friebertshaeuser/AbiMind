@@ -885,33 +885,84 @@ class _StreakCardState extends State<StreakCard> {
   }
 }
 
-class SideBar extends StatelessWidget {
+class SideBar extends StatefulWidget {
   const SideBar({super.key});
 
   @override
+  _SideBarState createState() => _SideBarState();
+}
+
+class _SideBarState extends State<SideBar> {
+  late Future<Map<String, dynamic>> sidebarData;
+
+  @override
+  void initState() {
+    super.initState();
+    sidebarData = loadSidebarData();
+  }
+
+  Future<Map<String, dynamic>> loadSidebarData() async {
+    final String jsonString = await rootBundle.loadString(
+        'assets/sidebar.json');
+    return json.decode(jsonString);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Container(
-        color: const Color(0xFFF9F4FC), // Soft background
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
-          children: [
-            const Text("AbiMind", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            const ListTile(title: Text("Profil")),
-            const Divider(),
-            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2024")),
-            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2020")),
-            const Divider(),
-            const Text("Korrekturen", style: TextStyle(fontWeight: FontWeight.bold)),
-            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2022")),
-            const ListTile(leading: Icon(Icons.folder), title: Text("Abi 2020")),
-            const Divider(),
-            const ListTile(leading: Icon(Icons.settings), title: Text("Settings")),
-          ],
-        ),
-      ),
+    return FutureBuilder<Map<String, dynamic>>(
+      future: sidebarData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData) {
+          return const Center(child: Text('No data available.'));
+        }
+
+        final data = snapshot.data!;
+        final corrected = data['corrected'] as List<dynamic>;
+        final inProgress = data['in_progress'] as List<dynamic>;
+
+        return Drawer(
+          child: Container(
+            color: const Color(0xFFF9F4FC),
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
+              children: [
+                const Text(
+                  "AbiMind",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                const ListTile(
+                    leading: Icon(Icons.person), title: Text("Profil")),
+                const Divider(),
+                ...inProgress.map((item) =>
+                    ListTile(
+                      leading: const Icon(Icons.description),
+                      title: Text(item['name']),
+                    )),
+                const Divider(),
+                const Text(
+                  "Korrekturen",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                ...corrected.map((item) =>
+                    ListTile(
+                      leading: const Icon(Icons.description),
+                      title: Text(item['name']),
+                    )),
+                const Divider(),
+                const ListTile(
+                  leading: Icon(Icons.settings),
+                  title: Text("Settings"),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
-
