@@ -5,8 +5,8 @@ class Question {
   final String title;
   final String description;
   final String solution;
-  final List<EncodedImage> images;
-  final List<EncodedImage> solutionImages;
+  List<EncodedImage> images;
+  List<EncodedImage> solutionImages;
 
   Question({
     required this.id,

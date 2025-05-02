@@ -7,6 +7,7 @@ class Exercise {
   final String description;
   List<Question>? questions;
   List<EncodedImage>? images;
+  List<EncodedImage>? solutionImages;
 
   Exercise({
     required this.id,
@@ -14,6 +15,7 @@ class Exercise {
     required this.description,
     required this.questions,
     required this.images,
+    required this.solutionImages,
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
@@ -21,12 +23,10 @@ class Exercise {
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      questions: (json['questions'] as List<dynamic>?)
-          ?.map((q) => Question.fromJson(q))
-          .toList() ?? [],
-      images: (json['images'] as List<dynamic>?)
-          ?.map((img) => EncodedImage.fromJson(img))
-          .toList() ?? [],
+      questions: (json['questions'] as List<dynamic>?)?.map((q) => Question.fromJson(q)).toList() ?? [],
+      images: (json['images'] as List<dynamic>?)?.map((img) => EncodedImage.fromJson(img)).toList() ?? [],
+      solutionImages:
+          (json['solutionImages'] as List<dynamic>?)?.map((img) => EncodedImage.fromJson(img)).toList() ?? [],
     );
   }
 

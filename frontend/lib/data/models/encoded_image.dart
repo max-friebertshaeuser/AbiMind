@@ -27,4 +27,9 @@ class EncodedImage {
     final Uint8List bytes = base64Decode(content);
     return Image.memory(bytes);
   }
+
+  @override
+  String toString() {
+    return 'EncodedImage{id: $id, title: $title, content: $content}';
+  }
 }

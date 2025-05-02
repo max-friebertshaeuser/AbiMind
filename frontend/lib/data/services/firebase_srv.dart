@@ -57,18 +57,31 @@ class FirebaseService {
         mandatoryExercises: mandatoryExercises,
       );
     } catch (e) {
-        print('Error fetching exam: $e');
+      print('Error fetching exam: $e');
     }
     return null;
-
   }
 
   Future<List<Question>> fetchQuestions(String examId, String topic, String exerciseId) async {
     try {
       final snapshot =
           await _db.collection('Abitur').doc(examId).collection(topic).doc(exerciseId).collection('questions').get();
-      final data = snapshot.docs.map((q) => Question.fromJson({...q.data(), 'id': q.id})).toList();
-      return data;
+      final questions = snapshot.docs.map((q) => Question.fromJson({...q.data(), 'id': q.id})).toList();
+
+      await Future.wait(
+        questions.map((q) async {
+          q.images = await fetchEncodedImages(
+            _db.collection('Abitur').doc(examId).collection(topic).doc(exerciseId).collection('questions').doc(q.id).collection('images'),
+          );
+
+          q.solutionImages = await fetchEncodedImages(
+            _db.collection('Abitur').doc(examId).collection(topic).doc(exerciseId).collection('questions').doc(q.id).collection('solution_images'),
+
+          );
+        }),
+      );
+
+      return questions;
     } catch (e) {
       print('Error fetching questions: $e');
       return [];
@@ -78,13 +91,24 @@ class FirebaseService {
   Future<List<Exercise>> fetchExercises(String examId, String topic) async {
     try {
       final snapshot = await _db.collection('Abitur').doc(examId).collection(topic).get();
-      final exercises = snapshot.docs.map(
-            (el) => Exercise.fromJson({...el.data(), 'id': el.id}),
-      ).toList() ;
+      final exercises = snapshot.docs.map((el) => Exercise.fromJson({...el.data(), 'id': el.id})).toList();
 
-      await Future.wait(exercises.map((exercise) async {
-        exercise.questions = await fetchQuestions(examId, topic, exercise.id);
-      }));
+      await Future.wait(
+        exercises.map((exercise) async {
+          exercise.questions = await fetchQuestions(examId, topic, exercise.id);
+          exercise.images = await fetchEncodedImages(
+            _db.collection('Abitur').doc(examId).collection(topic).doc(exercise.id).collection('images'),
+          );
+
+          exercise.solutionImages = await fetchEncodedImages(
+            _db.collection('Abitur')
+                .doc(examId)
+                .collection(topic)
+                .doc(exercise.id)
+                .collection('solution_images'),
+          );
+        }),
+      );
 
       return exercises;
     } catch (e) {
@@ -93,8 +117,21 @@ class FirebaseService {
     }
   }
 
+  Future<List<EncodedImage>> fetchEncodedImages(CollectionReference collection) async {
+    try {
+      final snapshot = await collection.get();
 
-// Future<EncodedImage> getImage(String imageId) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+        return EncodedImage(id: doc.id, title: data['title'] ?? '', content: data['content'] ?? '');
+      }).toList();
+    } catch (e) {
+      print('Error fetching images from ${collection.path}: $e');
+      return [];
+    }
+  }
+
+  // Future<EncodedImage> getImage(String imageId) {
   //   final val = _db.collection('Abitur').doc('OHLESyc19sRHmLTVOUji').collection('analysis').doc('lNPQGMEMrjUfdS7vsuxg').collection(collectionPath).get().then((doc) {
   //     if (doc.exists) {
   //       return EncodedImage.fromJson(doc.data()!);
@@ -106,4 +143,3 @@ class FirebaseService {
   //   return val;
   // }
 }
-
