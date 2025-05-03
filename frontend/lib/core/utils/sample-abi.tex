@@ -1,0 +1,113 @@
+\documentclass[10pt]{article}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\graphicspath{ {./images/} }
+
+\title{Hauptprüfung Abiturprüfung 2024 - Leistungsfach Baden-Württemberg }
+
+\author{Alexander Schwarz\\
+www.mathe-aufgaben.com}
+\date{}
+
+
+\begin{document}
+\maketitle
+
+
+\section*{Aufgabe P1: (2 BE und 3 BE)}
+Die Abbildung zeigt den Graphen $G_{f}$ der in $\mathbb{R}$ definierten Funktion $f$ mit $f(x)=2 \cdot \sin \left(\frac{1}{2} x\right)$.\\
+\includegraphics[max width=\textwidth, center]{2025_04_10_061d85015d58a3a45928g-2}\\
+a) Beurteilen Sie mithilfe der Abbildung, ob der Wert des Integrals $\int_{-2}^{8} f(x) d x$ negativ ist.\\
+b) Weisen Sie rechnerisch nach, dass die folgende Aussage zutriff: Die Tangente an $\mathrm{G}_{\mathrm{f}}$ im Koordinatenursprung ist die Gerade durch die Punkte (-1|-1) und (1|1).
+
+\section*{Aufgabe P2: (2 BE und 3 BE)}
+$G_{f}$ ist der Graph der Funktion $f$ mit $f(x)=e^{2 x-1}$.\\
+a) $G_{f}$ besitzt einen Schnittpunkt mit einer Koordinatenachse und eine Asymptote.
+
+Geben Sie die Koordinaten dieses Schnittpunkts sowie eine Gleichung dieser Asymptote an.\\
+b) $\mathrm{G}_{\mathrm{g}}$ ist der Graph der Funktion g mit $\mathrm{g}(\mathrm{x})=\mathrm{e}^{\frac{1}{4}-\frac{1}{2} \mathrm{x}}$. Es gilt $\mathrm{g}^{\prime}\left(\frac{1}{2}\right)=-\frac{1}{2}$.
+
+Zeigen Sie, dass sich $G_{f}$ und $G_{g}$ an der Stelle $x_{0}=\frac{1}{2}$ orthogonal schneiden.
+
+\section*{Aufgabe P3: (2 BE und 3 BE)}
+Gegeben ist die Schar der Ebenen $E_{a}: 2 a x_{1}-4 x_{2}+(a-2) \cdot x_{3}=12$ mit $a \in \mathbb{R}$.\\
+a) Ermitteln Sie denjenigen Wert von $a$, für den $E_{a}$ parallel zur Gerade mit der
+
+Gleichung $\vec{x}=\left(\begin{array}{l}0 \\ 1 \\ 1\end{array}\right)+t \cdot\left(\begin{array}{c}-1 \\ 0 \\ 1\end{array}\right)$ mit $t \in \mathbb{R}$ verläuft.\\
+b) Prüfen Sie, ob die Ebene mit der Gleichung $6 x_{1}-8 x_{2}+x_{3}=24$ zur Schar gehört.
+
+\section*{Aufgabe P4: (2 BE und 3 BE)}
+Ein Glücksrad ist in 20 gleich große Sektoren unterteilt, die entweder blau oder gelb eingefärbt sind. Das Glücksrad wird 100-mal gedreht. Die binomialverteilte Zufallsgröße $X$ beschreibt die Anzahl, wie oft dabei die Farbe „Blau", die binomialverteilte Zufallsgröße Y, wie oft dabei die Farbe „Gelb" erzielt wird.\\
+a) Begründen Sie, dass $X$ und $Y$ die gleiche Standardabweichung haben.\\
+b) Der Erwartungswert von X ist ganzzahlig. Die Abbildung zeigt Werte der Wahrscheinlichkeitsverteilung von X .\\
+\includegraphics[max width=\textwidth, center]{2025_04_10_061d85015d58a3a45928g-3}
+
+Bestimmen Sie die Anzahl der blauen Sektoren des Glücksrads.
+
+\section*{Lösungen}
+\section*{Aufgabe P1:}
+a) Das Integral beschreibt den orientierten Inhalt der Fläche, die der Graph $G_{f}$, die $x$-Achse und die senkrechten Geraden $x=-2$ und $x=8$ einschließen.\\
+Da der Flächeninhalt oberhalb der $x$-Achse größer ist als der Flächeninhalt unterhalb der x-Achse, ist der Wert des Integrals positiv, also nicht negativ.\\
+b) Tangentengleichung im Ursprung $\mathrm{O}(0 \mid 0)$ :
+
+Allgemeine Tangentengleichung: $y=f^{\prime}(u) \cdot(x-u)+f(u)$\\
+Einsetzen der Berührstelle $u=0: y=f^{\prime}(0) \cdot(x-0)+f(0)$\\
+Es gilt $f(0)=2 \cdot \sin (0)=0$.\\
+Wegen $f^{\prime}(x)=2 \cdot \cos \left(\frac{1}{2} x\right) \cdot \frac{1}{2}=\cos \left(\frac{1}{2} x\right)$ gilt $f^{\prime}(0)=\cos (0)=1$.\\
+Gleichung der Tangente: $y=1 \cdot(x-0)+0 \Leftrightarrow y=x$\\
+Da die Gerade $y=x$ durch die Punkte (-1|-1) und (1|1) verläuft ist nachgewiesen, dass die Aussage richtig ist.
+
+\section*{Aufgabe P2:}
+a) $G_{f}$ schneidet nicht die x-Achse, somit ist nach dem Schnittpunkt mit der y-Achse gefragt.\\
+Es gilt $f(0)=e^{-1}$, daher lautet der Schnittpunkt $S_{y}\left(0 \mid e^{-1}\right)$\\
+Die Gleichung der (waagrechten) Asymptote lautet $\mathrm{y}=0$.\\
+Zusatzhinweis: Für $x \rightarrow-\infty$ strebt $\mathrm{e}^{2 \mathrm{x}-1} \rightarrow 0$.\\
+Daher existiert die waagrechte Asymptote für $x \rightarrow-\infty$.\\
+b) Bedingung für den senkrechten Schnitt der Schaubilder an der Stelle $x_{0}=\frac{1}{2}$ :\\
+(1) $f\left(\frac{1}{2}\right)=g\left(\frac{1}{2}\right)$ (gemeinsamer Punkt)\\
+(2) $f^{\prime}\left(\frac{1}{2}\right) \cdot g^{\prime}\left(\frac{1}{2}\right)=-1 \quad$ (Tangenten bei $x_{0}=\frac{1}{2}$ sind orthogonal zueinander)
+
+Es gilt $f\left(\frac{1}{2}\right)=g\left(\frac{1}{2}\right)=e^{0}=1$, daher ist (1) erfüllt.\\
+Wegen $f^{\prime}(x)=2 e^{2 x-1}$ gilt $f^{\prime}\left(\frac{1}{2}\right)=2 e^{0}=2$.
+
+Daraus folgt $f^{\prime}\left(\frac{1}{2}\right) \cdot g^{\prime}\left(\frac{1}{2}\right)=2 \cdot\left(-\frac{1}{2}\right)=-1$, daher ist (2) erfüllt.\\
+Daraus folgt, dass sich die Schaubilder bei $x_{0}=\frac{1}{2}$ orthogonal schneiden.
+
+\section*{Aufgabe P3:}
+a) Eine Gerade ist parallel zu einer Ebene, wenn der Richtungsvektor der Gerade orthogonal zum Normalenvektor der Ebene ist.
+
+Bedingung: $\left(\begin{array}{c}2 a \\ -4 \\ a-2\end{array}\right) \cdot\left(\begin{array}{c}-1 \\ 0 \\ 1\end{array}\right)=0 \Leftrightarrow-2 a+0+a-2=0 \Leftrightarrow a=-2$\\
+b) Die Ebene kann nur dann zur Schar gehören, wenn die Normalenvektoren der Ebenen parallel (also Vielfache) zueinander sind:
+
+Bedingung: $\left(\begin{array}{c}2 a \\ -4 \\ a-2\end{array}\right)=k \cdot\left(\begin{array}{c}6 \\ -8 \\ 1\end{array}\right)$\\
+Aus Zeile 2 folgt $\mathrm{k}=0,5$.\\
+Aus Zeile 1 folgt $\mathrm{a}=1,5$.\\
+Aus Zeile 3 folgt $a=2,5$ und damit widersprüchlich zu $a=1,5$.\\
+Da es keine Werte für $k$ und a gibt, dass die Bedingung erfüllt wird, gehört die angegebene Ebene nicht zur Schar.
+
+\section*{Aufgabe P4:}
+a) Die Wahrscheinlichkeit für „Blau" sei p.
+
+Die Wahrscheinlichkeit für „Gelb" ist dann 1 - p.\\
+X ist binomialverteilt mit $\mathrm{n}=100$ und Trefferwahrscheinlichkeit p .\\
+Standardabweichung von $X: \sqrt{100 \cdot p \cdot(1-p)}$
+
+Y ist binomialverteilt mit $\mathrm{n}=100$ und Trefferwahrscheinlichkeit 1-p.\\
+Standardabweichung von $Y: \sqrt{100 \cdot(1-p) \cdot(1-(1-p))}=\sqrt{100 \cdot(1-p) \cdot p}$\\
+Damit stimmen die Standardabweichungen von $X$ und $Y$ überein.\\
+b) Der Erwartungswert von X ist 75 , da sich dort die höchste Säule befindet.
+
+Daraus folgt: $E(X)=n \cdot p \Leftrightarrow 75=100 \cdot p \Leftrightarrow p=\frac{3}{4}$\\
+Da die Trefferwahrscheinlichkeit $\frac{3}{4}$ ist, gibt es $20 \cdot \frac{3}{4}=15$ blaue Sektoren.
+
+
+\end{document}
