@@ -43,7 +43,6 @@ class HomeScreen extends StatelessWidget {
               label: const Text('Statistics'),
               icon: const Icon(Icons.line_axis_outlined),
             ),
-            ),
             ElevatedButton.icon(
               onPressed: () async {
                 print(await FirebaseService().getExam('OHLESyc19sRHmLTVOUji'));
