@@ -20,7 +20,7 @@ class _RegistrationFlowState extends State<RegistrationFlow> {
   String phoneNumber = '';
   String verificationCode = '';
   String username = '';
-  DateTime birthday = DateTime.now();
+  DateTime examDay = DateTime.now();
   RegExp phoneNumberRegex = RegExp(r'\+[0-9]');
   String number = '';
   String country = '';
@@ -117,7 +117,7 @@ class _RegistrationFlowState extends State<RegistrationFlow> {
     }
 
     handleBirthday(value) {
-      birthday = value;
+      examDay = value;
       Navigator.removeRouteBelow(context, ModalRoute.of(context)!);
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
@@ -159,7 +159,7 @@ class _RegistrationFlowState extends State<RegistrationFlow> {
           ),
           RegistrationFlow3(handleUsername: handleUsername, username: username),
           RegistrationFlow4(
-            handleBirthday: handleBirthday,
+            handleExamDay: handleBirthday,
           ),
         ],
       ),
