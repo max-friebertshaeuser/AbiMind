@@ -3,28 +3,26 @@ import 'package:flutter/material.dart';
 import '../../login/flow-content.dart';
 
 class RegistrationFlow4 extends StatefulWidget {
-  const RegistrationFlow4({super.key, required this.handleBirthday});
+  const RegistrationFlow4({super.key, required this.handleExamDay});
 
-  final void Function(DateTime) handleBirthday;
+  final void Function(DateTime) handleExamDay;
 
   @override
   State<RegistrationFlow4> createState() => _RegistrationFlow4State();
 }
 
 class _RegistrationFlow4State extends State<RegistrationFlow4> {
-  DateTime birthday = DateTime.now().subtract(const Duration(days: 365 * 18));
-  RegExp birthdayRegex = RegExp(r'[0-9]{4}-[0-9]{2}-[0-9]{2}');
+  DateTime examDay = DateTime.now().subtract(const Duration(days: 365 * 18));
+  RegExp dateRegex = RegExp(r'[0-9]{4}-[0-9]{2}-[0-9]{2}');
   String? error;
 
-  void checkBirthday(String value) {
-    if (birthdayRegex.hasMatch(value) &&
-        DateTime.parse(value).isBefore(
-            DateTime.now().subtract(const Duration(days: 365 * 18)))) {
-      birthday = DateTime.parse(value);
+  void checkDate(String value) {
+    if (dateRegex.hasMatch(value)) {
+      examDay = DateTime.parse(value);
       setState(() {
         error = null;
       });
-      widget.handleBirthday(birthday);
+      widget.handleExamDay(examDay);
     } else {
       setState(() {
         error = "Please enter a valid date";
@@ -35,33 +33,32 @@ class _RegistrationFlow4State extends State<RegistrationFlow4> {
   @override
   Widget build(BuildContext context) {
     return FlowContent(
-      title: 'Sorry about the legal stuff',
+      title: 'Mathe Abitur Datum',
       description:
-          'For legal reasons we need your birthday. \n Just to make sure you\'re old enough to use achievd',
+          'Um deinen optimalen Lernplan zu erstellen, benötigen wir dein Mathe Abitur Datum.',
       buttonText: 'Let\'s goooo!',
-      callback: () => widget.handleBirthday(birthday),
+      callback: () => widget.handleExamDay(examDay),
       content: Column(
         children: [
           TextField(
-            onChanged: (value) => birthday = DateTime.parse(value),
-            onSubmitted: (value) => widget.handleBirthday(birthday),
+            onChanged: (value) => examDay = DateTime.parse(value),
+            onSubmitted: (value) => widget.handleExamDay(examDay),
             controller: TextEditingController(
-                text: birthday.toString().substring(0, 10)),
+                text: examDay.toString().substring(0, 10)),
             autofocus: false,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              labelText: 'Your birthday',
+              labelText: 'Mathe Abitur Datum ',
               helperText: 'YYYY-MM-DD',
             ),
           ),
           CalendarDatePicker(
-            //todo: set min date
             initialDate:
                 DateTime.now().subtract(const Duration(days: 365 * 18)),
-            firstDate: DateTime(1900),
-            lastDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+            firstDate: DateTime.now(),
+            lastDate: DateTime.now().add(const Duration(days: 365)),
             onDateChanged: (value) {
-              birthday = value;
+              examDay = value;
               setState(() {});
             },
           )

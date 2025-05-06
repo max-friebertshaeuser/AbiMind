@@ -1,0 +1,46 @@
+[
+  {
+    "currentYear": 2024,
+    "solvedPercentage": 73,
+    "solvedPercentageNumeric": 0.73,
+    "stochastikDone": 7,
+    "stochastikTotal": 10,
+    "analysisDone": 8,
+    "analysisTotal": 10,
+    "geometrieDone": 9,
+    "geometrieTotal": 10
+  },
+  {
+    "currentYear": 2023,
+    "solvedPercentage": 82,
+    "solvedPercentageNumeric": 0.82,
+    "stochastikDone": 8,
+    "stochastikTotal": 10,
+    "analysisDone": 9,
+    "analysisTotal": 10,
+    "geometrieDone": 10,
+    "geometrieTotal": 10
+  },
+  {
+    "currentYear": 2022,
+    "solvedPercentage": 68,
+    "solvedPercentageNumeric": 0.68,
+    "stochastikDone": 7,
+    "stochastikTotal": 10,
+    "analysisDone": 7,
+    "analysisTotal": 10,
+    "geometrieDone": 9,
+    "geometrieTotal": 10
+  },
+  {
+    "currentYear": 2021,
+    "solvedPercentage": 55,
+    "solvedPercentageNumeric": 0.55,
+    "stochastikDone": 5,
+    "stochastikTotal": 10,
+    "analysisDone": 6,
+    "analysisTotal": 10,
+    "geometrieDone": 8,
+    "geometrieTotal": 10
+  }
+]
