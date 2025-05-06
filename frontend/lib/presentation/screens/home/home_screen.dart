@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/data/services/firebase_srv.dart';
+import 'package:frontend/presentation/screens/exercise/exercise_screen.dart';
 import 'package:frontend/routes/routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.exercise);
+                Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: '23qmCgsahtHIymBCfxxm'));
               },
               icon: const Icon(Icons.calculate),
               label: const Text('Start New Exercise'),
@@ -45,7 +46,7 @@ class HomeScreen extends StatelessWidget {
             ),
             ElevatedButton.icon(
               onPressed: () async {
-                print(await FirebaseService().getExam('OHLESyc19sRHmLTVOUji'));
+                print(await FirebaseService.getExam('23qmCgsahtHIymBCfxxm'));
               },
               icon: const Icon(Icons.shuffle),
               label: const Text('Random'),

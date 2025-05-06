@@ -79,3 +79,22 @@ final maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
 final minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
 
 const String kSampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
+
+const String kSampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
+    'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
+    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. '
+    'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. '
+    'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+const String kAnalysis = 'analysis';
+const String kGeometry = 'geometry';
+const String kStochastic = 'stochastic';
+const String kMandatory = 'mandatory';
+const String kExam = 'exams';
+const String kAbitur = 'Abitur'; //todo remove
+const String kExercises = 'exercises';
+const String kQuestion = 'question';
+const String kUser = 'user';
+const String kImages = 'images';
+const String kSolutionImages = 'solution_images';
+const String kAnswer = 'answer';
