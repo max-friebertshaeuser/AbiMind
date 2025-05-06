@@ -5,15 +5,16 @@ const kAchievdHeaderStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontFamily: 'Montserrat',
 );
-
 const kHeaderStyle = TextStyle(fontSize: 24, fontFamily: 'Montserrat');
-
 const percentageStyle = TextStyle(
   fontSize: 32,
   fontWeight: FontWeight.bold,
   color: Color(0xFF584178),
 );
-
+const sideBarTextStyle = TextStyle(
+  fontSize: 17,
+  fontWeight: FontWeight.bold
+);
 const smallTextStyle = TextStyle(fontSize: 11, color: Color(0xFF584178));
 const lableTextStyle = TextStyle(color: Colors.white, fontSize: 12);
 var middleTextStyle = TextStyle(fontSize: 15);
@@ -22,12 +23,12 @@ const whiteColor = Color(0xFFFFFFFF);
 const flameColor = Color(0xFFFFAB91);
 
 final Map<String, Color> tagColors = {
-  'Finished': Colors.green.shade200,         // Soft mint green
-  'Geometrie': Colors.blueGrey.shade400,     // Muted slate blue
-  'Analysis': Colors.deepOrange.shade200,    // Soft orange
-  'Keine Hilfsmittel': Colors.red.shade200,  // Gentle red
-  'Alle Hilfsmittel': Colors.teal.shade200,  // Calm turquoise
-  'Statistics': Colors.deepPurple.shade200,  // Muted violet
+  'Finished': Colors.green.shade200, // Soft mint green
+  'Geometrie': Colors.blueGrey.shade400, // Muted slate blue
+  'Analysis': Colors.deepOrange.shade200, // Soft orange
+  'Keine Hilfsmittel': Colors.red.shade200, // Gentle red
+  'Alle Hilfsmittel': Colors.teal.shade200, // Calm turquoise
+  'Statistics': Colors.deepPurple.shade200, // Muted violet
 };
 
 
