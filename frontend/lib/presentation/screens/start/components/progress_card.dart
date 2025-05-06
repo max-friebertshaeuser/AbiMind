@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-import '../../../core/utils/constants.dart';
+import '../../../../core/utils/constants.dart';
 
 class ProgressCard extends StatefulWidget {
   const ProgressCard({Key? key}) : super(key: key);
@@ -267,6 +267,49 @@ class _ProgressCardState extends State<ProgressCard> {
                   );
                 }).toList(),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+class CategoryProgress extends StatelessWidget {
+  final String title;
+  final int done;
+  final int total;
+
+  const CategoryProgress({
+    super.key,
+    required this.title,
+    required this.done,
+    required this.total,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double progress = done / total;
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      margin: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(title, style: smallTextStyle),
+              const Spacer(),
+              Text("$done/$total", style: smallTextStyle),
+            ],
+          ),
+          const SizedBox(height: 2),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              backgroundColor: colorScheme.surfaceContainerHigh,
+              color: colorScheme.onPrimaryFixedVariant,
             ),
           ),
         ],
