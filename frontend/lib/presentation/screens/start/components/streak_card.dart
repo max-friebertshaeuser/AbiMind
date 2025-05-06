@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/presentation/screens/start/start-screen.dart';
 
-import '../../../core/utils/constants.dart';
+import '../../../../core/utils/constants.dart';
 
 class StreakCard extends StatefulWidget {
   const StreakCard({super.key});
