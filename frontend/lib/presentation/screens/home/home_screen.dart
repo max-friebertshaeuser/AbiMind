@@ -50,6 +50,14 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.shuffle),
               label: const Text('Random'),
             ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.start);
+              },
+              label: const Text('Statistics'),
+              icon: const Icon(Icons.line_axis_outlined),
+            ),
           ],
         ),
       ),
