@@ -941,6 +941,14 @@ class _SideBarState extends State<SideBar> {
                   },
                 ),
                 const Divider(),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    "Continue",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+
                 ...inProgress.map(
                   (item) => ListTile(
                     leading: const Icon(Icons.description),
@@ -951,9 +959,12 @@ class _SideBarState extends State<SideBar> {
                   ),
                 ),
                 const Divider(),
-                const Text(
-                  "Korrekturen",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    "Correction",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 ...corrected.map(
                   (item) => ListTile(
