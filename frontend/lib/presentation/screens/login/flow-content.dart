@@ -25,10 +25,7 @@ class FlowContent extends StatelessWidget {
       appBar: AppBar(
         leading: first ? null : const SizedBox(),
         centerTitle: true,
-        title: const Text(
-          'AbiMind',
-          style: kAchievdHeaderStyle,
-        ),
+        title: Image.asset('assets/logo.png', height: 40),
       ),
       body: SafeArea(
         child: Column(
