@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   percent_indicator: ^4.2.2
   fl_chart: ^0.66.1
-  cloud_firestore: ^5.0.0
 
 
 

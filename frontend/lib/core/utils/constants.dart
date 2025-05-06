@@ -77,3 +77,5 @@ final minutesList =
     tenDayLearnProgress.map((entry) => entry['minutes'] as int).toList();
 final maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
 final minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
+
+const String kSampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
