@@ -937,7 +937,7 @@ class _SideBarState extends State<SideBar> {
                   leading: const Icon(Icons.person),
                   title: const Text("Profil"),
                   onTap: () {
-                    print("Profil was clicked");
+                    print("Profile was clicked");
                   },
                 ),
                 const Divider(),
@@ -945,7 +945,7 @@ class _SideBarState extends State<SideBar> {
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     "Continue",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                      style: sideBarTextStyle
                   ),
                 ),
 
@@ -963,7 +963,7 @@ class _SideBarState extends State<SideBar> {
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     "Correction",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: sideBarTextStyle
                   ),
                 ),
                 ...corrected.map(
