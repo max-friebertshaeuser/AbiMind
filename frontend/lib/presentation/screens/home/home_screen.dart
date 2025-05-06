@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/data/services/firebase_srv.dart';
 import 'package:frontend/routes/routes.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -34,7 +35,14 @@ class HomeScreen extends StatelessWidget {
                     context, AppRoutes.welcome, (route) => false);
               },
               icon: const Icon(Icons.logout), label: const Text('Log out'),
-            )
+            ),
+            ElevatedButton.icon(
+              onPressed: () async {
+                print(await FirebaseService().getExam('OHLESyc19sRHmLTVOUji'));
+              },
+              icon: const Icon(Icons.shuffle),
+              label: const Text('Random'),
+            ),
           ],
         ),
       ),

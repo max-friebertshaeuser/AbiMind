@@ -5,6 +5,7 @@ import firebase_admin
 from firebase_admin import credentials, storage, firestore
 from pathlib import Path
 import base64
+import uuid
 
 
 def init_firebase():
@@ -41,30 +42,113 @@ def save_exercise_to_firestore(db, fach: str, jahr: str, teil: str, aufgabe_name
         }
     }, merge=True)
 
+def image_to_dict(image_path: Path):
+    with open(image_path, "rb") as f:
+        content = base64.b64encode(f.read()).decode("utf-8")
+    return {
+        "uid": str(uuid.uuid4()),
+        "title": image_path.name,
+        "content": content
+    }
+
+def save_to_firestore_structure(db, subject: str, year: str, topic: str, exercise_data, exam_uid):
+    collection_ref = db.collection("Abitur")
+    doc_ref = collection_ref.document(exam_uid)
 
 
-def find_image_paths_from_latex(latex_text: str, tex_file_path: str):
+    for exercise in exercise_data:
+        aufgabe_name = exercise[0][0]
+        aufgabe_text = exercise[0][1]
+        aufgabe_bilder = exercise[0][2]
+
+        aufgabe_uid = str(uuid.uuid4())
+        aufgabe_entry = {
+            "uid": aufgabe_uid,
+            "title": aufgabe_name,
+            "description": aufgabe_text,
+            "images": {},
+            "questions": {}
+        }
+
+        # Encode Aufgabe-Bilder
+        for img_path in aufgabe_bilder:
+            img = image_to_dict(img_path)
+            aufgabe_entry["images"][img["uid"]] = {
+                "title": img["title"],
+                "content": img["content"]
+            }
+
+        # Fragen + Lösungen
+        for part in exercise[1:]:
+            question_title = part[0]
+            question_text = part[1]
+            question_images = part[2]
+            solution_text = part[3]
+            solution_images = part[4]
+
+            question_uid = str(uuid.uuid4())
+            question_entry = {
+                "uid": question_uid,
+                "title": question_title,
+                "description": question_text,
+                "images": {},
+                "solution": {
+                    "description": solution_text,
+                    "images": {}
+                }
+            }
+
+            for img_path in question_images:
+                img = image_to_dict(img_path)
+                question_entry["images"][img["uid"]] = {
+                    "title": img["title"],
+                    "content": img["content"]
+                }
+
+            for img_path in solution_images:
+                img = image_to_dict(img_path)
+                question_entry["solution"]["images"][img["uid"]] = {
+                    "title": img["title"],
+                    "content": img["content"]
+                }
+
+            aufgabe_entry["questions"][question_uid] = question_entry
+
+        doc_ref.set({
+            year: year,
+            subject: subject,
+            topic: {
+                aufgabe_uid: aufgabe_entry
+            }
+        }, merge=True)
+
+
+def find_and_strip_images(latex_text: str, tex_file_path: str) -> tuple[str, list[Path]]:
+
     image_paths = []
+    tex_dir = Path(tex_file_path).parent
 
-    tex_dir = Path(tex_file_path).parent  # Ordner, in dem die .tex-Datei liegt
+    pattern = r'(\\includegraphics[^\{]*\{(?!https?://)([^}]+)\})'
 
-    # Regex: Nur lokale Bilder, keine URLs
-    pattern = r'\\includegraphics[^\{]*\{(?!https?://)([^}]+)\}'
-
-    for match in re.finditer(pattern, latex_text):
-        image_name = match.group(1)
-        image_path_jpg = tex_dir.joinpath("images", (image_name + ".jpg"))
-        image_path_png = tex_dir.joinpath("images", (image_name + ".png"))
+    def replacer(match):
+        image_name = match.group(2)
+        image_path_jpg = tex_dir.joinpath("images", f"{image_name}.jpg")
+        image_path_png = tex_dir.joinpath("images", f"{image_name}.png")
 
         if image_path_jpg.exists():
             image_paths.append(image_path_jpg)
         elif image_path_png.exists():
             image_paths.append(image_path_png)
         else:
-            print(f"Bilddatei nicht gefunden: {image_name}")
+            print(f"Bild nicht gefunden: {image_name}")
             raise FileNotFoundError
 
-    return image_paths
+        return ""  # entfernt das includegraphics aus dem Text
+
+    # Text bereinigen + Bilderpfade sammeln
+    cleaned_text = re.sub(pattern, replacer, latex_text)
+
+    return cleaned_text, image_paths
 
 
 def get_year(path_name: str):
@@ -76,21 +160,52 @@ def get_year(path_name: str):
     return year
 
 
-def get_task(path_name: str):
+def get_topic(path_name: str):
     task = ""
     if "Pflichtaufgaben" in path_name or "Wahlaufgabe" in path_name or "Pflichtteil" in path_name:
-        task = "Pflichtteil"
+        task = "mandatory"
 
     if "Analysis" in path_name:
-        task = "Analysis"
+        task = "analysis"
 
     elif "Analytische_Geometrie" in path_name or "Analyt_Geometrie" in path_name:
-        task = "Geometrie"
+        task = "geometry"
 
     elif "Stochastik" in path_name:
-            task = "Stochastik"
+            task = "stochastic"
 
     return task
+
+
+def split_subquestions(latex_text: str, exercise_name: str):
+    pattern = r'(?:^|\n)\s*([a-zA-Z]\))'
+
+    # Split by pattern, but keep delimiters
+    parts = re.split(pattern, latex_text)
+
+    subquestions = []
+    current_title = None
+    current_content = ""
+
+    if parts[0].strip():
+        subquestions.append([exercise_name, parts[0].strip()])
+
+    for part in parts:
+        if not part.strip():
+            continue
+        # part looks like "a)", "(a)" or "\textbf{a}"
+        if re.match(r'^[a-zA-Z]\)$', part.strip()):
+            if current_title:
+                subquestions.append([current_title, current_content.strip()])
+            current_title = re.sub(r'[\\\{\}\(\)]', '', part).replace("textbf", "").strip()
+            current_content = ""
+        else:
+            current_content += part
+
+    if current_title:
+        subquestions.append([current_title, current_content.strip()])
+
+    return subquestions
 
 
 def split_into_exercises(latex_text: str, path_name: str):
@@ -101,42 +216,61 @@ def split_into_exercises(latex_text: str, path_name: str):
     annex: bool = False
     name = ""
 
-
     parts = re.split(r'(\\section\*\{[^\}]*\})', latex_text)
 
     for part in parts:
 
-        first_paths = []
-        second_paths = []
-        annex_paths = []
+        questions = split_subquestions(part, name)
+        sub_exercises = []
+        question_pictures = []
 
-        if "includegraphics" in part:
-            paths = find_image_paths_from_latex(part, path_name)
+        if first or second or annex:
+
+            if not annex:
+                for question in questions:
+                    question_pictures = []
+                    if "includegraphics" in question[1]:
+                        new_text = find_and_strip_images(question[1], path_name)
+                        question[1] = new_text[0]
+                        question_pictures.extend(new_text[1])
+
+                    if first:
+                        sub_exercises.append([question[0], question[1], question_pictures])
+
+                    if second:
+                        sub_exercises.append([question[0], question[1], question_pictures])
+
             if first:
-                first_paths = paths
+                exercises.append(sub_exercises)
+
             if second:
-                second_paths = paths
+                for exercise in exercises:
+                    if exercise[0][0] == name:
+                        if len(exercise) > 1:
+                            for i in range(len(exercise)-1):
+                                try:
+                                    exercise[i+1].extend([sub_exercises[i][1], sub_exercises[i][2]])
+                                except IndexError:
+                                    print("warum")
+                            break
+                        else:
+                            # wenn keine Unterpunkte (a, b...) existieren wird einfach nur die Loesung abgespeichert
+                            try:
+                                exercise.append([name, "", [],sub_exercises[0][1], sub_exercises[0][2]])
+                            except IndexError:
+                                print("warum2")
+                            break
+
             if annex:
-                annex_paths = paths
+                for exercise in exercises:
+                    if exercise[0][0] == name:
+                        new_text = find_and_strip_images(part, path_name)
+                        exercise[0][2].extend(new_text[1])
+                        break
 
-        if first:
-            exercises.append([name, part, first_paths])
             first = False
-
-        if second:
-            for exercise in exercises:
-                if exercise[0] == name:
-                    exercise.append(part)
-                    exercise.append(second_paths)
             second = False
-
-        if annex:
-            for exercise in exercises:
-                if exercise[0] == name:
-                    exercise[1] += "\n" + part
-                    exercise[2].extend(annex_paths)
-                    annex = False
-                    break
+            annex = False
 
         match = re.match(r'\\section\*\{(Aufgabe(?: [IVXLCDM]+)?(?: [A-Z])?(?: ?[WP]?\d+(?:\.\d+)?)?)', part)
         if match:
@@ -169,17 +303,26 @@ def main():
     # array contains tuples ("Mathe", "2024", "Pflichtteil/Analysis/Analytische Geometrie/Stochastik", Aufgabe, AufgabenText, Loesung), [Bilder]? noch offen
     array = []
 
+    uid_dict = {}
+
     for exam in exams:
         year = ""
-        subject = "Mathe"
-        task = ""
+        subject = "math"
+        topic = ""
         latex_text = ""
+        exam_uid = ""
 
         exam = exam.as_posix()
 
         year = get_year(exam)
 
-        task = get_task(exam)
+        if uid_dict.get(year):
+            exam_uid = uid_dict[year]
+        else:
+            exam_uid = str(uuid.uuid4())
+            uid_dict[year] = exam_uid
+
+        topic = get_topic(exam)
 
         with open(exam, "r", encoding="utf-8") as f:
             latex_text = f.read()
@@ -187,37 +330,11 @@ def main():
         exercises = split_into_exercises(latex_text, exam)
 
         for exercise in exercises:
-            latex_exercise = r"""\documentclass[10pt]{article}
-\usepackage[ngerman]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage[version=4]{mhchem}
-\usepackage{stmaryrd}
-\usepackage{bbold}
-\usepackage{graphicx}
-\usepackage[export]{adjustbox}
+            print(exercise)
 
-\begin{document}
-""" + "\\section*{" + year + ", " + exercise[0] + "}\n" + exercise[1] + "\n\\end{document}"
-
-            aufgabe_bildnamen = [path.name for path in exercise[2]]
-            loesung_bildnamen = [path.name for path in exercise[4]]
-
-            array.append((subject, year, task, exercise[0], latex_exercise, exercise[2], aufgabe_bildnamen, exercise[3], exercise[4], loesung_bildnamen))
+        save_to_firestore_structure(db, subject, year, topic, exercises, exam_uid)
 
 
-    for entry in array:
-        print(entry)
-        # print("\n")
-        # print(entry[4])
-
-    for entry in array:
-        fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade, aufgabe_bildnamen, loesung_text, loesung_bild_pfade, loesung_bildnamen = entry
-        save_exercise_to_firestore(db, fach, jahr, teil, aufgabe_name, aufgabe_text, aufgabe_bild_pfade,
-                                   aufgabe_bildnamen, loesung_text, loesung_bild_pfade, loesung_bildnamen)
 
 
 if __name__ == '__main__':
