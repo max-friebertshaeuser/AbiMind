@@ -16,7 +16,7 @@ class Exercise {
     this.id = '',
     this.title = '',
     this.description = '',
-    this.questions,
+    this.questions = const [],
     this.images,
     this.solutionImages,
     this.answer = const [],
