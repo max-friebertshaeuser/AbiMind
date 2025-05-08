@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/models/exercise.dart';
 import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -19,7 +20,7 @@ class ProgressCard extends StatefulWidget {
 
 class _ProgressCardState extends State<ProgressCard> {
   List<Exam> statisticsData = [];
-  late Exam selectedStatistic;
+  late Exam selectedExam;
   bool isLoading = true;
 
   @override
@@ -28,23 +29,23 @@ class _ProgressCardState extends State<ProgressCard> {
     loadStatistics();
   }
 
-Future<void> loadStatistics() async {
-        final exams = await FirebaseService.getExams();
-        setState(() {
-          statisticsData = exams;
-          selectedStatistic = exams.firstWhere(
-            (exam) => exam.year == 2025,
-            orElse: () => exams.first,
-          );
-          isLoading = false;
-        });
-      }
+  Future<void> loadStatistics() async {
+    final exams = await FirebaseService.getExams();
+    setState(() {
+      statisticsData = exams;
+      selectedExam = exams.firstWhere(
+        (exam) => exam.year == 2025,
+        orElse: () => exams.first,
+      );
+      isLoading = false;
+    });
+  }
 
-      void selectStatistic(Exam stat) {
-        setState(() {
-          selectedStatistic = stat;
-        });
-      }
+  void selectStatistic(Exam stat) {
+    setState(() {
+      selectedExam = stat;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +72,7 @@ Future<void> loadStatistics() async {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    selectedStatistic.year.toString(),
-                    style: kHeaderStyle,
-                  ),
+                  Text(selectedExam.year.toString(), style: kHeaderStyle),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: CircularPercentIndicator(
@@ -82,13 +80,8 @@ Future<void> loadStatistics() async {
                       progressColor: colorScheme.onPrimaryFixedVariant,
                       radius: 70.0,
                       lineWidth: 12.0,
-                      percent: double.parse(
-                        "0.0",
-                      ),
-                      center: Text(
-                        "0%",
-                        style: percentageStyle,
-                      ),
+                      percent: double.parse("0.0"),
+                      center: Text("0%", style: percentageStyle),
                       circularStrokeCap: CircularStrokeCap.round,
                     ),
                   ),
@@ -100,24 +93,51 @@ Future<void> loadStatistics() async {
                         children: [
                           CategoryProgress(
                             title: 'Stochastik',
-                            done: 0
-                            total: selectedStatistic.,
+                            done: 0,
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (exercise) =>
+                                          exercise.exerciseTopic ==
+                                          ExerciseTopic.stochastic,
+                                    )
+                                    .length,
                           ),
                           CategoryProgress(
                             title: 'Analysis',
-                            done: selectedStatistic['analysisDone'],
-                            total: selectedStatistic['analysisTotal'],
+                            done: 0,
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (exercise) =>
+                                          exercise.exerciseTopic ==
+                                          ExerciseTopic.analysis,
+                                    )
+                                    .length,
                           ),
                           CategoryProgress(
                             title: 'Geometrie',
-                            done: selectedStatistic['geometrieDone'],
-                            total: selectedStatistic['geometrieTotal'],
+                            done: 0,
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (exercise) =>
+                                          exercise.exerciseTopic ==
+                                          ExerciseTopic.geometry,
+                                    )
+                                    .length,
                           ),
                           CategoryProgress(
                             title: 'Pflichtaufgaben',
-                            done: selectedStatistic['pflichtaufgabenDone'],
-                            done: selectedStatistic['geometrieDone'],
-                            total: selectedStatistic['geometrieTotal'],
+                            done: 0,
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (exercise) =>
+                                          exercise.exerciseTopic ==
+                                          ExerciseTopic.mandatory,
+                                    )
+                                    .length,
                           ),
                         ],
                       ),
@@ -143,132 +163,150 @@ Future<void> loadStatistics() async {
             child: SingleChildScrollView(
               child: Column(
                 children:
-                statisticsData.map((stat) {
-                  final isSelected =
-                      stat['currentYear'] ==
-                          selectedStatistic['currentYear'];
-                  return GestureDetector(
-                    onTap: () => selectStatistic(stat),
+                    statisticsData.map((stat) {
+                      final isSelected = stat.year == selectedExam.year;
+                      return GestureDetector(
+                        onTap: () => selectStatistic(stat),
 
-                    child: Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      ),
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: colorScheme.onPrimaryFixedVariant,
-                          width: 2,
-                        ),
-                        color:
-                        isSelected
-                            ? colorScheme.primaryContainer.withOpacity(
-                          0.5,
-                        )
-                            : colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 12.0,
                           ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        // Center the year
-                        children: [
-                          Text(
-                            "— ${stat['currentYear']} —",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color:
-                              isSelected
-                                  ? colorScheme.onPrimaryContainer
-                                  : colorScheme.onSurface,
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: colorScheme.onPrimaryFixedVariant,
+                              width: 2,
                             ),
-                          ),
-                          const SizedBox(height: 10),
-
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CircularPercentIndicator(
-                                backgroundColor:
-                                colorScheme.surfaceContainerHigh,
-                                progressColor:
-                                colorScheme.onPrimaryFixedVariant,
-                                radius: 30.0,
-                                lineWidth: 8.0,
-                                percent: double.parse(
-                                  stat['solvedPercentageNumeric']
-                                      .toString(),
-                                ),
-                                center: Text(
-                                  "${stat['solvedPercentage']}%",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color:
-                                    isSelected
-                                        ? colorScheme.onPrimaryContainer
-                                        : colorScheme.onSurface,
-                                  ),
-                                ),
-                                circularStrokeCap: CircularStrokeCap.round,
+                            color:
+                                isSelected
+                                    ? colorScheme.primaryContainer.withOpacity(
+                                      0.5,
+                                    )
+                                    : colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 3),
                               ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            // Center the year
+                            children: [
+                              Text(
+                                "— ${stat.year} —",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      isSelected
+                                          ? colorScheme.onPrimaryContainer
+                                          : colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
 
-                              const SizedBox(width: 20),
-
-                              Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "${stat['stochastikDone']}/${stat['stochastikTotal']} Stochastik",
-                                    style: TextStyle(
-                                      color:
-                                      isSelected
-                                          ? colorScheme
-                                          .onPrimaryContainer
-                                          : colorScheme.onSurface,
+                                  CircularPercentIndicator(
+                                    backgroundColor:
+                                        colorScheme.surfaceContainerHigh,
+                                    progressColor:
+                                        colorScheme.onPrimaryFixedVariant,
+                                    radius: 30.0,
+                                    lineWidth: 8.0,
+                                    //TODO insert real percentage
+                                    percent: double.parse(0.0.toString()),
+                                    center: Text(
+                                      "${0.0}%",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            isSelected
+                                                ? colorScheme.onPrimaryContainer
+                                                : colorScheme.onSurface,
+                                      ),
                                     ),
+                                    circularStrokeCap: CircularStrokeCap.round,
                                   ),
-                                  Text(
-                                    "${stat['analysisDone']}/${stat['analysisTotal']} Analysis",
-                                    style: TextStyle(
-                                      color:
-                                      isSelected
-                                          ? colorScheme
-                                          .onPrimaryContainer
-                                          : colorScheme.onSurface,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${stat['geometrieDone']}/${stat['geometrieTotal']} Geometrie",
-                                    style: TextStyle(
-                                      color:
-                                      isSelected
-                                          ? colorScheme
-                                          .onPrimaryContainer
-                                          : colorScheme.onSurface,
-                                    ),
+
+                                  const SizedBox(width: 20),
+
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${0.0}/${stat.exercises.where((exercise) => exercise.exerciseTopic == ExerciseTopic.stochastic)} Stochastik",
+                                        style: TextStyle(
+                                          color:
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${0.0}/${stat.exercises.where(
+                                              (exercise) =>
+                                          exercise.exerciseTopic ==
+                                              ExerciseTopic.analysis,
+                                        )} Analysis",
+                                        style: TextStyle(
+                                          color:
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${0.0}/${stat.exercises..where(
+                                              (exercise) =>
+                                          exercise.exerciseTopic ==
+                                              ExerciseTopic.geometry,
+                                        )} Geometrie",
+                                        style: TextStyle(
+                                          color:
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${0.0}/${stat.exercises..where(
+                                              (exercise) =>
+                                          exercise.exerciseTopic ==
+                                              ExerciseTopic.mandatory,
+                                        )} Pflichtaufgaben",
+                                        style: TextStyle(
+                                          color:
+                                          isSelected
+                                              ? colorScheme
+                                              .onPrimaryContainer
+                                              : colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
           ),
@@ -277,6 +315,7 @@ Future<void> loadStatistics() async {
     );
   }
 }
+
 class CategoryProgress extends StatelessWidget {
   final String title;
   final int done;
