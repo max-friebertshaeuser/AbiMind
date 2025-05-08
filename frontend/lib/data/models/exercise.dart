@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:frontend/data/models/encoded_image.dart';
 import 'package:frontend/data/models/question.dart';
 
@@ -8,14 +9,17 @@ class Exercise {
   List<Question>? questions;
   List<EncodedImage>? images;
   List<EncodedImage>? solutionImages;
+  List<Map<String, dynamic>> answer;
+  ByteData? answerImage;
 
   Exercise({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.questions,
-    required this.images,
-    required this.solutionImages,
+    this.id = '',
+    this.title = '',
+    this.description = '',
+    this.questions,
+    this.images,
+    this.solutionImages,
+    this.answer = const [],
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
@@ -27,6 +31,7 @@ class Exercise {
       images: (json['images'] as List<dynamic>?)?.map((img) => EncodedImage.fromJson(img)).toList() ?? [],
       solutionImages:
           (json['solutionImages'] as List<dynamic>?)?.map((img) => EncodedImage.fromJson(img)).toList() ?? [],
+      answer: (json['answer'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList() ?? [],
     );
   }
 

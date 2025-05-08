@@ -1,20 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
-import 'package:flutter_drawing_board/paint_extension.dart';
+import 'package:frontend/data/services/firebase_srv.dart';
 
-import '../../../core/utils/constants.dart';
+import '../../../data/models/exam.dart';
+import '../../../data/models/exercise.dart';
 import 'custom_drawing_board.dart';
+
+class ExerciseScreenArguments {
+  final String examId;
+  final int exerciseIndex;
+
+  ExerciseScreenArguments({required this.examId, this.exerciseIndex = 0});
+}
 
 class ExerciseScreen extends StatefulWidget {
   const ExerciseScreen({super.key});
-
   @override
   State<ExerciseScreen> createState() => _ExerciseScreenState();
 }
@@ -22,10 +27,41 @@ class ExerciseScreen extends StatefulWidget {
 class _ExerciseScreenState extends State<ExerciseScreen> {
   /// 绘制控制器
   final DrawingController _drawingController = DrawingController();
-
   final TransformationController _transformationController = TransformationController();
-
+  late ExerciseScreenArguments args;
+  late Exam exam;
+  int exerciseIndex = 0;
+  bool exerciseExpanded = true;
   double _colorOpacity = 1;
+
+  Future<void> _loadAnswer(List<Map<String, dynamic>> data) async {
+    final contents = data.map((json) => _mapJsonToPaintContent(json)).toList();
+    _drawingController.clear();
+    _drawingController.addContents(contents); // :contentReference[oaicite:13]{index=13}
+  }
+
+  PaintContent _mapJsonToPaintContent(Map<String, dynamic> data) {
+    final type = data['type'] as String;
+    switch (type) {
+      case 'StraightLine':
+        return StraightLine.fromJson(data);
+      case 'SimpleLine':
+        return SimpleLine.fromJson(data);
+      case 'SmoothLine':
+        return SmoothLine.fromJson(data);
+      case 'Rectangle':
+        return Rectangle.fromJson(data);
+      case 'Circle':
+        return Circle.fromJson(data);
+      case 'Eraser':
+        return Eraser.fromJson(data);
+      default:
+        {
+          print(data);
+          throw Exception('Unsupported content type: $type');
+        }
+    }
+  }
 
   @override
   void dispose() {
@@ -33,69 +69,100 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     super.dispose();
   }
 
-  bool exerciseExpanded = true;
+  @override
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    args = ModalRoute.of(context)!.settings.arguments as ExerciseScreenArguments;
+    print('args: $args');
+    exam = await FirebaseService.getExam(args.examId) ?? Exam(exercises: [Exercise(title: 'fallback')]);
+    if (exam == null || exam.exercises.isEmpty) exam = Exam(exercises: [Exercise(title: 'fallback')]);
+    exerciseIndex = args.exerciseIndex;
+    if (exam.exercises[exerciseIndex].answer.isNotEmpty) _loadAnswer(exam.exercises[exerciseIndex].answer);
+  }
 
-  List<Exercise> exercises = [
-    Exercise(
-      heading: 'Exercise 1',
-      description: 'A description of Exercise 1',
-      questions: [
-        Question(
-          title: 'a)',
-          description: 'Description of Exercise a), $kSampleText',
-          solution: 'Solution of Exercise a)',
-        ),
-        Question(
-          title: 'b)',
-          description: 'Description of Exercise b), $kSampleText',
-          solution: 'Solution of Exercise b)',
-        ),
-        Question(
-          title: 'c)',
-          description: 'Description of Exercise c), $kSampleText',
-          solution: 'Solution of Exercise c)',
-        ),
-        Question(
-          title: 'd)',
-          description: 'Description of Exercise d), $kSampleText',
-          solution: 'Solution of Exercise d)',
-        ),
-      ],
-    ),
-    Exercise(
-      heading: 'Exercise 2',
-      description: 'A description of Exercise 1',
-      questions: [
-        Question(
-          title: 'a)',
-          description: 'Description of Exercise a), $kSampleText',
-          solution: 'Solution of Exercise a)',
-        ),
-        Question(
-          title: 'b)',
-          description: 'Description of Exercise b), $kSampleText',
-          solution: 'Solution of Exercise b)',
-        ),
-        Question(
-          title: 'c)',
-          description: 'Description of Exercise c), $kSampleText',
-          solution: 'Solution of Exercise c)',
-        ),
-        Question(
-          title: 'd)',
-          description: 'Description of Exercise d), $kSampleText',
-          solution: 'Solution of Exercise d)',
-        ),
-      ],
-    ),
-  ];
-  int exerciseIndex = 0;
+  // Exam exam = Exam(
+
+  //   id: 'OHLESyc19sRHmLTVOUji',
+  //   year: 2025,
+  //   subject: 'math',
+  //   analysisExercises: [
+  //     Exercise(
+  //       id: 'exercise_1',
+  //       title: 'Exercise 1',
+  //       description: 'A description of Exercise 1',
+  //       questions: [
+  //         Question(
+  //           id: 'exercise_1_a',
+  //           title: 'a)',
+  //           description: 'Description of Exercise a), $kSampleText',
+  //           solution: 'Solution of Exercise a)',
+  //         ),
+  //         Question(
+  //           id: 'exercise_1_b',
+  //           title: 'b)',
+  //           description: 'Description of Exercise b), $kSampleText',
+  //           solution: 'Solution of Exercise b)',
+  //         ),
+  //         Question(
+  //           id: 'exercise_1_c',
+  //           title: 'c)',
+  //           description: 'Description of Exercise c), $kSampleText',
+  //           solution: 'Solution of Exercise c)',
+  //         ),
+  //         Question(
+  //           id: 'exercise_1_d',
+  //           title: 'd)',
+  //           description: 'Description of Exercise d), $kSampleText',
+  //           solution: 'Solution of Exercise d)',
+  //         ),
+  //       ],
+  //     ),
+  //     Exercise(
+  //       id: 'exercise_2',
+  //       title: 'Exercise 2',
+  //       description: 'A description of Exercise 1',
+  //       questions: [
+  //         Question(
+  //           id: 'exercise_2_a',
+  //           title: 'a)',
+  //           description: 'Description of Exercise a), $kSampleText',
+  //           solution: 'Solution of Exercise a)',
+  //         ),
+  //         Question(
+  //           id: 'exercise_2_b',
+  //           title: 'b)',
+  //           description: 'Description of Exercise b), $kSampleText',
+  //           solution: 'Solution of Exercise b)',
+  //         ),
+  //         Question(
+  //           id: 'exercise_2_c',
+  //           title: 'c)',
+  //           description: 'Description of Exercise c), $kSampleText',
+  //           solution: 'Solution of Exercise c)',
+  //         ),
+  //         Question(
+  //           id: 'exercise_2_d',
+  //           title: 'd)',
+  //           description: 'Description of Exercise d), $kSampleText',
+  //           solution: 'Solution of Exercise d)',
+  //         ),
+  //       ],
+  //     ),
+  //   ],
+  //   geometryExercises: [],
+  //   stochasticExercises: [],
+  //   mandatoryExercises: [],
+  // );
 
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
-    Exercise currentExercise = exercises[exerciseIndex];
-
+    if(exam == null || exam.exercises.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    print('exam: $exam');
+    Exercise currentExercise = exam.exercises[exerciseIndex];
+    _loadAnswer(currentExercise.answer);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -134,6 +201,15 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
           // IconButton(icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
           // IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
           // IconButton(icon: const Icon(Icons.restore_page_rounded), onPressed: _restBoard),
+          IconButton(
+            icon: const Icon(Icons.save),
+            onPressed: () async {
+              currentExercise.answer = _drawingController.getJsonList();
+              currentExercise.answerImage = await _drawingController.getImageData();
+              await FirebaseService.saveAnswers(exam);
+              print('Save answer: ${currentExercise.answer}');
+            },
+          ),
         ],
       ),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -162,7 +238,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                exercises[exerciseIndex].heading,
+                                exam.exercises[exerciseIndex].title,
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -174,11 +250,11 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                               child:
                                   exerciseExpanded
                                       ? ListView.builder(
-                                        itemCount: exercises.length,
+                                        itemCount: exam.exercises.length,
                                         itemBuilder: (context, index) {
                                           return ListTile(
                                             title: Text(
-                                              '${currentExercise.questions[index].title} ${currentExercise.questions[index].description}',
+                                              currentExercise.questions!.isEmpty ? 'No Questions':'${currentExercise.questions?[index].title} ${currentExercise.questions?[index].description}',
                                               style: TextStyle(fontSize: 16),
                                             ),
                                           );
@@ -241,24 +317,24 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                       heroTag: "prev_page",
                       onPressed: () {
                         setState(() {
+                          currentExercise.answer = _drawingController.getJsonList();
                           if(exerciseIndex > 0) {
                             exerciseIndex--;
-                            _drawingController.clear();
+                            // _loadAnswer(currentExercise.answer);
                           }
                         });
                       },
                       child: Icon(Icons.chevron_left),
                     ),
-                    SizedBox(width: 8), // space between buttons
+                    SizedBox(width: 8),
                     FloatingActionButton(
                       mini: true,
                       heroTag: "next_page",
                       onPressed: () {
                         currentExercise.answer = _drawingController.getJsonList();
                         setState(() {
-                          if(exerciseIndex < exercises.length-1) {
+                          if (exerciseIndex < exam.analysisExercises!.length - 1) {
                             exerciseIndex++;
-                            _drawingController.clear();
                           }
                         });
                       },
@@ -275,26 +351,24 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   }
 }
 
-class Exercise {
-  Exercise({required this.heading, required this.description, required this.questions});
-
-  final String heading;
-  final String description;
-  final List<Question> questions;
-  List<Map<String, dynamic>>? answer;
-
-
-}
-
-class Question {
-  const Question({required this.title, required this.description, this.solution});
-
-  final String title;
-  final String description;
-  final String? solution;
-}
-
-
+// class Exercise {
+//   Exercise({required this.heading, required this.description, required this.questions});
+//
+//   final String heading;
+//   final String description;
+//   final List<Question> questions;
+//   List<Map<String, dynamic>>? answer;
+//
+//
+// }
+//
+// class Question {
+//   const Question({required this.title, required this.description, this.solution});
+//
+//   final String title;
+//   final String description;
+//   final String? solution;
+// }
 
 // {
 //   images: {

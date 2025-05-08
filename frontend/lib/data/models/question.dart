@@ -5,16 +5,16 @@ class Question {
   final String title;
   final String description;
   final String solution;
-  List<EncodedImage> images;
-  List<EncodedImage> solutionImages;
+  List<EncodedImage>? images;
+  List<EncodedImage>? solutionImages;
 
   Question({
     required this.id,
     required this.title,
     required this.description,
     required this.solution,
-    required this.images,
-    required this.solutionImages,
+    this.images,
+    this.solutionImages,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) {
