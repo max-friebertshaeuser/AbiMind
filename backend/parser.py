@@ -106,83 +106,6 @@ def image_to_dict(image_path: Path):
         "content": content
     }
 
-def save_to_firestore_structure(db, subject: str, all_exams: list):
-    collection_ref = db.collection("exams")
-
-    for exam in all_exams:
-        year = exam["year"]
-        topic = exam["topic"]
-        exercise_data = exam["exercises"]
-
-        doc_ref = collection_ref.document()
-
-        # Dokument-Metadaten setzen
-        doc_ref.set({
-            'year': year,
-            'subject': subject
-        }, merge=True)
-
-    for exercise in exercise_data:
-
-        aufgabe_name = exercise[0][0]
-        aufgabe_text = exercise[0][1]
-        aufgabe_bilder = exercise[0][2]
-
-        aufgabe_entry = {
-            "topic": topic,
-            "title": aufgabe_name,
-            "description": aufgabe_text,
-            "images": []
-        }
-
-        # Bilder der Aufgabe hinzufügen (ohne UID)
-        for img_path in aufgabe_bilder:
-            img = image_to_dict(img_path)
-            aufgabe_entry["images"].append({
-                "title": img["title"],
-                "content": img["content"]
-            })
-
-        # Aufgabe-Dokument erstellen (Firebase generiert UID)
-        aufgabe_doc_ref = doc_ref.collection("exercises").document()
-        aufgabe_doc_ref.set(aufgabe_entry)
-
-        # Fragen als Subcollection in der Aufgabe
-        for part in exercise[1:]:
-            question_title = part[0]
-            question_text = part[1]
-            question_images = part[2]
-            solution_text = part[3]
-            solution_images = part[4]
-
-            question_entry = {
-                "title": question_title,
-                "description": question_text,
-                "images": [],
-                "solution": solution_text,
-                "solution_images": []
-
-            }
-
-            for img_path in question_images:
-                img = image_to_dict(img_path)
-                question_entry["images"].append({
-                    "title": img["title"],
-                    "content": img["content"]
-                })
-
-            for img_path in solution_images:
-                img = image_to_dict(img_path)
-                question_entry["solution_images"].append({
-                    "title": img["title"],
-                    "content": img["content"]
-                })
-
-            # Frage als neues Dokument in Subcollection "questions"
-            aufgabe_doc_ref.collection("questions").document().set(question_entry)
-
-
-
 def find_and_strip_images(latex_text: str, tex_file_path: str) -> tuple[str, list[Path]]:
 
     image_paths = []
@@ -358,7 +281,6 @@ def split_into_exercises(latex_text: str, path_name: str, year: str, topic: str)
     }
 
 
-
 def main():
     file = Path(__file__)
     db = init_firebase()
@@ -396,9 +318,6 @@ def main():
         print(exercise)
 
     group_exercises_by_year_and_save(db, subject, exercises)
-
-
-
 
 if __name__ == '__main__':
     main()
