@@ -30,7 +30,9 @@ class FirebaseService {
         }
       }
 
+      exams.sort((a, b) => b.year!.compareTo(a.year!));
       return exams;
+
     } catch (e) {
       print('Error fetching exams: $e');
       return [];
@@ -60,11 +62,22 @@ class FirebaseService {
     return null;
   }
 
-  static Future<List<Question>> fetchQuestions(String examId, String exerciseId) async {
+  static Future<List<Question>> fetchQuestions(
+    String examId,
+    String exerciseId,
+  ) async {
     try {
       final snapshot =
-      await _db.collection(kAbitur).doc(examId).collection(kExercises).doc(exerciseId).collection(kQuestion).get();
-      return snapshot.docs.map((q) => Question.fromJson({...q.data(), 'id': q.id})).toList();
+          await _db
+              .collection(kAbitur)
+              .doc(examId)
+              .collection(kExercises)
+              .doc(exerciseId)
+              .collection(kQuestion)
+              .get();
+      return snapshot.docs
+          .map((q) => Question.fromJson({...q.data(), 'id': q.id}))
+          .toList();
     } catch (e) {
       print('Error fetching questions: $e');
       return [];
@@ -73,11 +86,18 @@ class FirebaseService {
 
   static Future<List<Exercise>> fetchExercises(String examId) async {
     try {
-      final snapshot = await _db.collection(kExam).doc(examId).collection(kExercises).get();
-      final exercises = snapshot.docs.map((el) => Exercise.fromJson({...el.data(), 'id': el.id})).toList();
+      final snapshot =
+          await _db.collection(kExam).doc(examId).collection(kExercises).get();
+      final exercises =
+          snapshot.docs
+              .map((el) => Exercise.fromJson({...el.data(), 'id': el.id}))
+              .toList();
 
       await Future.wait(
-        exercises.map((exercise) async => exercise.questions = await fetchQuestions(examId, exercise.id)),
+        exercises.map(
+          (exercise) async =>
+              exercise.questions = await fetchQuestions(examId, exercise.id),
+        ),
       );
 
       return exercises;
@@ -89,27 +109,39 @@ class FirebaseService {
 
   static Future<void> saveAnswers(Exam exam) async {
     for (var exercise in exam.exercises) {
-      dynamic examRef = await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).get();
+      dynamic examRef =
+          await _db
+              .collection(kUser)
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(exam.id)
+              .get();
       if (!examRef.exists) {
         print('Exam with ID ${exam.id} does not exist.');
       }
       if (exercise.answer.isNotEmpty) {
-        await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).collection(kExercises).doc(exercise.id).set({
-          kAnswer: exercise.answer,
-        });
+        await _db
+            .collection(kUser)
+            .doc(_auth.currentUser?.uid)
+            .collection(kExam)
+            .doc(exam.id)
+            .collection(kExercises)
+            .doc(exercise.id)
+            .set({kAnswer: exercise.answer});
       }
     }
   }
 
   static Future<List<Map<String, dynamic>>> fetchAnswers(String examId) async {
     try {
-      final snapshot = await _db
-          .collection('user')
-          .doc(_auth.currentUser?.uid)
-          .collection(kExam)
-          .doc(examId)
-          .collection(kExercises)
-          .get();
+      final snapshot =
+          await _db
+              .collection('user')
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(examId)
+              .collection(kExercises)
+              .get();
 
       return snapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {

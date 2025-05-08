@@ -7,6 +7,8 @@ import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../data/models/exam.dart';
+import '../../../../data/services/firebase_srv.dart';
 
 class ProgressCard extends StatefulWidget {
   const ProgressCard({Key? key}) : super(key: key);
@@ -16,8 +18,8 @@ class ProgressCard extends StatefulWidget {
 }
 
 class _ProgressCardState extends State<ProgressCard> {
-  List<Map<String, dynamic>> statisticsData = [];
-  late Map<String, dynamic> selectedStatistic;
+  List<Exam> statisticsData = [];
+  late Exam selectedStatistic;
   bool isLoading = true;
 
   @override
@@ -26,27 +28,23 @@ class _ProgressCardState extends State<ProgressCard> {
     loadStatistics();
   }
 
-  Future<void> loadStatistics() async {
-    final String response = await rootBundle.loadString(
-      'assets/exerciseProgress.json',
-    );
-    final List<dynamic> data = jsonDecode(response);
+Future<void> loadStatistics() async {
+        final exams = await FirebaseService.getExams();
+        setState(() {
+          statisticsData = exams;
+          selectedStatistic = exams.firstWhere(
+            (exam) => exam.year == 2025,
+            orElse: () => exams.first,
+          );
+          isLoading = false;
+        });
+      }
 
-    setState(() {
-      statisticsData = List<Map<String, dynamic>>.from(data);
-      selectedStatistic = statisticsData.firstWhere(
-            (stat) => stat['currentYear'] == 2025,
-        orElse: () => statisticsData.first,
-      );
-      isLoading = false;
-    });
-  }
-
-  void selectStatistic(Map<String, dynamic> stat) {
-    setState(() {
-      selectedStatistic = stat;
-    });
-  }
+      void selectStatistic(Exam stat) {
+        setState(() {
+          selectedStatistic = stat;
+        });
+      }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +60,6 @@ class _ProgressCardState extends State<ProgressCard> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          /// Left: Big Selected Card
           Expanded(
             flex: 1,
             child: Container(
@@ -75,7 +72,7 @@ class _ProgressCardState extends State<ProgressCard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    selectedStatistic['currentYear'].toString(),
+                    selectedStatistic.year.toString(),
                     style: kHeaderStyle,
                   ),
                   Padding(
@@ -86,10 +83,10 @@ class _ProgressCardState extends State<ProgressCard> {
                       radius: 70.0,
                       lineWidth: 12.0,
                       percent: double.parse(
-                        selectedStatistic['solvedPercentageNumeric'].toString(),
+                        "0.0",
                       ),
                       center: Text(
-                        "${selectedStatistic['solvedPercentage']}%",
+                        "0%",
                         style: percentageStyle,
                       ),
                       circularStrokeCap: CircularStrokeCap.round,
@@ -103,8 +100,8 @@ class _ProgressCardState extends State<ProgressCard> {
                         children: [
                           CategoryProgress(
                             title: 'Stochastik',
-                            done: selectedStatistic['stochastikDone'],
-                            total: selectedStatistic['stochastikTotal'],
+                            done: 0
+                            total: selectedStatistic.,
                           ),
                           CategoryProgress(
                             title: 'Analysis',
@@ -113,6 +110,12 @@ class _ProgressCardState extends State<ProgressCard> {
                           ),
                           CategoryProgress(
                             title: 'Geometrie',
+                            done: selectedStatistic['geometrieDone'],
+                            total: selectedStatistic['geometrieTotal'],
+                          ),
+                          CategoryProgress(
+                            title: 'Pflichtaufgaben',
+                            done: selectedStatistic['pflichtaufgabenDone'],
                             done: selectedStatistic['geometrieDone'],
                             total: selectedStatistic['geometrieTotal'],
                           ),
