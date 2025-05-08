@@ -29,7 +29,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   final DrawingController _drawingController = DrawingController();
   final TransformationController _transformationController = TransformationController();
   late ExerciseScreenArguments args;
-  late Exam exam;
+  Exam exam = Exam(exercises: [Exercise(title: 'fallback')]);
   int exerciseIndex = 0;
   bool exerciseExpanded = true;
   double _colorOpacity = 1;
@@ -333,7 +333,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                       onPressed: () {
                         currentExercise.answer = _drawingController.getJsonList();
                         setState(() {
-                          if (exerciseIndex < exam.analysisExercises!.length - 1) {
+                          if (exerciseIndex < exam.exercises.length - 1) {
                             exerciseIndex++;
                           }
                         });

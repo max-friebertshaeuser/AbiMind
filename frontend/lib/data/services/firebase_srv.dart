@@ -151,26 +151,59 @@ class FirebaseService {
 
 
   static Future<void> saveAnswers(Exam exam) async {
-    final topics = {
-      kAnalysis: exam.analysisExercises,
-      kGeometry: exam.geometryExercises,
-      kStochastic: exam.stochasticExercises,
-      kMandatory: exam.mandatoryExercises,
-    };
+    // final topics = {
+    //   kAnalysis: exam.analysisExercises,
+    //   kGeometry: exam.geometryExercises,
+    //   kStochastic: exam.stochasticExercises,
+    //   kMandatory: exam.mandatoryExercises,
+    // };
+    for (var exercise in exam.exercises) {
+      dynamic examRef = await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).get();
+      if (!examRef.exists) {
+        print('Exam with ID ${exam.id} does not exist.');
+        // await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).set({
+        //   kYear: exam.year,
+        //   kSubject: exam.subject,
+        // });
+      }
+      if (exercise.answer.isNotEmpty) {
+        await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).collection(kExercises).doc(exercise.id).set({
+          kAnswer: exercise.answer,
+        });
+      }
+    }
 
-    await Future.wait(
-        topics.entries.expand((entry) =>
-            (entry.value ?? []).map((e) async {
-              await _db.collection('user').doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).collection(
-                  entry.key).doc(
-                  e.id).set({
-                kAnswer: e.answer,
 
-              });
-              print('Answer saved for ${entry.key} exercise ${e.id}');
-            }
-            )
-        )
-    );
+    // await Future.wait(
+    //     topics.entries.expand((entry) =>
+    //         (entry.value ?? []).map((e) async {
+    //           await _db.collection('user').doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).collection(
+    //               entry.key).doc(
+    //               e.id).set({
+    //             kAnswer: e.answer,
+    //
+    //           });
+    //           print('Answer saved for ${entry.key} exercise ${e.id}');
+    //         }
+    //         )
+    //     )
+    // );
+  }
+
+  static Future<List<Map<String, dynamic>>> fetchAnswers(String examId) async {
+    try {
+      final snapshot = await _db
+          .collection('user')
+          .doc(_auth.currentUser?.uid)
+          .collection(kExam)
+          .doc(examId)
+          .collection(kExercises)
+          .get();
+
+      return snapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      print('Error fetching answers: $e');
+      return [];
+    }
   }
 }

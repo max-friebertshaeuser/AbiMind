@@ -78,8 +78,6 @@ final minutesList =
 final maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
 final minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
 
-const String kSampleText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ";
-
 const String kSampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
     'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
     'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. '
