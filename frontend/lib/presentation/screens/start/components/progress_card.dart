@@ -30,16 +30,30 @@ class _ProgressCardState extends State<ProgressCard> {
   }
 
   Future<void> loadStatistics() async {
-    final exams = await FirebaseService.getExams();
-    setState(() {
-      statisticsData = exams;
-      selectedExam = exams.firstWhere(
-        (exam) => exam.year == 2025,
-        orElse: () => exams.first,
-      );
-      isLoading = false;
-    });
+    try {
+      final exams = await FirebaseService.getExams();
+
+      if (exams.isEmpty) {
+        debugPrint("No exams returned from Firebase.");
+      }
+
+      setState(() {
+        statisticsData = exams;
+        selectedExam = exams.firstWhere(
+              (exam) => exam.year == 2025,
+          orElse: () => exams.first,
+        );
+        isLoading = false;
+      });
+    } catch (e, stacktrace) {
+      debugPrint("Error loading statistics: $e");
+      debugPrint(stacktrace.toString());
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
+
 
   void selectStatistic(Exam stat) {
     setState(() {
@@ -257,11 +271,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                         ),
                                       ),
                                       Text(
-                                        "${0.0}/${stat.exercises.where(
-                                              (exercise) =>
-                                          exercise.exerciseTopic ==
-                                              ExerciseTopic.analysis,
-                                        )} Analysis",
+                                        "${0.0}/${stat.exercises.where((exercise) => exercise.exerciseTopic == ExerciseTopic.analysis)} Analysis",
                                         style: TextStyle(
                                           color:
                                               isSelected
@@ -271,11 +281,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                         ),
                                       ),
                                       Text(
-                                        "${0.0}/${stat.exercises..where(
-                                              (exercise) =>
-                                          exercise.exerciseTopic ==
-                                              ExerciseTopic.geometry,
-                                        )} Geometrie",
+                                        "${0.0}/${stat.exercises..where((exercise) => exercise.exerciseTopic == ExerciseTopic.geometry)} Geometrie",
                                         style: TextStyle(
                                           color:
                                               isSelected
@@ -285,17 +291,13 @@ class _ProgressCardState extends State<ProgressCard> {
                                         ),
                                       ),
                                       Text(
-                                        "${0.0}/${stat.exercises..where(
-                                              (exercise) =>
-                                          exercise.exerciseTopic ==
-                                              ExerciseTopic.mandatory,
-                                        )} Pflichtaufgaben",
+                                        "${0.0}/${stat.exercises..where((exercise) => exercise.exerciseTopic == ExerciseTopic.mandatory)} Pflichtaufgaben",
                                         style: TextStyle(
                                           color:
-                                          isSelected
-                                              ? colorScheme
-                                              .onPrimaryContainer
-                                              : colorScheme.onSurface,
+                                              isSelected
+                                                  ? colorScheme
+                                                      .onPrimaryContainer
+                                                  : colorScheme.onSurface,
                                         ),
                                       ),
                                     ],
