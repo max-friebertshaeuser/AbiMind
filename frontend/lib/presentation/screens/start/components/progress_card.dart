@@ -33,26 +33,24 @@ class _ProgressCardState extends State<ProgressCard> {
     try {
       final exams = await FirebaseService.getExams();
 
-      if (exams.isEmpty) {
-        debugPrint("No exams returned from Firebase.");
-      }
-
       setState(() {
         statisticsData = exams;
-        selectedExam = exams.firstWhere(
-              (exam) => exam.year == 2025,
-          orElse: () => exams.first,
-        );
+        if (exams.isNotEmpty) {
+          selectedExam = exams.firstWhere(
+                (exam) => exam.year == 2025,
+            orElse: () => exams.first,
+          );
+        }
         isLoading = false;
       });
-    } catch (e, stacktrace) {
-      debugPrint("Error loading statistics: $e");
-      debugPrint(stacktrace.toString());
+    } catch (e) {
+      debugPrint("❌ Error loading statistics: $e");
       setState(() {
         isLoading = false;
       });
     }
   }
+
 
 
   void selectStatistic(Exam stat) {
@@ -68,6 +66,36 @@ class _ProgressCardState extends State<ProgressCard> {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
+
+    if (statisticsData.isEmpty) {
+      return MainSurfaceCard(
+        title: 'Current Exercise',
+        boxFlex: 2,
+        child: Center(
+          child: Text(
+            'Keine Daten verfügbar.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+      );
+    }
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (statisticsData.isEmpty) {
+      return MainSurfaceCard(
+        title: 'Current Exercise',
+        boxFlex: 2,
+        child: Center(
+          child: Text(
+            'Keine Daten verfügbar.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+      );
+    }
+
 
     return MainSurfaceCard(
       title: 'Current Exercise',
