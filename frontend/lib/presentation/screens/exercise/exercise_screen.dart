@@ -29,7 +29,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   final DrawingController _drawingController = DrawingController();
   final TransformationController _transformationController = TransformationController();
   late ExerciseScreenArguments args;
-  late Exam exam;
+  Exam exam = Exam(exercises: [Exercise(title: 'fallback')]);
   int exerciseIndex = 0;
   bool exerciseExpanded = true;
   double _colorOpacity = 1;
@@ -333,7 +333,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                       onPressed: () {
                         currentExercise.answer = _drawingController.getJsonList();
                         setState(() {
-                          if (exerciseIndex < exam.analysisExercises!.length - 1) {
+                          if (exerciseIndex < exam.exercises.length - 1) {
                             exerciseIndex++;
                           }
                         });
@@ -350,39 +350,3 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     );
   }
 }
-
-// class Exercise {
-//   Exercise({required this.heading, required this.description, required this.questions});
-//
-//   final String heading;
-//   final String description;
-//   final List<Question> questions;
-//   List<Map<String, dynamic>>? answer;
-//
-//
-// }
-//
-// class Question {
-//   const Question({required this.title, required this.description, this.solution});
-//
-//   final String title;
-//   final String description;
-//   final String? solution;
-// }
-
-// {
-//   images: {
-// asldkfjalskfjaslk: {
-// title: 2025.....jpg,
-// content: "base64:eklgnalknölf"
-// },
-// falksjfaklsjfö: {
-// title: 2025.....jpg,
-// content: "base64:eklgnalknölf"
-// },
-// dafklfjölajf: {
-// title: 2025.....jpg,
-// content: "base64:eklgnalknölf"
-// }
-// ]
-// }
