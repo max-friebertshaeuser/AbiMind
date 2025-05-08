@@ -350,39 +350,3 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     );
   }
 }
-
-// class Exercise {
-//   Exercise({required this.heading, required this.description, required this.questions});
-//
-//   final String heading;
-//   final String description;
-//   final List<Question> questions;
-//   List<Map<String, dynamic>>? answer;
-//
-//
-// }
-//
-// class Question {
-//   const Question({required this.title, required this.description, this.solution});
-//
-//   final String title;
-//   final String description;
-//   final String? solution;
-// }
-
-// {
-//   images: {
-// asldkfjalskfjaslk: {
-// title: 2025.....jpg,
-// content: "base64:eklgnalknölf"
-// },
-// falksjfaklsjfö: {
-// title: 2025.....jpg,
-// content: "base64:eklgnalknölf"
-// },
-// dafklfjölajf: {
-// title: 2025.....jpg,
-// content: "base64:eklgnalknölf"
-// }
-// ]
-// }
