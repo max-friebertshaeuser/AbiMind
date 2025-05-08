@@ -6,6 +6,7 @@ class Exercise {
   final String id;
   final String title;
   final String description;
+  final ExerciseTopic? exerciseTopic;
   List<Question>? questions;
   List<EncodedImage>? images;
   List<EncodedImage>? solutionImages;
@@ -20,6 +21,7 @@ class Exercise {
     this.images,
     this.solutionImages,
     this.answer = const [],
+    this.exerciseTopic = ExerciseTopic.unknown,
   });
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
@@ -27,11 +29,26 @@ class Exercise {
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      questions: (json['questions'] as List<dynamic>?)?.map((q) => Question.fromJson(q)).toList() ?? [],
-      images: (json['images'] as List<dynamic>?)?.map((img) => EncodedImage.fromJson(img)).toList() ?? [],
+      questions:
+          (json['questions'] as List<dynamic>?)
+              ?.map((q) => Question.fromJson(q))
+              .toList() ??
+          [],
+      images:
+          (json['images'] as List<dynamic>?)
+              ?.map((img) => EncodedImage.fromJson(img))
+              .toList() ??
+          [],
       solutionImages:
-          (json['solutionImages'] as List<dynamic>?)?.map((img) => EncodedImage.fromJson(img)).toList() ?? [],
-      answer: (json['answer'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList() ?? [],
+          (json['solutionImages'] as List<dynamic>?)
+              ?.map((img) => EncodedImage.fromJson(img))
+              .toList() ??
+          [],
+      answer:
+          (json['answer'] as List<dynamic>?)
+              ?.map((item) => item as Map<String, dynamic>)
+              .toList() ??
+          [],
     );
   }
 
@@ -40,3 +57,5 @@ class Exercise {
     return 'Exercise{id: $id, title: $title, description: $description, questions: $questions, images: $images}';
   }
 }
+
+enum ExerciseTopic { geometry, mandatory, analysis, stochastic, unknown }
