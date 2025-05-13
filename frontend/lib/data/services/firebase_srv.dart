@@ -15,8 +15,8 @@ class FirebaseService {
   static Future<List<Exam>> getExams() async {
     print('📥 Fetching exams from Firestore...');
     try {
-      final querySnapshot = await _db.collection(kAbitur).get();
-      print('✅ Fetched ${querySnapshot.docs.length} documents from "$kAbitur" collection.');
+      final querySnapshot = await _db.collection(kExam).get();
+      print('✅ Fetched ${querySnapshot.docs.length} documents from "$kExam" collection.');
 
       final List<Exam> exams = [];
 
