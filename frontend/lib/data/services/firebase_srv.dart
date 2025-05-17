@@ -12,7 +12,7 @@ class FirebaseService {
 
   static Future<List<Exam>> getExams() async {
     try {
-      final querySnapshot = await _db.collection(kAbitur).get();
+      final querySnapshot = await _db.collection(kExam).get();
 
       final List<Exam> exams = [];
 

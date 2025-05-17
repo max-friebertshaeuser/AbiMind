@@ -6,6 +6,7 @@ class Exercise {
   final String id;
   final String title;
   final String description;
+  final ExerciseTopic? exerciseTopic;
   List<Question>? questions;
   List<EncodedImage>? images;
   List<EncodedImage>? solutionImages;
@@ -13,6 +14,7 @@ class Exercise {
   ByteData? answerImage;
 
   Exercise({
+    this.exerciseTopic = ExerciseTopic.unknown,
     this.id = '',
     this.title = '',
     this.description = '',
@@ -40,3 +42,4 @@ class Exercise {
     return 'Exercise{id: $id, title: $title, description: $description, questions: $questions, images: $images}';
   }
 }
+enum ExerciseTopic { geometry, mandatory, analysis, stochastic, unknown }

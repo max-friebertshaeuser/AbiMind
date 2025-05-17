@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/models/exercise.dart';
 import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../data/models/exam.dart';
+import '../../../../data/services/firebase_srv.dart';
 
 class ProgressCard extends StatefulWidget {
   const ProgressCard({Key? key}) : super(key: key);
@@ -16,8 +19,8 @@ class ProgressCard extends StatefulWidget {
 }
 
 class _ProgressCardState extends State<ProgressCard> {
-  List<Map<String, dynamic>> statisticsData = [];
-  late Map<String, dynamic> selectedStatistic;
+  List<Exam> statisticsData = [];
+  late Exam selectedExam;
   bool isLoading = true;
 
   @override
@@ -27,24 +30,32 @@ class _ProgressCardState extends State<ProgressCard> {
   }
 
   Future<void> loadStatistics() async {
-    final String response = await rootBundle.loadString(
-      'assets/exerciseProgress.json',
-    );
-    final List<dynamic> data = jsonDecode(response);
+    try {
+      final exams = await FirebaseService.getExams();
 
-    setState(() {
-      statisticsData = List<Map<String, dynamic>>.from(data);
-      selectedStatistic = statisticsData.firstWhere(
-            (stat) => stat['currentYear'] == 2025,
-        orElse: () => statisticsData.first,
-      );
-      isLoading = false;
-    });
+      setState(() {
+        statisticsData = exams;
+        if (exams.isNotEmpty) {
+          selectedExam = exams.firstWhere(
+                (exam) => exam.year == 2025,
+            orElse: () => exams.first,
+          );
+        }
+        isLoading = false;
+      });
+    } catch (e) {
+      debugPrint("❌ Error loading statistics: $e");
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
-  void selectStatistic(Map<String, dynamic> stat) {
+
+
+  void selectStatistic(Exam stat) {
     setState(() {
-      selectedStatistic = stat;
+      selectedExam = stat;
     });
   }
 
@@ -56,13 +67,42 @@ class _ProgressCardState extends State<ProgressCard> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    if (statisticsData.isEmpty) {
+      return MainSurfaceCard(
+        title: 'Current Exercise',
+        boxFlex: 2,
+        child: Center(
+          child: Text(
+            'Keine Daten verfügbar.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+      );
+    }
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (statisticsData.isEmpty) {
+      return MainSurfaceCard(
+        title: 'Current Exercise',
+        boxFlex: 2,
+        child: Center(
+          child: Text(
+            'Keine Daten verfügbar.',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+      );
+    }
+
+
     return MainSurfaceCard(
       title: 'Current Exercise',
       boxFlex: 2,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          /// Left: Big Selected Card
           Expanded(
             flex: 1,
             child: Container(
@@ -70,14 +110,12 @@ class _ProgressCardState extends State<ProgressCard> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
+              // 👈 Wrap the entire left side in a scroll view
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    selectedStatistic['currentYear'].toString(),
-                    style: kHeaderStyle,
-                  ),
+                  Text(selectedExam.year.toString(), style: kHeaderStyle),
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: CircularPercentIndicator(
@@ -85,40 +123,43 @@ class _ProgressCardState extends State<ProgressCard> {
                       progressColor: colorScheme.onPrimaryFixedVariant,
                       radius: 70.0,
                       lineWidth: 12.0,
-                      percent: double.parse(
-                        selectedStatistic['solvedPercentageNumeric'].toString(),
-                      ),
-                      center: Text(
-                        "${selectedStatistic['solvedPercentage']}%",
-                        style: percentageStyle,
-                      ),
+                      percent: 0.0, // update as needed
+                      center: Text("0%", style: percentageStyle),
                       circularStrokeCap: CircularStrokeCap.round,
                     ),
                   ),
                   const Divider(thickness: 2),
-                  Container(
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          CategoryProgress(
-                            title: 'Stochastik',
-                            done: selectedStatistic['stochastikDone'],
-                            total: selectedStatistic['stochastikTotal'],
-                          ),
-                          CategoryProgress(
-                            title: 'Analysis',
-                            done: selectedStatistic['analysisDone'],
-                            total: selectedStatistic['analysisTotal'],
-                          ),
-                          CategoryProgress(
-                            title: 'Geometrie',
-                            done: selectedStatistic['geometrieDone'],
-                            total: selectedStatistic['geometrieTotal'],
-                          ),
-                        ],
+                  Column(
+                    children: [
+                      CategoryProgress(
+                        title: 'Stochastik',
+                        done: 0,
+                        total: selectedExam.exercises
+                            .where((e) => e.exerciseTopic == ExerciseTopic.stochastic)
+                            .length,
                       ),
-                    ),
+                      CategoryProgress(
+                        title: 'Analysis',
+                        done: 0,
+                        total: selectedExam.exercises
+                            .where((e) => e.exerciseTopic == ExerciseTopic.analysis)
+                            .length,
+                      ),
+                      CategoryProgress(
+                        title: 'Geometrie',
+                        done: 0,
+                        total: selectedExam.exercises
+                            .where((e) => e.exerciseTopic == ExerciseTopic.geometry)
+                            .length,
+                      ),
+                      CategoryProgress(
+                        title: 'Pflichtaufgaben',
+                        done: 0,
+                        total: selectedExam.exercises
+                            .where((e) => e.exerciseTopic == ExerciseTopic.mandatory)
+                            .length,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -141,9 +182,7 @@ class _ProgressCardState extends State<ProgressCard> {
               child: Column(
                 children:
                 statisticsData.map((stat) {
-                  final isSelected =
-                      stat['currentYear'] ==
-                          selectedStatistic['currentYear'];
+                  final isSelected = stat.year == selectedExam.year;
                   return GestureDetector(
                     onTap: () => selectStatistic(stat),
 
@@ -180,7 +219,7 @@ class _ProgressCardState extends State<ProgressCard> {
                         // Center the year
                         children: [
                           Text(
-                            "— ${stat['currentYear']} —",
+                            "— ${stat.year} —",
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -203,12 +242,10 @@ class _ProgressCardState extends State<ProgressCard> {
                                 colorScheme.onPrimaryFixedVariant,
                                 radius: 30.0,
                                 lineWidth: 8.0,
-                                percent: double.parse(
-                                  stat['solvedPercentageNumeric']
-                                      .toString(),
-                                ),
+                                //TODO insert real percentage
+                                percent: double.parse(0.0.toString()),
                                 center: Text(
-                                  "${stat['solvedPercentage']}%",
+                                  "${0.0}%",
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -228,7 +265,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                 CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "${stat['stochastikDone']}/${stat['stochastikTotal']} Stochastik",
+                                    "${0.0}/${stat.exercises.where((exercise) => exercise.exerciseTopic == ExerciseTopic.stochastic)} Stochastik",
                                     style: TextStyle(
                                       color:
                                       isSelected
@@ -238,7 +275,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                     ),
                                   ),
                                   Text(
-                                    "${stat['analysisDone']}/${stat['analysisTotal']} Analysis",
+                                    "${0.0}/${stat.exercises.where((exercise) => exercise.exerciseTopic == ExerciseTopic.analysis)} Analysis",
                                     style: TextStyle(
                                       color:
                                       isSelected
@@ -248,7 +285,17 @@ class _ProgressCardState extends State<ProgressCard> {
                                     ),
                                   ),
                                   Text(
-                                    "${stat['geometrieDone']}/${stat['geometrieTotal']} Geometrie",
+                                    "${0.0}/${stat.exercises..where((exercise) => exercise.exerciseTopic == ExerciseTopic.geometry)} Geometrie",
+                                    style: TextStyle(
+                                      color:
+                                      isSelected
+                                          ? colorScheme
+                                          .onPrimaryContainer
+                                          : colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  Text(
+                                    "${0.0}/${stat.exercises..where((exercise) => exercise.exerciseTopic == ExerciseTopic.mandatory)} Pflichtaufgaben",
                                     style: TextStyle(
                                       color:
                                       isSelected
@@ -274,6 +321,7 @@ class _ProgressCardState extends State<ProgressCard> {
     );
   }
 }
+
 class CategoryProgress extends StatelessWidget {
   final String title;
   final int done;
@@ -288,10 +336,14 @@ class CategoryProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double progress = done / total;
     final colorScheme = Theme.of(context).colorScheme;
+    // avoid division by zero:
+    final double? progress = (total > 0)
+        ? done / total
+        : 0.0; // or `null` if you want an indeterminate bar
+
     return Container(
-      margin: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -306,6 +358,7 @@ class CategoryProgress extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
+              // only pass a value when it's valid:
               value: progress,
               minHeight: 8,
               backgroundColor: colorScheme.surfaceContainerHigh,
