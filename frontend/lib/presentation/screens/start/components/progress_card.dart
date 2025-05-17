@@ -110,82 +110,59 @@ class _ProgressCardState extends State<ProgressCard> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(selectedExam.year.toString(), style: kHeaderStyle),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: CircularPercentIndicator(
-                      backgroundColor: colorScheme.surfaceContainerHigh,
-                      progressColor: colorScheme.onPrimaryFixedVariant,
-                      radius: 70.0,
-                      lineWidth: 12.0,
-                      percent: double.parse("0.0"),
-                      center: Text("0%", style: percentageStyle),
-                      circularStrokeCap: CircularStrokeCap.round,
-                    ),
-                  ),
-                  const Divider(thickness: 2),
-                  Container(
-                    width: double.infinity,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          CategoryProgress(
-                            title: 'Stochastik',
-                            done: 0,
-                            total:
-                                selectedExam.exercises
-                                    .where(
-                                      (exercise) =>
-                                          exercise.exerciseTopic ==
-                                          ExerciseTopic.stochastic,
-                                    )
-                                    .length,
-                          ),
-                          CategoryProgress(
-                            title: 'Analysis',
-                            done: 0,
-                            total:
-                                selectedExam.exercises
-                                    .where(
-                                      (exercise) =>
-                                          exercise.exerciseTopic ==
-                                          ExerciseTopic.analysis,
-                                    )
-                                    .length,
-                          ),
-                          CategoryProgress(
-                            title: 'Geometrie',
-                            done: 0,
-                            total:
-                                selectedExam.exercises
-                                    .where(
-                                      (exercise) =>
-                                          exercise.exerciseTopic ==
-                                          ExerciseTopic.geometry,
-                                    )
-                                    .length,
-                          ),
-                          CategoryProgress(
-                            title: 'Pflichtaufgaben',
-                            done: 0,
-                            total:
-                                selectedExam.exercises
-                                    .where(
-                                      (exercise) =>
-                                          exercise.exerciseTopic ==
-                                          ExerciseTopic.mandatory,
-                                    )
-                                    .length,
-                          ),
-                        ],
+              child: SingleChildScrollView( // 👈 Wrap the entire left side in a scroll view
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(selectedExam.year.toString(), style: kHeaderStyle),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: CircularPercentIndicator(
+                        backgroundColor: colorScheme.surfaceContainerHigh,
+                        progressColor: colorScheme.onPrimaryFixedVariant,
+                        radius: 70.0,
+                        lineWidth: 12.0,
+                        percent: 0.0, // update as needed
+                        center: Text("0%", style: percentageStyle),
+                        circularStrokeCap: CircularStrokeCap.round,
                       ),
                     ),
-                  ),
-                ],
+                    const Divider(thickness: 2),
+                    Column(
+                      children: [
+                        CategoryProgress(
+                          title: 'Stochastik',
+                          done: 0,
+                          total: selectedExam.exercises
+                              .where((e) => e.exerciseTopic == ExerciseTopic.stochastic)
+                              .length,
+                        ),
+                        CategoryProgress(
+                          title: 'Analysis',
+                          done: 0,
+                          total: selectedExam.exercises
+                              .where((e) => e.exerciseTopic == ExerciseTopic.analysis)
+                              .length,
+                        ),
+                        CategoryProgress(
+                          title: 'Geometrie',
+                          done: 0,
+                          total: selectedExam.exercises
+                              .where((e) => e.exerciseTopic == ExerciseTopic.geometry)
+                              .length,
+                        ),
+                        CategoryProgress(
+                          title: 'Pflichtaufgaben',
+                          done: 0,
+                          total: selectedExam.exercises
+                              .where((e) => e.exerciseTopic == ExerciseTopic.mandatory)
+                              .length,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
