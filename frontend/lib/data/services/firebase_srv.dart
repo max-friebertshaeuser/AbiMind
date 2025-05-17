@@ -57,7 +57,6 @@ class FirebaseService {
 
       final data = snapshot.data();
       final exercises = await fetchExercises(examId);
-
       return Exam(
         id: snapshot.id,
         year: int.parse(data?['year']),
@@ -70,6 +69,7 @@ class FirebaseService {
     return null;
   }
 
+ feat/importData
   static Future<List<Question>> fetchQuestions(
     String examId,
     String exerciseId,
@@ -94,6 +94,7 @@ class FirebaseService {
 
   static Future<List<Exercise>> fetchExercises(String examId) async {
     try {
+      feat/importData
       final snapshot =
           await _db.collection(kExam).doc(examId).collection(kExercises).get();
       final exercises =
@@ -107,7 +108,6 @@ class FirebaseService {
               exercise.questions = await fetchQuestions(examId, exercise.id),
         ),
       );
-
       return exercises;
     } catch (e) {
       print('Failed to fetch exercises: $e');
@@ -117,6 +117,7 @@ class FirebaseService {
 
   static Future<void> saveAnswers(Exam exam) async {
     for (var exercise in exam.exercises) {
+feat/importData
       dynamic examRef =
           await _db
               .collection(kUser)
@@ -140,7 +141,7 @@ class FirebaseService {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchAnswers(String examId) async {
+  static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(String examId) async {
     try {
       final snapshot =
           await _db
@@ -151,10 +152,15 @@ class FirebaseService {
               .collection(kExercises)
               .get();
 
-      return snapshot.docs.map((doc) => doc.data()).toList();
+ Map<String, List<Map<String, dynamic>>> answers = {
+        for (var doc in snapshot.docs)
+          doc.id: (doc.data()['answer'] as List)
+              .cast<Map<String, dynamic>>(),
+      };
+      return answers;
     } catch (e) {
       print('Error fetching answers: $e');
-      return [];
+      return {};
     }
   }
 }

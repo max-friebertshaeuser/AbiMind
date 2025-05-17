@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             ElevatedButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: '23qmCgsahtHIymBCfxxm'));
+                Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: 'BLILtj4qkTk5RJVM1sfH'));
               },
               icon: const Icon(Icons.calculate),
               label: const Text('Start New Exercise'),
@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
             ),
             ElevatedButton.icon(
               onPressed: () async {
-                print(await FirebaseService.getExam('23qmCgsahtHIymBCfxxm'));
+                print(await FirebaseService.getExam('BLILtj4qkTk5RJVM1sfH'));
               },
               icon: const Icon(Icons.shuffle),
               label: const Text('Random'),

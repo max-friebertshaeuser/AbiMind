@@ -1,142 +1,122 @@
 import base64
 from pathlib import Path
 import firebase_admin
-from firebase_admin import credentials, storage, firestore
+from firebase_admin import credentials, firestore
 import openai
 
-client = openai.OpenAI(api_key="")
+# Initialize OpenAI client
+token = ""
+client = openai.OpenAI(api_key=token)
 
 def init_firebase():
+    """
+    Initialisiert die Verbindung zu Firebase Firestore.
+    """
     cred = credentials.Certificate("E:/Studium-git/abimind-2caf8-firebase-adminsdk-fbsvc-be13487a7f.json")
     firebase_admin.initialize_app(cred)
-    db = firestore.client()
-    return db
+    return firestore.client()
 
-def encode_image_to_base64(image_path: Path) -> str:
-    with open(image_path, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    return encoded_string
-
-def lade_aufgabe_aus_firestore(db, fach: str, jahr: str, teil: str, aufgabe_name: str):
-    doc_ref = db.collection("Abitur").document(f"{fach}_{jahr}")
-    doc = doc_ref.get()
-    if doc.exists:
-        daten = doc.to_dict()
-        aufgabe = daten.get(teil, {}).get(aufgabe_name)
-        if aufgabe:
-            return aufgabe  # enthält alle relevanten Felder
-    return None
-
-def frage_mit_bildern_aus_firestore(db, fach, jahr, teil, aufgabe_name, schueler_bild_dateinamen, frage_template):
-    aufgabe_daten = lade_aufgabe_aus_firestore(db, fach, jahr, teil, aufgabe_name)
-    if not aufgabe_daten:
-        return "Fehler: Aufgabe nicht gefunden."
-
-    bilder = []
-
-    # Bilder aus der Aufgabenstellung
-    for base64_bild in aufgabe_daten["aufgabe_bilder"]:
-        bilder.append({
-            "type": "image_url",
-            "image_url": {"url": f"data:image/png;base64,{base64_bild}"}
-        })
-
-    # Bilder aus der Lösung
-    for base64_bild in aufgabe_daten["loesung_bilder"]:
-        bilder.append({
-            "type": "image_url",
-            "image_url": {"url": f"data:image/png;base64,{base64_bild}"}
-        })
-
-    # Schülerlösung (lokal)
-    file = __file__
-    basis_pfad = Path(file).parent
-    for dateiname in schueler_bild_dateinamen:
-        bilder.append({
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/png;base64,{encode_image_to_base64(Path.joinpath(basis_pfad, dateiname))}"
-            }
-        })
-
-    # Textinhalt zusammensetzen
-    text = frage_template + \
-        f"\nAufgabe:\n{aufgabe_daten['aufgabe_text']}\n" \
-        f"Lösung:\n{aufgabe_daten['loesung_text']}"
-
-    response = client.chat.completions.create(
-        model="gpt-4.1",
-        messages=[
-            {"role": "user", "content": [*bilder, {"type": "text", "text": text}]}
-        ],
-        max_tokens=1500
+def frage_alle_questions_mit_bildern_aus_firestore(
+    db,
+    user_uid: str,
+    exam_uid: str,
+    aufgabe_uid: str,
+    frage_template: str
+) -> dict[str, str]:
+    """
+    Für jede Teilaufgabe (Question) einer Exercise wird der GPT-Request ausgeführt.
+    Die Schülerlösung (answer_image) wird aus der user-Collection geladen.
+    Gibt ein Mapping von Question-ID zu GPT-Antwort zurück.
+    """
+    # 1) Schülerantwort (einzelner Base64-String) laden
+    answer_ref = (
+        db.collection("user").document(user_uid)
+          .collection("exams").document(exam_uid)
+          .collection("exercises").document(aufgabe_uid)
     )
+    answer_snap = answer_ref.get()
+    if not answer_snap.exists:
+        raise ValueError(
+            f"Keine Schülerantwort gefunden für User '{user_uid}', Exam '{exam_uid}', Exercise '{aufgabe_uid}'."
+        )
+    student_data = answer_snap.to_dict()
+    student_img_b64 = student_data.get("answer_image")
+    if not isinstance(student_img_b64, str):
+        raise ValueError("Das Feld 'answer_image' muss ein Base64-codierter String sein.")
 
-    return response.choices[0].message.content.strip()
+    # 2) Exercise-Daten abrufen
+    ex_ref = db.collection("exams").document(exam_uid)
+    ex_snap = ex_ref.collection("exercises").document(aufgabe_uid).get()
+    if not ex_snap.exists:
+        raise ValueError(
+            f"Exercise '{aufgabe_uid}' nicht gefunden in Exam '{exam_uid}'."
+        )
+    exercise_data = ex_snap.to_dict()
 
-def frage_mit_bildern_aus_firestore_neu(db, exam_uid, aufgabe_uid, question_uid, schueler_bild_dateinamen, frage_template):
-    doc_ref = db.collection("exams").document(exam_uid)
-    aufgabe_ref = doc_ref.collection("exercises").document(aufgabe_uid)
-    question_ref = aufgabe_ref.collection("questions").document(question_uid)
-
-    doc = question_ref.get()
-
-    if not doc.exists:
-        return "Fehler: Frage nicht gefunden."
-
-    question_data = doc.to_dict()
-
-    bilder = []
-
-    # Bilder aus Aufgabenstellung
-    for bild in question_data.get("images", []):
-        bilder.append({
+    # Bereite die gemeinsamen Bilder vor (Exercise-Level + Schülerbild)
+    bilder_common = []
+    # Exercise-Level Bilder (falls vorhanden)
+    for img in exercise_data.get("images", []):
+        bilder_common.append({
             "type": "image_url",
-            "image_url": {"url": f"data:image/png;base64,{bild['content']}"}
+            "image_url": {"url": f"data:image/png;base64,{img['content']}"}
         })
+    # Schülerbild einmalig anhängen
+    bilder_common.append({
+        "type": "image_url",
+        "image_url": {"url": f"data:image/png;base64,{student_img_b64}"}
+    })
 
-    # Bilder aus Lösung (neues Feld 'solution_images')
-    for bild in question_data.get("solution_images", []):
-        bilder.append({
-            "type": "image_url",
-            "image_url": {"url": f"data:image/png;base64,{bild['content']}"}
-        })
+    # 3) Über alle Questions iterieren
+    responses: dict[str, str] = {}
+    questions = ex_ref.collection("exercises").document(aufgabe_uid)\
+                     .collection("questions").stream()
 
-    # Schülerbilder (lokal)
-    file = __file__
-    basis_pfad = Path(file).parent
-    for dateiname in schueler_bild_dateinamen:
-        bilder.append({
-            "type": "image_url",
-            "image_url": {
-                "url": f"data:image/png;base64,{encode_image_to_base64(Path.joinpath(basis_pfad, dateiname))}"
-            }
-        })
+    for q_doc in questions:
+        q_data = q_doc.to_dict()
+        q_id   = q_doc.id
+        q_title= q_data.get("title", q_id)
 
-    # Textinhalt zusammensetzen (solution ist String)
-    text = f"{frage_template} Beachte unbedingt, dass nur die Aufgabenstellung und Musterlösung zu Teilaufgabe {question_data.get('title', '')} gegeben ist. Korrigiere nur diese Teilaufgabe. Gebe nichts zu den anderen Aufgaben zurück. " + \
-        f"\nAufgabe:\n{question_data.get('description', '')}\n" \
-        f"Lösung:\n{question_data.get('solution', '')}"
+        # Pro Frage die Bilderliste frisch anlegen
+        bilder = bilder_common.copy()
+        # Question-Level Bilder
+        for img in q_data.get("images", []):
+            bilder.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{img['content']}"}
+            })
+        # Musterlösungs-Bilder
+        for img in q_data.get("solution_images", []):
+            bilder.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{img['content']}"}
+            })
 
-    response = client.chat.completions.create(
-        model="gpt-4.1",
-        messages=[
-            {"role": "user", "content": [*bilder, {"type": "text", "text": text}]}
-        ],
-        max_tokens=1500
-    )
+        # Prompt-Text
+        prompt_text = (
+            f"{frage_template}\n"
+            f"Aufgabe: {exercise_data.get('title', '')} — Teilaufgabe: {q_title}\n"
+            f"{exercise_data.get('description', '')}\n"
+            f"{q_data.get('description', '')}\n"
+            f"Lösung:\n{q_data.get('solution', '')}"
+        )
 
-    return response.choices[0].message.content.strip()
+        # API-Call
+        resp = client.chat.completions.create(
+            model="gpt-4.1",
+            messages=[
+                { "role": "user",
+                  "content": [ *bilder, { "type": "text", "text": prompt_text } ]
+                }
+            ],
+            max_tokens=1500
+        )
+        responses[q_id] = resp.choices[0].message.content.strip()
 
+    return responses
 
-
-
-
-
-if __name__ == "__main__":
+def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
     db = init_firebase()
-    schueler_bilder = ["f P1.png"]
-
     frage_template = (
         "Du bekommst hier eine Mathe-Abituraufgabe und die Musterlösung. "
         "Außerdem als Bild(er) eine Schülerlösung. Vergleiche beide Lösungen und bewerte die Schülerlösung. "
@@ -150,24 +130,15 @@ if __name__ == "__main__":
         "Spreche den Schüler bei den Korrekturvorschlägen direkt an. Verhalte dich wie ein Lehrer."
     )
 
-    ''' antwort = frage_mit_bildern_aus_firestore(
+    ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
         db=db,
-        fach="Mathe",
-        jahr="2024",
-        teil="Pflichtteil",
-        aufgabe_name="Aufgabe P1",
-        schueler_bild_dateinamen=schueler_bilder,
-        frage_template=frage_template
-    )'''
-
-    antwort = frage_mit_bildern_aus_firestore_neu(
-        db=db,
-        exam_uid="23qmCgsahtHIymBCfxxm",
-        aufgabe_uid="l9a2L85rlpw6t2TNKCzW",
-        question_uid="l300fenv1HZRQRE6j2nP",
-        schueler_bild_dateinamen=["f P1.png"],
+        user_uid=user_uid,
+        exam_uid=exam_uid,
+        aufgabe_uid=aufgabe_uid,
         frage_template=frage_template
     )
 
-
-    print("\nAntwort:\n", antwort)
+    for qid, antwort in ergebnisse.items():
+        print(f"--- Question {qid} ---")
+        print(antwort)
+        print()
