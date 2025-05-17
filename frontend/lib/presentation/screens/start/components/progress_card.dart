@@ -110,7 +110,7 @@ class _ProgressCardState extends State<ProgressCard> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: SingleChildScrollView( // 👈 Wrap the entire left side in a scroll view
+               // 👈 Wrap the entire left side in a scroll view
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -165,7 +165,6 @@ class _ProgressCardState extends State<ProgressCard> {
                 ),
               ),
             ),
-          ),
 
           /// Vertical Divider
           Container(
@@ -337,10 +336,14 @@ class CategoryProgress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double progress = done / total;
     final colorScheme = Theme.of(context).colorScheme;
+    // avoid division by zero:
+    final double? progress = (total > 0)
+        ? done / total
+        : 0.0; // or `null` if you want an indeterminate bar
+
     return Container(
-      margin: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -355,6 +358,7 @@ class CategoryProgress extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
+              // only pass a value when it's valid:
               value: progress,
               minHeight: 8,
               backgroundColor: colorScheme.surfaceContainerHigh,
