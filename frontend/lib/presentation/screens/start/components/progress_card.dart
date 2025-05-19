@@ -265,7 +265,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                 CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "${0.0}/${stat.exercises.where((exercise) => exercise.exerciseTopic == ExerciseTopic.stochastic)} Stochastik",
+                                    "${0}/${stat.stochasticExercises?.length} Stochastik",
                                     style: TextStyle(
                                       color:
                                       isSelected
@@ -275,7 +275,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                     ),
                                   ),
                                   Text(
-                                    "${0.0}/${stat.exercises.where((exercise) => exercise.exerciseTopic == ExerciseTopic.analysis)} Analysis",
+                                    "${0}/${stat.analysisExercises?.length} Analysis",
                                     style: TextStyle(
                                       color:
                                       isSelected
@@ -285,7 +285,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                     ),
                                   ),
                                   Text(
-                                    "${0.0}/${stat.exercises..where((exercise) => exercise.exerciseTopic == ExerciseTopic.geometry)} Geometrie",
+                                    "${0}/${stat.geometryExercises?.length} Geometrie",
                                     style: TextStyle(
                                       color:
                                       isSelected
@@ -295,7 +295,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                     ),
                                   ),
                                   Text(
-                                    "${0.0}/${stat.exercises..where((exercise) => exercise.exerciseTopic == ExerciseTopic.mandatory)} Pflichtaufgaben",
+                                    "${0}/${stat.exercises.length} Pflichtaufgaben",
                                     style: TextStyle(
                                       color:
                                       isSelected
