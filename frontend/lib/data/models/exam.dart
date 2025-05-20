@@ -1,49 +1,76 @@
-import 'package:frontend/data/services/firebase_srv.dart';
-
+import 'dart:convert';                      // ← for JsonEncoder
+import 'package:cloud_firestore/cloud_firestore.dart';
 import './exercise.dart';
 
 class Exam {
-  final String? id;
-  final int? year;
-  final String? subject;
+  final String id;
+  final int year;
+  final String subject;
 
-  final List<Exercise>? analysisExercises;
-  final List<Exercise>? geometryExercises;
-  final List<Exercise>? stochasticExercises;
-  final List<Exercise>? mandatoryExercises;
+  final List<Exercise> analysisExercises;
+  final List<Exercise> geometryExercises;
+  final List<Exercise> stochasticExercises;
+  final List<Exercise> mandatoryExercises;
 
   final List<Exercise> exercises;
 
   Exam({
-    this.id,
-    this.year,
-    this.subject,
-    this.analysisExercises,
-    this.geometryExercises,
-    this.stochasticExercises,
-    this.mandatoryExercises,
+    required this.id,
+    required this.year,
+    required this.subject,
+    this.analysisExercises = const [],
+    this.geometryExercises = const [],
+    this.stochasticExercises = const [],
+    this.mandatoryExercises = const [],
     this.exercises = const [],
   });
 
   factory Exam.fromJson(Map<String, dynamic> json) {
     return Exam(
       id: json['id'] as String,
-      year: int.parse(json['year']),
+      year: int.parse(json['year'] as String),
       subject: json['subject'] as String,
-      analysisExercises: (json['analysisExercises'] as List<dynamic>?)?.map((e) => Exercise.fromJson(e)).toList(),
-      geometryExercises: (json['geometryExercises'] as List<dynamic>?)?.map((e) => Exercise.fromJson(e)).toList(),
-      stochasticExercises: (json['stochasticExercises'] as List<dynamic>?)?.map((e) => Exercise.fromJson(e)).toList(),
-      mandatoryExercises: (json['mandatoryExercises'] as List<dynamic>?)?.map((e) => Exercise.fromJson(e)).toList(),
-      exercises: (json['exercises'] as List<dynamic>?)?.map((e) => Exercise.fromJson(e)).toList() ?? [],
     );
   }
 
-  save() {
-    FirebaseService.saveAnswers(this);
+  /// loads the one "exercises" subcollection, dumps raw JSON, then splits by topic
+  static Future<Exam> fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> doc) async {
+    final data = doc.data();
+    if (data == null) throw StateError('No data for Exam ${doc.id}');
+    data['id'] = doc.id;
+    final base = Exam.fromJson(data);
+
+    final exSnap = await doc.reference.collection('exercises').get();
+
+    final all = <Exercise>[];
+    for (final ed in exSnap.docs) {
+      final raw = Map<String, dynamic>.from(ed.data())..['id'] = ed.id;
+      all.add(Exercise.fromJson(raw));
+    }
+
+    final analysis   = all.where((e) => e.exerciseTopic == ExerciseTopic.analysis).toList();
+    final geometry   = all.where((e) => e.exerciseTopic == ExerciseTopic.geometry).toList();
+    final stochastic = all.where((e) => e.exerciseTopic == ExerciseTopic.stochastic).toList();
+    final mandatory  = all.where((e) => e.exerciseTopic == ExerciseTopic.mandatory).toList();
+
+    return Exam(
+      id: base.id,
+      year: base.year,
+      subject: base.subject,
+      analysisExercises:  analysis,
+      geometryExercises:  geometry,
+      stochasticExercises:stochastic,
+      mandatoryExercises: mandatory,
+      exercises: all,
+    );
   }
 
   @override
-  String toString() {
-    return 'Exam{id: $id, year: $year, subject: $subject, analysisExercises: $analysisExercises, geometryExercises: $geometryExercises, stochasticExercises: $stochasticExercises, mandatoryExercises: $mandatoryExercises}, exercises: $exercises}';
-  }
+  String toString() =>
+      'Exam($id, $year, $subject): total=${exercises.length} '
+          '[analysis=${analysisExercises.length} '
+          'geometry=${geometryExercises.length} '
+          'stochastic=${stochasticExercises.length} '
+          'mandatory=${mandatoryExercises.length}]';
 }
