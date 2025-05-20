@@ -14,21 +14,9 @@ class FirebaseService {
     try {
       final querySnapshot = await _db.collection(kExam).get();
 
-      final List<Exam> exams = [];
-
-      for (final doc in querySnapshot.docs) {
-        try {
-          final data = doc.data();
-          data['id'] = doc.id;
-
-          final exam = Exam.fromJson(data);
-
-          exams.add(exam);
-        } catch (e) {
-          print('Error parsing exam ${doc.id}: $e');
-          continue;
-        }
-      }
+      final exams = await Future.wait(
+          querySnapshot.docs.map((doc) => Exam.fromSnapshot(doc))
+      );
 
       return exams;
     } catch (e) {
@@ -36,6 +24,7 @@ class FirebaseService {
       return [];
     }
   }
+
 
   static Future<Exam?> getExam(String examId) async {
     try {
