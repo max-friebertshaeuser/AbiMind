@@ -9,6 +9,8 @@ import '../../../../core/utils/constants.dart';
 import '../../../../data/models/exam.dart';
 import '../../../../data/models/exercise.dart';
 import '../../../../data/services/firebase_srv.dart';
+import '../../../../routes/routes.dart';
+import '../../exercise/exercise_screen.dart';
 import '../../start/start-screen.dart';
 
 class ProgressCard extends StatefulWidget {
@@ -317,6 +319,7 @@ class _ProgressCardState extends State<ProgressCard> {
             right: 12,
             child: FloatingActionButton.small(
               onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: selectedExam.id));
                 debugPrint('✏️ Edit tapped for ${selectedExam.year}');
               },
               backgroundColor: colorScheme.primary,
