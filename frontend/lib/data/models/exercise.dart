@@ -6,6 +6,23 @@ import 'package:frontend/data/models/question.dart';
 
 enum ExerciseTopic { geometry, mandatory, analysis, stochastic, unknown }
 
+extension ExerciseTopicName on ExerciseTopic {
+  String get displayName {
+    switch (this) {
+      case ExerciseTopic.geometry:
+        return 'Geometry';
+      case ExerciseTopic.mandatory:
+        return 'Mandatory';
+      case ExerciseTopic.analysis:
+        return 'Analysis';
+      case ExerciseTopic.stochastic:
+        return 'Stochastic';
+      case ExerciseTopic.unknown:
+        return 'Unknown';
+    }
+  }
+}
+
 class Exercise {
   final String id;
   final String title;

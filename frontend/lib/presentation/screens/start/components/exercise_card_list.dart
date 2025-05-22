@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/models/exercise.dart';
 import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -16,7 +17,7 @@ class ExerciseCardList extends StatefulWidget {
 
 class _ExerciseCardListState extends State<ExerciseCardList> {
   // Store selected categories
-  List<String> selectedCategories = ['Geometrie', 'Analysis'];
+  List<ExerciseTopic> selectedCategories = [ExerciseTopic.mandatory];
 
   // All tasks (you can also move this outside if you prefer)
   final List<Map<String, dynamic>> taskCardsData = [];
@@ -48,7 +49,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
     }).toList();
   }
 
-  void onCategorySelectionChanged(List<String> newSelection) {
+  void onCategorySelectionChanged(List<ExerciseTopic> newSelection) {
     setState(() {
       selectedCategories = newSelection;
     });
@@ -86,7 +87,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
               ),
             ),
             CategoryToggleBar(
-              categories: ['Geometrie', 'Analysis', 'Statistics'],
+              categories: [ExerciseTopic.mandatory, ExerciseTopic.analysis, ExerciseTopic.stochastic,ExerciseTopic.geometry],
               selected: selectedCategories,
               onSelectionChanged: onCategorySelectionChanged,
             ),
