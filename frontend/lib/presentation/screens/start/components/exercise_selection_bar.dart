@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/data/models/exercise.dart';
 
 import '../../../../core/utils/constants.dart';
 
 class CategoryToggleBar extends StatefulWidget {
-  final List<String> categories;
-  final List<String> selected;
-  final void Function(List<String>) onSelectionChanged;
+  final List<ExerciseTopic> categories;
+  final List<ExerciseTopic> selected;
+  final void Function(List<ExerciseTopic>) onSelectionChanged;
 
   const CategoryToggleBar({
     super.key,
@@ -20,7 +21,7 @@ class CategoryToggleBar extends StatefulWidget {
 }
 
 class _CategoryToggleBarState extends State<CategoryToggleBar> {
-  late List<String> selected;
+  late List<ExerciseTopic> selected;
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
     selected = [...widget.selected];
   }
 
-  void toggleCategory(String category) {
+  void toggleCategory(ExerciseTopic category) {
     setState(() {
       if (selected.contains(category)) {
         selected.remove(category);
@@ -79,7 +80,7 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      category,
+                      category.displayName,
                       style: TextStyle(
                         color:
                         isSelected
