@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,8 @@ import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../data/models/exam.dart';
+import '../../../../data/services/firebase_srv.dart';
 import 'exercise_selection_bar.dart';
 
 class ExerciseCardList extends StatefulWidget {
@@ -16,11 +19,9 @@ class ExerciseCardList extends StatefulWidget {
 }
 
 class _ExerciseCardListState extends State<ExerciseCardList> {
-  // Store selected categories
   List<ExerciseTopic> selectedCategories = [ExerciseTopic.mandatory];
-
-  // All tasks (you can also move this outside if you prefer)
-  final List<Map<String, dynamic>> taskCardsData = [];
+  List<Exercise> exercises = [];
+  List<String> tags = [];
 
   @override
   void initState() {
@@ -30,22 +31,18 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
 
   Future<void> loadTaskCardsData() async {
     try {
-      String jsonString = await rootBundle.loadString(
-        'assets/exerciseData.json',
-      );
-      List<dynamic> jsonData = json.decode(jsonString);
-      setState(() {
-        taskCardsData.addAll(jsonData.cast<Map<String, dynamic>>());
+      final exams = await FirebaseService.getExams();
+      exams.forEach((exam) {
+        exercises.addAll(exam.exercises);
       });
     } catch (e) {
       print('Error loading task cards data: $e');
     }
   }
 
-  // Filter logic based on selected categories
-  List<Map<String, dynamic>> get filteredTasks {
-    return taskCardsData.where((task) {
-      return task['tags'].any((tag) => selectedCategories.contains(tag));
+  List<Exercise> get filteredTasks {
+    return exercises.where((ex) {
+      return selectedCategories.contains(ex.exerciseTopic);
     }).toList();
   }
 
@@ -73,13 +70,16 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:
-                        filteredTasks.map((task) {
-                          return CustomTaskCard(
-                            title: task['title'],
-                            description: task['description'],
-                            tags: List<String>.from(task['tags']),
-                          );
-                        }).toList(),
+                            filteredTasks.map((task) {
+                              return CustomTaskCard(
+                                title: task.title,
+                                description: task.description,
+                                tags:
+                                    task.exerciseTopic != null
+                                        ? [task.exerciseTopic!]
+                                        : [],
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -87,7 +87,12 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
               ),
             ),
             CategoryToggleBar(
-              categories: [ExerciseTopic.mandatory, ExerciseTopic.analysis, ExerciseTopic.stochastic,ExerciseTopic.geometry],
+              categories: [
+                ExerciseTopic.mandatory,
+                ExerciseTopic.analysis,
+                ExerciseTopic.stochastic,
+                ExerciseTopic.geometry,
+              ],
               selected: selectedCategories,
               onSelectionChanged: onCategorySelectionChanged,
             ),
@@ -168,28 +173,28 @@ class ExerciseCards extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children:
-                  topics.entries.map((entry) {
-                    final String topic = entry.key;
-                    final int done = entry.value[0];
-                    final int total = entry.value[1];
+                      topics.entries.map((entry) {
+                        final String topic = entry.key;
+                        final int done = entry.value[0];
+                        final int total = entry.value[1];
 
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text("$done/$total ", style: smallTextStyle),
-                          Text(
-                            topic,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: colorScheme.onPrimaryFixedVariant,
-                            ),
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("$done/$total ", style: smallTextStyle),
+                              Text(
+                                topic,
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
                 ),
               ],
             ),
@@ -199,10 +204,11 @@ class ExerciseCards extends StatelessWidget {
     );
   }
 }
+
 class CustomTaskCard extends StatelessWidget {
   final String title;
   final String description;
-  final List<String> tags;
+  final List<ExerciseTopic> tags;
 
   const CustomTaskCard({
     super.key,
@@ -228,19 +234,19 @@ class CustomTaskCard extends StatelessWidget {
           Wrap(
             spacing: 8,
             children:
-            tags.map((tag) {
-              return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: tagColors[tag],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(tag, style: lableTextStyle),
-              );
-            }).toList(),
+                tags.map((tag) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: tagColors[tag],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(tag.displayName, style: lableTextStyle),
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 10),
           Text(title, style: kHeaderStyle),

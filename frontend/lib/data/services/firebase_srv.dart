@@ -25,7 +25,6 @@ class FirebaseService {
     }
   }
 
-
   static Future<Exam?> getExam(String examId) async {
     try {
       final snapshot = await _db.collection(kExam).doc(examId).get();
