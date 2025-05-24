@@ -138,7 +138,63 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
         frage_template=frage_template
     )
 
+    full_correction_text = ""
     for qid, antwort in ergebnisse.items():
-        print(f"--- Question {qid} ---")
-        print(antwort)
-        print()
+        full_correction_text += f"{{{qid}}}\n{antwort}\n\n"
+
+    exercise_ref = (
+        db.collection("user").document(user_uid)
+          .collection("exams").document(exam_uid)
+          .collection("exercises").document(aufgabe_uid)
+    )
+
+    exercise_ref.update({ "correction": full_correction_text.strip() })
+
+    # Optional zur Kontrolle ausgeben
+    print("Korrektur erfolgreich gespeichert:")
+    print(full_correction_text)
+
+
+def main():
+    db = init_firebase()
+    frage_template = (
+        "Du bekommst hier eine Mathe-Abituraufgabe und die Musterlösung. "
+        "Außerdem als Bild(er) eine Schülerlösung. Vergleiche beide Lösungen und bewerte die Schülerlösung. "
+        "Wenn die Schülerlösung falsch ist, korrigiere sie und gebe einen Lösungsweg vor. Beachte, dass die Aufgabe nicht exakt gleich wie die Musterlösung sein muss. WIchtig ist, dass das Ergebnis richtig bzw. der Lösungsweg im Rahmen der Musterlösung nachvollziehbar ist."
+        "Bewerte es auch als falsch, wenn ein notwendiger Lösungsweg in der Schülerlösung fehlt. "
+        "Schreibe nur die Korrektur, nichts drum herum. Arbeite die Teilaufgaben nacheinander ab. "
+        "Schreibe zunächst zu jeder Teilaufgabe ob sie richtig oder falsch gelöst wurde, dann, wenn sie falsch war, die Korrektur. " 
+        "Wenn die Aufgabe richtig ist, schreibe nur 'richtig', wenn sie falsch ist, schreibe 'falsch,' und dann die Korrektur."
+        "Gebe nicht die Aufgabenstellung wieder. Mache am Ende keine Zusammenfassung der Teilaufgaben. "
+        "Mache bei richtigen Teilaufgaben keinerlei Anmerkung außer der Angabe, dass sie richtig ist. "
+        "Spreche den Schüler bei den Korrekturvorschlägen direkt an. Verhalte dich wie ein Lehrer."
+        "Bewerte die Teilaufgaben als Ganzes. Auch wenn sie auf mehrere Bilder verteilt sind. Die Korrektur soll die gesamte Schülerlösung über mehrere Bilder hinweg berücksichtigen."
+    )
+
+    ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
+        db=db,
+        user_uid="TNddezDjmEYDGEx0HdcMWvEQVbv1",
+        exam_uid="BLILtj4qkTk5RJVM1sfH",
+        aufgabe_uid="09Xxx1t1RT59AgyJhBsi",
+        frage_template=frage_template
+    )
+
+    full_correction_text = ""
+    for qid, antwort in ergebnisse.items():
+        full_correction_text += f"{{{qid}}}\n{antwort}\n\n"
+
+    exercise_ref = (
+        db.collection("user").document("TNddezDjmEYDGEx0HdcMWvEQVbv1")
+          .collection("exams").document("BLILtj4qkTk5RJVM1sfH")
+          .collection("exercises").document("09Xxx1t1RT59AgyJhBsi")
+    )
+
+    exercise_ref.update({ "correction": full_correction_text.strip() })
+
+    # Optional zur Kontrolle ausgeben
+    print("Korrektur erfolgreich gespeichert:")
+    print(full_correction_text)
+
+
+if __name__ == '__main__':
+    main()
