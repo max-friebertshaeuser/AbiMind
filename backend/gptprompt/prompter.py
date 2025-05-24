@@ -3,6 +3,7 @@ from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
 import openai
+import re
 
 # Initialize OpenAI client
 token = ""
@@ -128,6 +129,8 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
         "Gebe nicht die Aufgabenstellung wieder. Mache am Ende keine Zusammenfassung der Teilaufgaben. "
         "Mache bei richtigen Teilaufgaben keinerlei Anmerkung außer der Angabe, dass sie richtig ist. "
         "Spreche den Schüler bei den Korrekturvorschlägen direkt an. Verhalte dich wie ein Lehrer."
+        "Bewerte die Teilaufgaben als Ganzes. Auch wenn sie auf mehrere Bilder verteilt sind. Die Korrektur soll die gesamte Schülerlösung über mehrere Bilder hinweg berücksichtigen."
+        "Vor der Bewertung, ob 'falsch' oder 'richtig' gebe einen Prozentsatz an, ob 100% korrekt oder 0% korrekt oder etwas dazwischen. Gebe es als Dezimalzahl in geschweiften Klammern am Anfang deiner Antwort zurück."
     )
 
     ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
@@ -138,9 +141,19 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
         frage_template=frage_template
     )
 
+    sum = 0.0
+    count = 0
+
     full_correction_text = ""
     for qid, antwort in ergebnisse.items():
         full_correction_text += f"{{{qid}}}\n{antwort}\n\n"
+        match = re.match(r"\{([\d.,]+)\}", antwort)
+        if match:
+            wert = float(match.group(1).replace(",", "."))  # Komma zu Punkt für float
+            sum += wert
+            count += 1
+
+    avg = sum / count if count > 0 else 0.0
 
     exercise_ref = (
         db.collection("user").document(user_uid)
@@ -148,7 +161,12 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
           .collection("exercises").document(aufgabe_uid)
     )
 
-    exercise_ref.update({ "correction": full_correction_text.strip() })
+    exercise_ref.update(
+        { 
+        "correction": full_correction_text.strip(),
+        "score": round(avg, 2),
+        "done":  avg >= 0.8
+        })
 
     # Optional zur Kontrolle ausgeben
     print("Korrektur erfolgreich gespeichert:")
@@ -169,6 +187,7 @@ def main():
         "Mache bei richtigen Teilaufgaben keinerlei Anmerkung außer der Angabe, dass sie richtig ist. "
         "Spreche den Schüler bei den Korrekturvorschlägen direkt an. Verhalte dich wie ein Lehrer."
         "Bewerte die Teilaufgaben als Ganzes. Auch wenn sie auf mehrere Bilder verteilt sind. Die Korrektur soll die gesamte Schülerlösung über mehrere Bilder hinweg berücksichtigen."
+        "Vor der Bewertung, ob 'falsch' oder 'richtig' gebe einen Prozentsatz an, ob 100% korrekt oder 0% korrekt oder etwas dazwischen. Gebe es als Dezimalzahl in geschweiften Klammern am Anfang deiner Antwort zurück."
     )
 
     ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
@@ -179,9 +198,19 @@ def main():
         frage_template=frage_template
     )
 
+    sum = 0.0
+    count = 0
+
     full_correction_text = ""
     for qid, antwort in ergebnisse.items():
         full_correction_text += f"{{{qid}}}\n{antwort}\n\n"
+        match = re.match(r"\{([\d.,]+)\}", antwort)
+        if match:
+            wert = float(match.group(1).replace(",", "."))  # Komma zu Punkt für float
+            sum += wert
+            count += 1
+
+    avg = sum / count if count > 0 else 0.0
 
     exercise_ref = (
         db.collection("user").document("TNddezDjmEYDGEx0HdcMWvEQVbv1")
@@ -189,7 +218,12 @@ def main():
           .collection("exercises").document("09Xxx1t1RT59AgyJhBsi")
     )
 
-    exercise_ref.update({ "correction": full_correction_text.strip() })
+    exercise_ref.update(
+        { 
+        "correction": full_correction_text.strip(),
+        "score": round(avg, 2),
+        "done":  avg >= 0.8
+        })
 
     # Optional zur Kontrolle ausgeben
     print("Korrektur erfolgreich gespeichert:")
