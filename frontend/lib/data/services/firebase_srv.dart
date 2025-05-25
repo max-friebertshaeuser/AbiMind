@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/core/utils/constants.dart';
 import 'package:frontend/data/models/exercise.dart';
 import 'package:frontend/data/models/question.dart';
+import 'package:intl/intl.dart';
 
 import '../models/exam.dart';
+import '../models/streak.dart';
 
 class FirebaseService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -15,7 +17,7 @@ class FirebaseService {
       final querySnapshot = await _db.collection(kExam).get();
 
       final exams = await Future.wait(
-          querySnapshot.docs.map((doc) => Exam.fromSnapshot(doc))
+        querySnapshot.docs.map((doc) => Exam.fromSnapshot(doc)),
       );
 
       return exams;
@@ -23,6 +25,71 @@ class FirebaseService {
       print('Error fetching exams: $e');
       return [];
     }
+  }
+
+  static Future<List<StreakDay>> getStreakRaw(String userId) async {
+    final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
+
+    // --- DEBUG: confirm user doc exists ---
+    final userSnap = await userRef.get();
+    if (!userSnap.exists) {
+      print('🔥 getStreakRaw: user $userId does not exist!');
+      return [];
+    }
+
+    // --- fetch the subcollection ---
+    final logCollection = userRef.collection('streakLog');
+    final logSnap = await logCollection.get();
+    print('📄 getStreakRaw: found ${logSnap.docs.length} docs in streakLog for user $userId');
+
+    final formatter = DateFormat('yyyy-MM-dd');
+    final List<StreakDay> logs = [];
+
+    for (final doc in logSnap.docs) {
+      final data = doc.data();
+      print('   • doc.id=${doc.id} data=$data');
+
+      // try to parse the `date` field
+      final rawTs = data['date'];
+      if (rawTs is! Timestamp) {
+        print('     ‼️ skipping ${doc.id}: `date` is not a Timestamp');
+        continue;
+      }
+      final date = rawTs.toDate();
+
+      // minutes & goal (fall back to zero if missing)
+      final minutes = (data['minutes'] as num?)?.toInt() ?? 0;
+      final goal    = (data['goal']    as num?)?.toInt() ?? 0;
+
+      logs.add(StreakDay(date: date, minutes: minutes, goal: goal));
+    }
+
+    // sort by date ascending
+    logs.sort((a, b) => a.date.compareTo(b.date));
+    print('✅ getStreakRaw: returning ${logs.length} StreakDay entries');
+    return logs;
+  }
+
+  static Future<List<StreakDay>> getStreakPadded(String userId) async {
+    final raw = await getStreakRaw(userId);
+    final formatter = DateFormat('yyyy-MM-dd');
+    final byDate = { for (var d in raw) formatter.format(d.date): d };
+
+    final today = DateTime.now();
+    final start = DateTime(today.year, today.month, today.day)
+        .subtract(Duration(days: 14));
+
+    final defaultGoal = raw.isNotEmpty ? raw.last.goal : 0;
+    final List<StreakDay> padded = [];
+    for (int i = 0; i < 15; i++) {
+      final day = start.add(Duration(days: i));
+      final key = formatter.format(day);
+      padded.add(
+        byDate[key] ??
+            StreakDay(date: day, minutes: 0, goal: defaultGoal),
+      );
+    }
+    return padded;
   }
 
   static Future<Exam?> getExam(String examId) async {
@@ -64,16 +131,28 @@ class FirebaseService {
 
   static Future<List<Exercise>> fetchExercises(String examId) async {
     try {
-      final exercisesRef = _db.collection(kExam).doc(examId).collection(kExercises);
+      final exercisesRef = _db
+          .collection(kExam)
+          .doc(examId)
+          .collection(kExercises);
       final snapshot = await exercisesRef.get();
-      List<Exercise> exercises = snapshot.docs.map((el) => Exercise.fromJson({...el.data(), 'id': el.id,})).toList();
+      List<Exercise> exercises =
+          snapshot.docs
+              .map((el) => Exercise.fromJson({...el.data(), 'id': el.id}))
+              .toList();
       final answers = await fetchAnswers(examId);
-      exercises = exercises.map((e) {
-        e.answer = answers[e.id] ?? [];
-        return e;
-      }).toList();
+      exercises =
+          exercises.map((e) {
+            e.answer = answers[e.id] ?? [];
+            return e;
+          }).toList();
       await Future.wait(
-        exercises.map((exercise) async => exercise.questions = await fetchQuestions(exercisesRef.doc(exercise.id))),
+        exercises.map(
+          (exercise) async =>
+              exercise.questions = await fetchQuestions(
+                exercisesRef.doc(exercise.id),
+              ),
+        ),
       );
       return exercises;
     } catch (e) {
@@ -104,10 +183,9 @@ class FirebaseService {
           .collection(kExercises)
           .get();
 
- Map<String, List<Map<String, dynamic>>> answers = {
+      Map<String, List<Map<String, dynamic>>> answers = {
         for (var doc in snapshot.docs)
-          doc.id: (doc.data()['answer'] as List)
-              .cast<Map<String, dynamic>>(),
+          doc.id: (doc.data()['answer'] as List).cast<Map<String, dynamic>>(),
       };
       return answers;
     } catch (e) {
