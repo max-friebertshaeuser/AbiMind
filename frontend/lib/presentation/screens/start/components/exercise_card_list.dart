@@ -260,13 +260,16 @@ class CustomTaskCard extends StatelessWidget {
             spacing: 8,
             children:
                 tags.map((tag) {
+                  final color =
+                      tagColors[tag] ??
+                      Colors.blueGrey; // tagColors from constants.dart
                   return Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: tagColors[tag] ?? Colors.blueGrey,
+                      color: color,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(tag, style: lableTextStyle),
