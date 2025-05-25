@@ -24,13 +24,24 @@ const whiteColor = Color(0xFFFFFFFF);
 const flameColor = Color(0xFFFFAB91);
 
 final Map<String, Color> tagColors = {
-  'Finished': Colors.green.shade200, // Soft mint green
-  'Geometrie': Colors.blueGrey.shade400, // Muted slate blue
-  'Analysis': Colors.deepOrange.shade200, // Soft orange
-  'Keine Hilfsmittel': Colors.red.shade200, // Gentle red
-  'Alle Hilfsmittel': Colors.teal.shade200, // Calm turquoise
-  'Statistics': Colors.deepPurple.shade200, // Muted violet
+  // Special status
+  'Finished': Color(0xFF80CBC4), // Soft teal
+
+  // Topics (cooler, darker blue-gray tone for white font contrast)
+  'Geometry': Color(0xFF607D8B),   // Blue Grey 400
+  'Analysis': Color(0xFF607D8B),
+  'Stochastic': Color(0xFF607D8B),
+
+// Hilfsmittel tags (soft pastel red and green, good contrast with white text)
+  'Keine Hilfsmittel': Color(0xFFE57373), // Soft red (Red 300)
+  'Mit Hilfsmitteln': Color(0xFFA5D6A7),  // Soft green (Green 200)
+
+
+  // Mandatory tag (pastel yellow too bright → switch to amber for contrast)
+  'Mandatory': Color(0x96FFB300), // Amber 600
 };
+
+
 
 const texamleExeciese = {
   'id': 'example',
