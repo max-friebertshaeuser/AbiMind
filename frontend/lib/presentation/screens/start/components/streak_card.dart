@@ -4,9 +4,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/models/streak.dart';
 import 'package:frontend/presentation/screens/start/start-screen.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../data/services/firebase_srv.dart' as firebase_srv;
 
 class StreakCard extends StatefulWidget {
   const StreakCard({super.key});
@@ -23,11 +25,30 @@ class _StreakCardState extends State<StreakCard> {
     super.initState();
     _streakDataFuture = loadStreakData();
   }
-
   Future<Map<String, dynamic>> loadStreakData() async {
-    final String jsonString = await rootBundle.loadString('assets/streak.json');
-    return json.decode(jsonString);
+    const userId = 'OVHaLWokscqwx1iM91M7';
+
+    final List<StreakDay> logs = await firebase_srv.FirebaseService.getStreakRaw(userId);
+    int streak = 0;
+    for (int i = logs.length - 1; i >= 0; i--) {
+      if (logs[i].minutes >= logs[i].goal) streak++;
+      else break;
+    }
+
+    final progress = logs
+        .map((day) => {'minutes': day.minutes})
+        .toList();
+
+    final goal = logs.isNotEmpty ? logs.last.goal : 0;
+
+    return {
+      'streak': streak,
+      'goal': goal,
+      'tenDayLearnProgress': progress,
+    };
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +72,8 @@ class _StreakCardState extends State<StreakCard> {
 
         final List<int> minutesList =
             tenDayLearnProgress.map((e) => e['minutes'] as int).toList();
-        final int maxMinutes = minutesList.reduce((a, b) => a > b ? a : b);
-        final int minMinutes = minutesList.reduce((a, b) => a < b ? a : b);
+final int maxMinutes = [minutesList.reduce((a, b) => a > b ? a : b), goal.toInt()].reduce((a, b) => a > b ? a : b);
+final int minMinutes = [minutesList.reduce((a, b) => a < b ? a : b), goal.toInt()].reduce((a, b) => a < b ? a : b);
 
         return MainSurfaceCard(
           title: 'Streak',
