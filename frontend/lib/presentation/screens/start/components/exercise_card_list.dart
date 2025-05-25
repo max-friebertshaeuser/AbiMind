@@ -18,10 +18,16 @@ class ExerciseCardList extends StatefulWidget {
   _ExerciseCardListState createState() => _ExerciseCardListState();
 }
 
+class ExerciseWithExamDate {
+  final Exercise exercise;
+  final int year; // or DateTime date;
+
+  ExerciseWithExamDate({required this.exercise, required this.year});
+}
+
 class _ExerciseCardListState extends State<ExerciseCardList> {
   List<ExerciseTopic> selectedCategories = [ExerciseTopic.mandatory];
-  List<Exercise> exercises = [];
-  List<String> tags = [];
+  List<ExerciseWithExamDate> exercisesWithDate = [];
 
   @override
   void initState() {
@@ -32,17 +38,24 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   Future<void> loadTaskCardsData() async {
     try {
       final exams = await FirebaseService.getExams();
-      exams.forEach((exam) {
-        exercises.addAll(exam.exercises);
-      });
+      for (final exam in exams) {
+        for (final exercise in exam.exercises) {
+          exercisesWithDate.add(
+            ExerciseWithExamDate(
+              exercise: exercise,
+              year: exam.year, // or exam.date
+            ),
+          );
+        }
+      }
     } catch (e) {
       print('Error loading task cards data: $e');
     }
   }
 
-  List<Exercise> get filteredTasks {
-    return exercises.where((ex) {
-      return selectedCategories.contains(ex.exerciseTopic);
+  List<ExerciseWithExamDate> get filteredTasks {
+    return exercisesWithDate.where((ex) {
+      return selectedCategories.contains(ex.exercise.exerciseTopic);
     }).toList();
   }
 
@@ -72,9 +85,13 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                         children:
                             filteredTasks.map((task) {
                               return CustomTaskCard(
-                                title: task.title,
-                                description: task.description,
-                                tags: getTags(task.exerciseTopic, task.id),
+                                title: task.exercise.title,
+                                description: task.exercise.description,
+                                tags: getTags(
+                                  task.exercise.exerciseTopic,
+                                  task.exercise.id,
+                                ),
+                                year: task.year.toString(),
                               );
                             }).toList(),
                       ),
@@ -100,7 +117,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   }
 
   getTags(ExerciseTopic? exerciseTopic, String exerciseId) {
-    //TODO: request if exercise is Done
+    //TODO: request if exercise is Done set Done
     List<String> tags = [];
     switch (exerciseTopic) {
       case ExerciseTopic.mandatory:
@@ -126,118 +143,18 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   }
 }
 
-class ExerciseCards extends StatelessWidget {
-  final int year;
-  final double percent;
-  final Map<String, List<int>> topics;
-
-  const ExerciseCards({
-    Key? key,
-    required this.year,
-    required this.percent,
-    required this.topics,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryFixed,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, offset: Offset(2, 2), blurRadius: 5),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            "— $year —",
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-              letterSpacing: 1,
-              color: colorScheme.onPrimaryFixedVariant,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Progress Circle
-                CircularPercentIndicator(
-                  radius: 30.0,
-                  lineWidth: 6.0,
-                  percent: percent,
-                  center: Text(
-                    "${(percent * 100).round()}%",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      color: colorScheme.onPrimaryFixedVariant,
-                    ),
-                  ),
-                  backgroundColor: colorScheme.surfaceContainerHigh,
-                  progressColor: colorScheme.onPrimaryFixedVariant,
-                  circularStrokeCap: CircularStrokeCap.round,
-                ),
-
-                const SizedBox(width: 50),
-                // Topics List
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children:
-                      topics.entries.map((entry) {
-                        final String topic = entry.key;
-                        final int done = entry.value[0];
-                        final int total = entry.value[1];
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text("$done/$total ", style: smallTextStyle),
-                              Text(
-                                topic,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: colorScheme.onPrimaryFixedVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class CustomTaskCard extends StatelessWidget {
   final String title;
   final String description;
   final List<String> tags;
+  final String year;
 
   const CustomTaskCard({
     super.key,
     required this.title,
     required this.description,
     required this.tags,
+    required this.year,
   });
 
   @override
@@ -277,7 +194,14 @@ class CustomTaskCard extends StatelessWidget {
                 }).toList(),
           ),
           const SizedBox(height: 10),
-          Text(title, style: kHeaderStyle),
+          Row(
+            children: [
+              Text(year, style: kHeaderStyle),
+              const SizedBox(width: 8),
+              Text(title, style: kHeaderStyle),
+
+            ],
+          ),
           const SizedBox(height: 6),
 
           // Use a simple Text widget for the description instead of TeXView
