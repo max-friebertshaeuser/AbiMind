@@ -9,7 +9,6 @@ import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
-import '../../../../data/models/exam.dart';
 import '../../../../data/services/firebase_srv.dart';
 import 'exercise_selection_bar.dart';
 import 'package:flutter_tex/flutter_tex.dart';
@@ -75,7 +74,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                               return CustomTaskCard(
                                 title: task.title,
                                 description: task.description,
-                                tags: task.exerciseTopic != null ? [task.exerciseTopic!] : [],
+                                tags: getTags(task.exerciseTopic, task.id),
                               );
                             }).toList(),
                       ),
@@ -98,6 +97,32 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
         ),
       ),
     );
+  }
+
+  getTags(ExerciseTopic? exerciseTopic, String exerciseId) {
+    //TODO: request if exercise is Done
+    List<String> tags = [];
+    switch (exerciseTopic) {
+      case ExerciseTopic.mandatory:
+        tags.add('Mandatory');
+        tags.add('Keine Hilfsmittel');
+        break;
+      case ExerciseTopic.analysis:
+        tags.add('Analysis');
+        tags.add('Mit Hilfsmitteln');
+        break;
+      case ExerciseTopic.stochastic:
+        tags.add('Stochastic');
+        tags.add('Mit Hilfsmitteln');
+        break;
+      case ExerciseTopic.geometry:
+        tags.add('Geometry');
+        tags.add('Mit Hilfsmitteln');
+        break;
+      default:
+        break;
+    }
+    return tags;
   }
 }
 
@@ -203,12 +228,10 @@ class ExerciseCards extends StatelessWidget {
   }
 }
 
-
-
 class CustomTaskCard extends StatelessWidget {
   final String title;
   final String description;
-  final List<ExerciseTopic> tags;
+  final List<String> tags;
 
   const CustomTaskCard({
     super.key,
@@ -235,16 +258,20 @@ class CustomTaskCard extends StatelessWidget {
           // Tags
           Wrap(
             spacing: 8,
-            children: tags.map((tag) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: tagColors[tag] ?? Colors.blueGrey,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(tag.displayName, style: lableTextStyle),
-              );
-            }).toList(),
+            children:
+                tags.map((tag) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: tagColors[tag] ?? Colors.blueGrey,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(tag, style: lableTextStyle),
+                  );
+                }).toList(),
           ),
           const SizedBox(height: 10),
           Text(title, style: kHeaderStyle),
@@ -253,7 +280,7 @@ class CustomTaskCard extends StatelessWidget {
           // LaTeX description using flutter_tex
           TeXView(
             child: TeXViewDocument(
-              description,
+              "description",
               style: TeXViewStyle(
                 fontStyle: TeXViewFontStyle(fontSize: 14),
                 padding: TeXViewPadding.all(0),
@@ -266,11 +293,12 @@ class CustomTaskCard extends StatelessWidget {
               elevation: 0,
               padding: TeXViewPadding.all(0),
             ),
-            loadingWidgetBuilder: (_) => const Center(
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            onRenderFinished: (height) =>
-                debugPrint('TeXView rendered with height: $height'),
+            loadingWidgetBuilder:
+                (_) => const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+            onRenderFinished:
+                (height) => debugPrint('TeXView rendered with height: $height'),
           ),
         ],
       ),
