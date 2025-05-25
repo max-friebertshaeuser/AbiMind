@@ -320,7 +320,6 @@ class _ProgressCardState extends State<ProgressCard> {
             child: FloatingActionButton.small(
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: selectedExam.id));
-                debugPrint('✏️ Edit tapped for ${selectedExam.year}');
               },
               backgroundColor: colorScheme.primary,
               child: const Icon(Icons.edit, size: 18, color: Colors.white),

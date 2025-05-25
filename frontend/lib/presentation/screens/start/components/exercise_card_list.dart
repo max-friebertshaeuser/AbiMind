@@ -10,6 +10,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../data/services/firebase_srv.dart';
+import '../../../../routes/routes.dart';
+import '../../exercise/exercise_screen.dart';
 import 'exercise_selection_bar.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 
@@ -20,9 +22,11 @@ class ExerciseCardList extends StatefulWidget {
 
 class ExerciseWithExamDate {
   final Exercise exercise;
-  final int year; // or DateTime date;
+  final int year;
+  final String examId;
 
-  ExerciseWithExamDate({required this.exercise, required this.year});
+  ExerciseWithExamDate({required this.exercise, required this.year
+  , required this.examId});
 }
 
 class _ExerciseCardListState extends State<ExerciseCardList> {
@@ -43,7 +47,8 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
           exercisesWithDate.add(
             ExerciseWithExamDate(
               exercise: exercise,
-              year: exam.year, // or exam.date
+              year: exam.year,
+              examId: exam.id// or exam.date
             ),
           );
         }
@@ -87,11 +92,13 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                               return CustomTaskCard(
                                 title: task.exercise.title,
                                 description: task.exercise.description,
-                                tags: getTags(
-                                  task.exercise.exerciseTopic,
-                                  task.exercise.id,
-                                ),
+                                tags: getTags(task.exercise.exerciseTopic, task.exercise.id),
                                 year: task.year.toString(),
+                                onTap: () {
+                                  //TODO navigate to exact exercise
+                                  Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: task.examId));
+                                  // Your navigation or logic here
+                                },
                               );
                             }).toList(),
                       ),
@@ -148,6 +155,7 @@ class CustomTaskCard extends StatelessWidget {
   final String description;
   final List<String> tags;
   final String year;
+  final VoidCallback? onTap;
 
   const CustomTaskCard({
     super.key,
@@ -155,84 +163,58 @@ class CustomTaskCard extends StatelessWidget {
     required this.description,
     required this.tags,
     required this.year,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer,
-        border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Tags
-          Wrap(
-            spacing: 8,
-            children:
-                tags.map((tag) {
-                  final color =
-                      tagColors[tag] ??
-                      Colors.blueGrey; // tagColors from constants.dart
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(tag, style: lableTextStyle),
-                  );
-                }).toList(),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Text(year, style: kHeaderStyle),
-              const SizedBox(width: 8),
-              Text(title, style: kHeaderStyle),
-
-            ],
-          ),
-          const SizedBox(height: 6),
-
-          // Use a simple Text widget for the description instead of TeXView
-          Text(
-            description,
-            style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
-          ),
-          /*         TeXView(
-            child: TeXViewDocument(
-              "description",
-              style: TeXViewStyle(
-                fontStyle: TeXViewFontStyle(fontSize: 14),
-                padding: TeXViewPadding.all(0),
-                margin: TeXViewMargin.all(0),
-                contentColor: colorScheme.onSurface,
-              ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: colorScheme.primaryContainer,
+          border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Tags
+            Wrap(
+              spacing: 8,
+              children: tags.map((tag) {
+                final color = tagColors[tag] ?? Colors.blueGrey;
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(tag, style: lableTextStyle),
+                );
+              }).toList(),
             ),
-            style: TeXViewStyle(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              padding: TeXViewPadding.all(0),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Text(year, style: kHeaderStyle),
+                const SizedBox(width: 8),
+                Text(title, style: kHeaderStyle),
+              ],
             ),
-            loadingWidgetBuilder:
-                (_) => const Center(
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-            onRenderFinished:
-                (height) => debugPrint('TeXView rendered with height: $height'),
-          ),*/
-        ],
+            const SizedBox(height: 6),
+            Text(
+              description,
+              style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
