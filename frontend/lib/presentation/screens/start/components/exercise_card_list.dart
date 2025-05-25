@@ -277,8 +277,12 @@ class CustomTaskCard extends StatelessWidget {
           Text(title, style: kHeaderStyle),
           const SizedBox(height: 6),
 
-          // LaTeX description using flutter_tex
-          TeXView(
+          // Use a simple Text widget for the description instead of TeXView
+          Text(
+            description,
+            style: TextStyle(fontSize: 14, color: colorScheme.onSurface),
+          ),
+          /*         TeXView(
             child: TeXViewDocument(
               "description",
               style: TeXViewStyle(
@@ -299,7 +303,7 @@ class CustomTaskCard extends StatelessWidget {
                 ),
             onRenderFinished:
                 (height) => debugPrint('TeXView rendered with height: $height'),
-          ),
+          ),*/
         ],
       ),
     );
