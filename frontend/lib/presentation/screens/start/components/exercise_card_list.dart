@@ -12,6 +12,7 @@ import '../../../../core/utils/constants.dart';
 import '../../../../data/models/exam.dart';
 import '../../../../data/services/firebase_srv.dart';
 import 'exercise_selection_bar.dart';
+import 'package:flutter_tex/flutter_tex.dart';
 
 class ExerciseCardList extends StatefulWidget {
   @override
@@ -74,10 +75,7 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                               return CustomTaskCard(
                                 title: task.title,
                                 description: task.description,
-                                tags:
-                                    task.exerciseTopic != null
-                                        ? [task.exerciseTopic!]
-                                        : [],
+                                tags: task.exerciseTopic != null ? [task.exerciseTopic!] : [],
                               );
                             }).toList(),
                       ),
@@ -205,6 +203,8 @@ class ExerciseCards extends StatelessWidget {
   }
 }
 
+
+
 class CustomTaskCard extends StatelessWidget {
   final String title;
   final String description;
@@ -220,6 +220,7 @@ class CustomTaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
       padding: const EdgeInsets.all(12),
@@ -231,27 +232,46 @@ class CustomTaskCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Tags
           Wrap(
             spacing: 8,
-            children:
-                tags.map((tag) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: tagColors[tag],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(tag.displayName, style: lableTextStyle),
-                  );
-                }).toList(),
+            children: tags.map((tag) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: tagColors[tag] ?? Colors.blueGrey,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(tag.displayName, style: lableTextStyle),
+              );
+            }).toList(),
           ),
           const SizedBox(height: 10),
           Text(title, style: kHeaderStyle),
           const SizedBox(height: 6),
-          Text(description, style: middleTextStyle),
+
+          // LaTeX description using flutter_tex
+          TeXView(
+            child: TeXViewDocument(
+              description,
+              style: TeXViewStyle(
+                fontStyle: TeXViewFontStyle(fontSize: 14),
+                padding: TeXViewPadding.all(0),
+                margin: TeXViewMargin.all(0),
+                contentColor: colorScheme.onSurface,
+              ),
+            ),
+            style: TeXViewStyle(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              padding: TeXViewPadding.all(0),
+            ),
+            loadingWidgetBuilder: (_) => const Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+            onRenderFinished: (height) =>
+                debugPrint('TeXView rendered with height: $height'),
+          ),
         ],
       ),
     );
