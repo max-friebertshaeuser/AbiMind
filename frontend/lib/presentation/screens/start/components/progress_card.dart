@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/data/models/progress.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
@@ -24,7 +25,7 @@ class _ProgressCardState extends State<ProgressCard> {
   List<Exam> statisticsData = [];
   late Exam selectedExam;
   bool isLoading = true;
-  Map<String, dynamic> progressData = {};
+  Progress progressData = Progress(examProgress: {});
 
   @override
   void initState() {
@@ -34,13 +35,13 @@ class _ProgressCardState extends State<ProgressCard> {
 
   Future<void> loadStatistics() async {
     try {
-      final progressData = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
+      progressData = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
       final exams = await FirebaseService.getExams();
       setState(() {
         statisticsData = exams;
         if (exams.isNotEmpty) {
           selectedExam = exams.firstWhere(
-                (exam) => exam.year == DateTime.now().year,
+            (exam) => exam.year == DateTime.now().year,
             orElse: () => exams.first,
           );
         }
@@ -95,22 +96,17 @@ class _ProgressCardState extends State<ProgressCard> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        selectedExam.year.toString(),
-                        style: kHeaderStyle,
-                      ),
+                      Text(selectedExam.year.toString(), style: kHeaderStyle),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: CircularPercentIndicator(
                           backgroundColor: colorScheme.surfaceContainerHigh,
-                          progressColor:
-                          colorScheme.onPrimaryFixedVariant,
+                          progressColor: colorScheme.onPrimaryFixedVariant,
                           radius: 70.0,
                           lineWidth: 12.0,
                           percent: 0.0,
                           center: Text("0%", style: percentageStyle),
-                          circularStrokeCap:
-                          CircularStrokeCap.round,
+                          circularStrokeCap: CircularStrokeCap.round,
                         ),
                       ),
                       const Divider(thickness: 2),
@@ -118,39 +114,67 @@ class _ProgressCardState extends State<ProgressCard> {
                         children: [
                           CategoryProgress(
                             title: 'Stochastik',
-                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.stochastic),
-                            total: selectedExam.exercises
-                                .where((e) =>
-                            e.exerciseTopic ==
-                                ExerciseTopic.stochastic)
-                                .length,
+                            done: _calculateCategoryDone(
+                              progressData.examProgress,
+                              selectedExam,
+                              ExerciseTopic.stochastic,
+                            ),
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (e) =>
+                                          e.exerciseTopic ==
+                                          ExerciseTopic.stochastic,
+                                    )
+                                    .length,
                           ),
                           CategoryProgress(
                             title: 'Analysis',
-                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.analysis),
-                            total: selectedExam.exercises
-                                .where((e) =>
-                            e.exerciseTopic ==
-                                ExerciseTopic.analysis)
-                                .length,
+                            done: _calculateCategoryDone(
+                              progressData.examProgress,
+                              selectedExam,
+                              ExerciseTopic.analysis,
+                            ),
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (e) =>
+                                          e.exerciseTopic ==
+                                          ExerciseTopic.analysis,
+                                    )
+                                    .length,
                           ),
                           CategoryProgress(
                             title: 'Geometrie',
-                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.geometry),
-                            total: selectedExam.exercises
-                                .where((e) =>
-                            e.exerciseTopic ==
-                                ExerciseTopic.geometry)
-                                .length,
+                            done: _calculateCategoryDone(
+                              progressData.examProgress,
+                              selectedExam,
+                              ExerciseTopic.geometry,
+                            ),
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (e) =>
+                                          e.exerciseTopic ==
+                                          ExerciseTopic.geometry,
+                                    )
+                                    .length,
                           ),
                           CategoryProgress(
                             title: 'Pflichtaufgaben',
-                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.mandatory),
-                            total: selectedExam.exercises
-                                .where((e) =>
-                            e.exerciseTopic ==
-                                ExerciseTopic.mandatory)
-                                .length,
+                            done: _calculateCategoryDone(
+                              progressData.examProgress,
+                              selectedExam,
+                              ExerciseTopic.mandatory,
+                            ),
+                            total:
+                                selectedExam.exercises
+                                    .where(
+                                      (e) =>
+                                          e.exerciseTopic ==
+                                          ExerciseTopic.mandatory,
+                                    )
+                                    .length,
                           ),
                         ],
                       ),
@@ -165,10 +189,7 @@ class _ProgressCardState extends State<ProgressCard> {
                   horizontal: 10.0,
                   vertical: 20.0,
                 ),
-                child: const VerticalDivider(
-                  thickness: 2,
-                  width: 10,
-                ),
+                child: const VerticalDivider(thickness: 2, width: 10),
               ),
 
               // right side: scrollable mini cards
@@ -176,138 +197,133 @@ class _ProgressCardState extends State<ProgressCard> {
                 flex: 1,
                 child: SingleChildScrollView(
                   child: Column(
-                    children: statisticsData.map((stat) {
-                      final isSelected =
-                          stat.year == selectedExam.year;
-                      return GestureDetector(
-                        onTap: () => selectStatistic(stat),
-                        child: Container(
-                          width: double.infinity,
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 8.0,
-                            horizontal: 12.0,
-                          ),
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: colorScheme
-                                  .onPrimaryFixedVariant,
-                              width: 2,
-                            ),
-                            color: isSelected
-                                ? colorScheme.primaryContainer
-                                .withOpacity(0.5)
-                                : colorScheme.primaryContainer,
-                            borderRadius:
-                            BorderRadius.circular(20),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                offset: Offset(0, 3),
+                    children:
+                        statisticsData.map((stat) {
+                          final isSelected = stat.year == selectedExam.year;
+                          return GestureDetector(
+                            onTap: () => selectStatistic(stat),
+                            child: Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                                horizontal: 12.0,
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment:
-                            CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "— ${stat.year} —",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: isSelected
-                                      ? colorScheme
-                                      .onPrimaryContainer
-                                      : colorScheme.onSurface,
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                  width: 2,
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.center,
-                                children: [
-                                  CircularPercentIndicator(
-                                    backgroundColor: colorScheme
-                                        .surfaceContainerHigh,
-                                    progressColor: colorScheme
-                                        .onPrimaryFixedVariant,
-                                    radius: 30.0,
-                                    lineWidth: 8.0,
-                                    percent: 0.0,
-                                    center: Text(
-                                      "0%",
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight:
-                                        FontWeight.bold,
-                                        color: isSelected
-                                            ? colorScheme
-                                            .onPrimaryContainer
-                                            : colorScheme
-                                            .onSurface,
-                                      ),
-                                    ),
-                                    circularStrokeCap:
-                                    CircularStrokeCap.round,
+                                color:
+                                    isSelected
+                                        ? colorScheme.primaryContainer
+                                            .withOpacity(0.5)
+                                        : colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
                                   ),
-                                  const SizedBox(width: 20),
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "— ${stat.year} —",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          isSelected
+                                              ? colorScheme.onPrimaryContainer
+                                              : colorScheme.onSurface,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.stochastic)}/${stat.stochasticExercises.length} Stochastik",
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? colorScheme
-                                              .onPrimaryContainer
-                                              : colorScheme
-                                              .onSurface,
+                                      CircularPercentIndicator(
+                                        backgroundColor:
+                                            colorScheme.surfaceContainerHigh,
+                                        progressColor:
+                                            colorScheme.onPrimaryFixedVariant,
+                                        radius: 30.0,
+                                        lineWidth: 8.0,
+                                        percent: 0.0,
+                                        center: Text(
+                                          "0%",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                isSelected
+                                                    ? colorScheme
+                                                        .onPrimaryContainer
+                                                    : colorScheme.onSurface,
+                                          ),
                                         ),
+                                        circularStrokeCap:
+                                            CircularStrokeCap.round,
                                       ),
-                                      Text(
-                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.analysis)}/${stat.analysisExercises.length} Analysis",
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? colorScheme
-                                              .onPrimaryContainer
-                                              : colorScheme
-                                              .onSurface,
-                                        ),
-                                      ),
-                                      Text(
-                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.geometry)}/${stat.geometryExercises.length} Geometrie",
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? colorScheme
-                                              .onPrimaryContainer
-                                              : colorScheme
-                                              .onSurface,
-                                        ),
-                                      ),
-                                      Text(
-                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Pflichtaufgaben",
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? colorScheme
-                                              .onPrimaryContainer
-                                              : colorScheme
-                                              .onSurface,
-                                        ),
+                                      const SizedBox(width: 20),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.stochastic)}/${stat.stochasticExercises.length} Stochastik",
+                                            style: TextStyle(
+                                              color:
+                                                  isSelected
+                                                      ? colorScheme
+                                                          .onPrimaryContainer
+                                                      : colorScheme.onSurface,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.analysis)}/${stat.analysisExercises.length} Analysis",
+                                            style: TextStyle(
+                                              color:
+                                                  isSelected
+                                                      ? colorScheme
+                                                          .onPrimaryContainer
+                                                      : colorScheme.onSurface,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.geometry)}/${stat.geometryExercises.length} Geometrie",
+                                            style: TextStyle(
+                                              color:
+                                                  isSelected
+                                                      ? colorScheme
+                                                          .onPrimaryContainer
+                                                      : colorScheme.onSurface,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Pflichtaufgaben",
+                                            style: TextStyle(
+                                              color:
+                                                  isSelected
+                                                      ? colorScheme
+                                                          .onPrimaryContainer
+                                                      : colorScheme.onSurface,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                            ),
+                          );
+                        }).toList(),
                   ),
                 ),
               ),
@@ -318,7 +334,11 @@ class _ProgressCardState extends State<ProgressCard> {
             right: 12,
             child: FloatingActionButton.small(
               onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: selectedExam.id));
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.exercise,
+                  arguments: ExerciseScreenArguments(examId: selectedExam.id),
+                );
               },
               backgroundColor: colorScheme.primary,
               child: const Icon(Icons.edit, size: 18, color: Colors.white),
@@ -331,7 +351,6 @@ class _ProgressCardState extends State<ProgressCard> {
     );
   }
 }
-
 
 class CategoryProgress extends StatelessWidget {
   final String title;
@@ -378,14 +397,22 @@ class CategoryProgress extends StatelessWidget {
   }
 }
 
-
-int _calculateCategoryDone(Map<String, dynamic> progressData, Exam selectedExam, ExerciseTopic category) {
-  final categoryCount = selectedExam.exercises
-      .where((e) => e.exerciseTopic == category)
-      .length;
-  final progress = progressData[selectedExam.id]?[category.name];
-  if (progress != null && categoryCount > 0 && (progress / categoryCount) >= 0.8) {
-    return 1;
+int _calculateCategoryDone(
+  Map<String, dynamic> progressData,
+  Exam selectedExam,
+  ExerciseTopic category,
+) {
+  final exercises = selectedExam.exercises.where(
+    (e) => e.exerciseTopic == category,
+  );
+  final Map<String, double> exercisesProgress =
+      progressData[selectedExam.id] ?? {};
+  int doneCount = 0;
+  for (var exercise in exercises) {
+    final progress = exercisesProgress[exercise.id] ?? 0.0;
+    if (progress >= 0.8) {
+      doneCount++;
+    }
   }
-  return 0;
+  return doneCount;
 }
