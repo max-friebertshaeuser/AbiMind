@@ -100,6 +100,7 @@ class FirebaseService {
       if (exercise.answer.isNotEmpty) {
         await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).collection(kExercises).doc(exercise.id).set({
           kAnswer: exercise.answer,
+          kAnswerImage: exercise.getEncodedImage()
         });
       }
     }

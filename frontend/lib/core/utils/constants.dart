@@ -96,3 +96,4 @@ const String kUser = 'user';
 const String kImages = 'images';
 const String kSolutionImages = 'solution_images';
 const String kAnswer = 'answer';
+const String kAnswerImage = 'answer_image';

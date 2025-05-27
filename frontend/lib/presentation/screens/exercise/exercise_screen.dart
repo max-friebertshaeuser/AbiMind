@@ -245,8 +245,8 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                 onPressed: () async {
                   currentExercise.answer = _drawingController.getJsonList();
                   currentExercise.answerImage = await _drawingController.getImageData();
-                  await FirebaseService.saveAnswers(exam!);
-                  print('Save answer: ${currentExercise.answer}');
+                  await exam?.save();
+                  print('Saved answer');
                 },
               ),
             ],
@@ -271,38 +271,10 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Flex(
-                              direction: Axis.vertical,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    exam!.exercises[exerciseIndex].title,
-                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Text(currentExercise.description, style: TextStyle(fontSize: 16)),
-                                ),
-                                Expanded(
-                                  child:
-                                  exerciseExpanded && currentExercise.questions!.isNotEmpty
-                                      ? ListView.builder(
-                                    itemCount: currentExercise.questions!.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        title: Text(
-                                          currentExercise.questions!.isEmpty ? 'No Questions':'${currentExercise.questions?[index].title} ${currentExercise.questions?[index].description}',
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      );
-                                    },
-                                  )
-                                      : SizedBox(),
-                                ),
-                              ],
-                            ),
+                            child: ExerciseView(exam: exam,
+                                exerciseIndex: exerciseIndex,
+                                currentExercise: currentExercise,
+                                exerciseExpanded: exerciseExpanded),
                           ),
                         ),
                       ),
@@ -354,7 +326,9 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                         FloatingActionButton(
                           mini: true,
                           heroTag: "prev_page",
-                          onPressed: () {
+                          onPressed: () async {
+                            currentExercise.answer = _drawingController.getJsonList();
+                            currentExercise.answerImage = await _drawingController.getImageData();
                             setState(() {
                               currentExercise.answer = _drawingController.getJsonList();
                               if(exerciseIndex > 0) {
@@ -369,8 +343,9 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                         FloatingActionButton(
                           mini: true,
                           heroTag: "next_page",
-                          onPressed: () {
+                          onPressed: () async {
                             currentExercise.answer = _drawingController.getJsonList();
+                            currentExercise.answerImage = await _drawingController.getImageData();
                             setState(() {
                               if (exerciseIndex < exam!.exercises.length - 1) {
                                 exerciseIndex++;
@@ -390,5 +365,57 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
 
     }
 
+  }
+}
+
+class ExerciseView extends StatelessWidget {
+  const ExerciseView({
+    super.key,
+    required this.exam,
+    required this.exerciseIndex,
+    required this.currentExercise,
+    required this.exerciseExpanded,
+  });
+
+  final Exam? exam;
+  final int exerciseIndex;
+  final Exercise currentExercise;
+  final bool exerciseExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    return Flex(
+      direction: Axis.vertical,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            exam!.exercises[exerciseIndex].title,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Text(currentExercise.description, style: TextStyle(fontSize: 16)),
+        ),
+        Expanded(
+          child:
+          exerciseExpanded && currentExercise.questions!.isNotEmpty
+              ? ListView.builder(
+            itemCount: currentExercise.questions!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(
+                  currentExercise.questions!.isEmpty ? 'No Questions' : '${currentExercise.questions?[index]
+                      .title} ${currentExercise.questions?[index].description}',
+                  style: TextStyle(fontSize: 16),
+                ),
+              );
+            },
+          )
+              : SizedBox(),
+        ),
+      ],
+    );
   }
 }

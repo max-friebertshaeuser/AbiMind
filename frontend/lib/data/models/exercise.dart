@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 import 'package:frontend/data/models/encoded_image.dart';
 import 'package:frontend/data/models/question.dart';
@@ -36,6 +38,16 @@ class Exercise {
       answer: (json['answer'] as List<dynamic>?)?.map((item) => item as Map<String, dynamic>).toList() ?? [],
     );
   }
+
+  String getEncodedImage(){
+    if (answerImage != null) {
+      final bytes = answerImage!.buffer.asUint8List();
+      return base64Encode(bytes);
+    }
+    return '';
+  }
+
+
 
   @override
   String toString() {
