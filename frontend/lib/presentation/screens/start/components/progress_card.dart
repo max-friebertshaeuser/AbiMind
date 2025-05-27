@@ -24,6 +24,7 @@ class _ProgressCardState extends State<ProgressCard> {
   List<Exam> statisticsData = [];
   late Exam selectedExam;
   bool isLoading = true;
+  Map<String, dynamic> progressData = {};
 
   @override
   void initState() {
@@ -33,6 +34,7 @@ class _ProgressCardState extends State<ProgressCard> {
 
   Future<void> loadStatistics() async {
     try {
+      final progressData = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
       final exams = await FirebaseService.getExams();
       setState(() {
         statisticsData = exams;
@@ -45,7 +47,6 @@ class _ProgressCardState extends State<ProgressCard> {
         isLoading = false;
       });
     } catch (e) {
-      debugPrint("❌ Error loading statistics: $e");
       setState(() => isLoading = false);
     }
   }
@@ -80,11 +81,9 @@ class _ProgressCardState extends State<ProgressCard> {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // ─── Your existing Row with left + divider + right ───────────────
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // left side: big circle + categories
               Expanded(
                 flex: 1,
                 child: Container(
@@ -119,7 +118,7 @@ class _ProgressCardState extends State<ProgressCard> {
                         children: [
                           CategoryProgress(
                             title: 'Stochastik',
-                            done: 0,
+                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.stochastic),
                             total: selectedExam.exercises
                                 .where((e) =>
                             e.exerciseTopic ==
@@ -128,7 +127,7 @@ class _ProgressCardState extends State<ProgressCard> {
                           ),
                           CategoryProgress(
                             title: 'Analysis',
-                            done: 0,
+                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.analysis),
                             total: selectedExam.exercises
                                 .where((e) =>
                             e.exerciseTopic ==
@@ -137,7 +136,7 @@ class _ProgressCardState extends State<ProgressCard> {
                           ),
                           CategoryProgress(
                             title: 'Geometrie',
-                            done: 0,
+                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.geometry),
                             total: selectedExam.exercises
                                 .where((e) =>
                             e.exerciseTopic ==
@@ -146,7 +145,7 @@ class _ProgressCardState extends State<ProgressCard> {
                           ),
                           CategoryProgress(
                             title: 'Pflichtaufgaben',
-                            done: 0,
+                            done: _calculateCategoryDone(progressData, selectedExam, ExerciseTopic.mandatory),
                             total: selectedExam.exercises
                                 .where((e) =>
                             e.exerciseTopic ==
@@ -261,7 +260,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                         .start,
                                     children: [
                                       Text(
-                                        "0/${stat.stochasticExercises.length} Stochastik",
+                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.stochastic)}/${stat.stochasticExercises.length} Stochastik",
                                         style: TextStyle(
                                           color: isSelected
                                               ? colorScheme
@@ -271,7 +270,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                         ),
                                       ),
                                       Text(
-                                        "0/${stat.analysisExercises.length} Analysis",
+                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.analysis)}/${stat.analysisExercises.length} Analysis",
                                         style: TextStyle(
                                           color: isSelected
                                               ? colorScheme
@@ -281,7 +280,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                         ),
                                       ),
                                       Text(
-                                        "0/${stat.geometryExercises.length} Geometrie",
+                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.geometry)}/${stat.geometryExercises.length} Geometrie",
                                         style: TextStyle(
                                           color: isSelected
                                               ? colorScheme
@@ -291,7 +290,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                         ),
                                       ),
                                       Text(
-                                        "0/${stat.mandatoryExercises.length} Pflichtaufgaben",
+                                        "${_calculateCategoryDone(progressData, selectedExam, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Pflichtaufgaben",
                                         style: TextStyle(
                                           color: isSelected
                                               ? colorScheme
@@ -377,4 +376,16 @@ class CategoryProgress extends StatelessWidget {
       ),
     );
   }
+}
+
+
+int _calculateCategoryDone(Map<String, dynamic> progressData, Exam selectedExam, ExerciseTopic category) {
+  final categoryCount = selectedExam.exercises
+      .where((e) => e.exerciseTopic == category)
+      .length;
+  final progress = progressData[selectedExam.id]?[category.name];
+  if (progress != null && categoryCount > 0 && (progress / categoryCount) >= 0.8) {
+    return 1;
+  }
+  return 0;
 }
