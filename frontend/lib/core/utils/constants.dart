@@ -31,6 +31,7 @@ final Map<String, Color> tagColors = {
   'Geometry': Color(0xFF607D8B),   // Blue Grey 400
   'Analysis': Color(0xFF607D8B),
   'Stochastic': Color(0xFF607D8B),
+  'Mandatory': Color(0xFF607D8B),
 
 // Hilfsmittel tags (soft pastel red and green, good contrast with white text)
   'Keine Hilfsmittel': Color(0xFFE57373), // Soft red (Red 300)
@@ -38,7 +39,6 @@ final Map<String, Color> tagColors = {
 
 
   // Mandatory tag (pastel yellow too bright → switch to amber for contrast)
-  'Mandatory': Color(0x96FFB300), // Amber 600
 };
 
 
