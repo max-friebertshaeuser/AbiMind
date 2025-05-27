@@ -28,25 +28,41 @@ class _StreakCardState extends State<StreakCard> {
   Future<Map<String, dynamic>> loadStreakData() async {
     const userId = 'OVHaLWokscqwx1iM91M7';
 
-    final List<StreakDay> logs = await firebase_srv.FirebaseService.getStreakRaw(userId);
-    int streak = 0;
-    for (int i = logs.length - 1; i >= 0; i--) {
-      if (logs[i].minutes >= logs[i].goal) streak++;
-      else break;
-    }
+    final Streak streakObj = await firebase_srv.FirebaseService.getStreak(userId);
 
-    final progress = logs
-        .map((day) => {'minutes': day.minutes})
+    final int goal = streakObj.goal;
+
+    final sortedDates = streakObj.days.keys.toList()
+      ..sort((a, b) => a.compareTo(b));
+
+    final List<int> minutesList = sortedDates
+        .map((day) => streakObj.days[day]!)
         .toList();
 
-    final goal = logs.isNotEmpty ? logs.last.goal : 0;
+    final List<int> lastTen = minutesList.length > 10
+        ? minutesList.sublist(minutesList.length - 10)
+        : minutesList;
+
+    int streakCount = 0;
+    for (int i = lastTen.length - 1; i >= 0; i--) {
+      if (lastTen[i] >= goal) {
+        streakCount++;
+      } else {
+        break;
+      }
+    }
+
+    final tenDayLearnProgress = lastTen
+        .map((mins) => {'minutes': mins})
+        .toList();
 
     return {
-      'streak': streak,
+      'streak': streakCount,
       'goal': goal,
-      'tenDayLearnProgress': progress,
+      'tenDayLearnProgress': tenDayLearnProgress,
     };
   }
+
 
 
 
