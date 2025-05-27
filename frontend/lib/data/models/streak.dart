@@ -1,14 +1,10 @@
-class StreakDay {
-  final DateTime date;
-  final int minutes;
-  final int goal;
+class Streak {
 
-  StreakDay({
-    required this.date,
-    required this.minutes,
+  Map<DateTime, int> days;
+  int goal;
+
+  Streak({
+    required this.days,
     required this.goal,
   });
-
-  double get progressPercent =>
-      goal == 0 ? 0 : minutes / goal;
 }
