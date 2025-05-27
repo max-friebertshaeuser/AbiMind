@@ -26,6 +26,8 @@ class _StreakCardState extends State<StreakCard> {
     _streakDataFuture = loadStreakData();
   }
   Future<Map<String, dynamic>> loadStreakData() async {
+
+    //TODO: replace with actual user ID from auth service
     const userId = 'OVHaLWokscqwx1iM91M7';
 
     final Streak streakObj = await firebase_srv.FirebaseService.getStreak(userId);

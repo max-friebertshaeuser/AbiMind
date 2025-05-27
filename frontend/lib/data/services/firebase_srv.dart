@@ -30,7 +30,6 @@ class FirebaseService {
   static Future<Streak> getStreak(String userId) async {
     final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
 
-    // 1) load the goal from the user doc
     final userSnap = await userRef.get();
     if (!userSnap.exists) {
 
@@ -39,30 +38,24 @@ class FirebaseService {
     final data = userSnap.data()!;
     final int goal = (data['goal'] as num?)?.toInt() ?? 0;
 
-    // 2) load every streakLog entry
     final logSnap = await userRef.collection('streakLog').get();
 
-    // 3) for each doc, parse the doc.id as a date and read minutes
     final Map<DateTime, int> days = {};
     for (final doc in logSnap.docs) {
       DateTime day;
       try {
-        // assume your doc IDs are "YYYY-MM-DD"
         day = DateTime.parse(doc.id);
       } catch (_) {
-        // fallback: if you still store a Timestamp field named "date"
         final ts = doc.data()['date'];
         if (ts is Timestamp) {
           day = ts.toDate();
         } else {
-          continue; // skip unparseable
+          continue;
         }
       }
       final int mins = (doc.data()['minutes'] as num?)?.toInt() ?? 0;
       days[day] = mins;
     }
-
-    // 4) return one aggregated model
     return Streak(
       days: days,
       goal: goal,
