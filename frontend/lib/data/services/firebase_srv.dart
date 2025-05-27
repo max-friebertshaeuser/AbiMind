@@ -6,6 +6,7 @@ import 'package:frontend/data/models/question.dart';
 import 'package:intl/intl.dart';
 
 import '../models/exam.dart';
+import '../models/progress.dart';
 import '../models/streak.dart';
 
 class FirebaseService {
@@ -26,6 +27,40 @@ class FirebaseService {
       return [];
     }
   }
+
+  static Future<Progress> getProgress(String userId) async {
+    final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
+    final userSnap = await userRef.get();
+    if (!userSnap.exists) return Progress(examProgress: {});
+
+    final examSnap = await userRef.collection('exams').get();
+    final examDocs = examSnap.docs;
+
+    // Kick off _all_ exercises fetches in parallel:
+    final futures = examDocs.map((examDoc) async {
+      final exerSnap = await examDoc.reference.collection('exercises').get();
+      final Map<String,double> progressMap = {
+        for (final exDoc in exerSnap.docs)
+          exDoc.id : (exDoc.data()['score'] as num? ?? 0).toDouble()
+      };
+      return MapEntry(examDoc.id, progressMap);
+    }).toList();
+
+    // Wait for all of them at once:
+    final entries = await Future.wait(futures);
+
+    // Build the final map in one go:
+    final Map<String,Map<String,double>> examProgress = {
+      for (final e in entries) e.key: e.value
+    };
+
+    return Progress(examProgress: examProgress);
+  }
+
+
+
+
+
 
   static Future<Streak> getStreak(String userId) async {
     final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
