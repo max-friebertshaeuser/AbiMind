@@ -105,7 +105,13 @@ class _ProgressCardState extends State<ProgressCard> {
                           radius: 70.0,
                           lineWidth: 12.0,
                           percent: 0.0,
-                          center: Text("0%", style: percentageStyle),
+                          center: Text(
+                            _loadProgressPercentage(
+                              progressData.examProgress[selectedExam.id] ?? {},
+                              selectedExam,
+                            ),
+                            style: percentageStyle,
+                          ),
                           circularStrokeCap: CircularStrokeCap.round,
                         ),
                       ),
@@ -256,7 +262,12 @@ class _ProgressCardState extends State<ProgressCard> {
                                         lineWidth: 8.0,
                                         percent: 0.0,
                                         center: Text(
-                                          "0%",
+                                          _loadProgressPercentage(
+                                            progressData.examProgress[stat
+                                                    .id] ??
+                                                {},
+                                            stat,
+                                          ),
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
@@ -349,6 +360,15 @@ class _ProgressCardState extends State<ProgressCard> {
         ],
       ),
     );
+  }
+
+  String _loadProgressPercentage(Map<String, double> map, Exam stat) {
+    if (map.isEmpty) return "0%";
+    final total = stat.exercises.length;
+    if (total == 0) return "0%";
+    final done = map.values.where((p) => p >= 0.8).length;
+    final percentage = ((done / total) * 100).round().toString();
+    return "$percentage%";
   }
 }
 
