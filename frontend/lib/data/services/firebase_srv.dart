@@ -13,6 +13,8 @@ class FirebaseService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  static Progress? _cachedProgress;
+
   static Future<List<Exam>> getExams() async {
     try {
       final querySnapshot = await _db.collection(kExam).get();
@@ -28,7 +30,14 @@ class FirebaseService {
     }
   }
 
-  static Future<Progress> getProgress(String userId) async {
+  static Future<Progress> getProgress(
+    String userId, {
+    bool forceRefresh = false,
+  }) async {
+    if (_cachedProgress != null && !forceRefresh) {
+      return _cachedProgress!;
+    }
+
     final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
     final userSnap = await userRef.get();
     if (!userSnap.exists) return Progress(examProgress: {});
@@ -36,38 +45,31 @@ class FirebaseService {
     final examSnap = await userRef.collection('exams').get();
     final examDocs = examSnap.docs;
 
-    // Kick off _all_ exercises fetches in parallel:
-    final futures = examDocs.map((examDoc) async {
-      final exerSnap = await examDoc.reference.collection('exercises').get();
-      final Map<String,double> progressMap = {
-        for (final exDoc in exerSnap.docs)
-          exDoc.id : (exDoc.data()['score'] as num? ?? 0).toDouble()
-      };
-      return MapEntry(examDoc.id, progressMap);
-    }).toList();
+    final futures =
+        examDocs.map((examDoc) async {
+          final exerSnap =
+              await examDoc.reference.collection('exercises').get();
+          final Map<String, double> progressMap = {
+            for (final exDoc in exerSnap.docs)
+              exDoc.id: (exDoc.data()['score'] as num? ?? 0).toDouble(),
+          };
+          return MapEntry(examDoc.id, progressMap);
+        }).toList();
 
-    // Wait for all of them at once:
     final entries = await Future.wait(futures);
 
-    // Build the final map in one go:
-    final Map<String,Map<String,double>> examProgress = {
-      for (final e in entries) e.key: e.value
+    final Map<String, Map<String, double>> examProgress = {
+      for (final e in entries) e.key: e.value,
     };
-
-    return Progress(examProgress: examProgress);
+    _cachedProgress = Progress(examProgress: examProgress);
+    return _cachedProgress!;
   }
-
-
-
-
-
 
   static Future<Streak> getStreak(String userId) async {
     final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
 
     final userSnap = await userRef.get();
     if (!userSnap.exists) {
-
       return Streak(days: {}, goal: 0);
     }
     final data = userSnap.data()!;
@@ -91,12 +93,8 @@ class FirebaseService {
       final int mins = (doc.data()['minutes'] as num?)?.toInt() ?? 0;
       days[day] = mins;
     }
-    return Streak(
-      days: days,
-      goal: goal,
-    );
+    return Streak(days: days, goal: goal);
   }
-
 
   static Future<Exam?> getExam(String examId) async {
     try {
@@ -120,14 +118,19 @@ class FirebaseService {
     return null;
   }
 
-  static Future<List<Question>> fetchQuestions(DocumentReference exerciseRef) async {
+  static Future<List<Question>> fetchQuestions(
+    DocumentReference exerciseRef,
+  ) async {
     try {
       final snapshot = await exerciseRef.collection(kQuestion).get();
       if (snapshot.docs.isEmpty) {
         print('No questions found for exercise ${exerciseRef.id}');
         return [];
       }
-      final questions = snapshot.docs.map((q) => Question.fromJson({...q.data(), 'id': q.id})).toList();
+      final questions =
+          snapshot.docs
+              .map((q) => Question.fromJson({...q.data(), 'id': q.id}))
+              .toList();
       return questions;
     } catch (e) {
       print('Error fetching questions: $e');
@@ -169,24 +172,38 @@ class FirebaseService {
 
   static Future<void> saveAnswers(Exam exam) async {
     for (var exercise in exam.exercises) {
-      dynamic examRef = await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).get();
+      dynamic examRef =
+          await _db
+              .collection(kUser)
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(exam.id)
+              .get();
       if (exercise.answer.isNotEmpty) {
-        await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).collection(kExercises).doc(exercise.id).set({
-          kAnswer: exercise.answer,
-        });
+        await _db
+            .collection(kUser)
+            .doc(_auth.currentUser?.uid)
+            .collection(kExam)
+            .doc(exam.id)
+            .collection(kExercises)
+            .doc(exercise.id)
+            .set({kAnswer: exercise.answer});
       }
     }
   }
 
-  static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(String examId) async {
+  static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(
+    String examId,
+  ) async {
     try {
-      final snapshot = await _db
-          .collection('user')
-          .doc(_auth.currentUser?.uid)
-          .collection(kExam)
-          .doc(examId)
-          .collection(kExercises)
-          .get();
+      final snapshot =
+          await _db
+              .collection('user')
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(examId)
+              .collection(kExercises)
+              .get();
 
       Map<String, List<Map<String, dynamic>>> answers = {
         for (var doc in snapshot.docs)
