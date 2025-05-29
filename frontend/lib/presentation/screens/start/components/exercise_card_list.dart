@@ -9,6 +9,7 @@ import 'package:frontend/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';
+import '../../../../data/models/progress.dart';
 import '../../../../data/services/firebase_srv.dart';
 import '../../../../routes/routes.dart';
 import '../../exercise/exercise_screen.dart';
@@ -25,13 +26,17 @@ class ExerciseWithExamDate {
   final int year;
   final String examId;
 
-  ExerciseWithExamDate({required this.exercise, required this.year
-  , required this.examId});
+  ExerciseWithExamDate({
+    required this.exercise,
+    required this.year,
+    required this.examId,
+  });
 }
 
 class _ExerciseCardListState extends State<ExerciseCardList> {
   List<ExerciseTopic> selectedCategories = [ExerciseTopic.mandatory];
   List<ExerciseWithExamDate> exercisesWithDate = [];
+  Progress progressData = Progress(examProgress: {});
 
   @override
   void initState() {
@@ -42,13 +47,14 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   Future<void> loadTaskCardsData() async {
     try {
       final exams = await FirebaseService.getExams();
+      progressData = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
       for (final exam in exams) {
         for (final exercise in exam.exercises) {
           exercisesWithDate.add(
             ExerciseWithExamDate(
               exercise: exercise,
               year: exam.year,
-              examId: exam.id// or exam.date
+              examId: exam.id, // or exam.date
             ),
           );
         }
@@ -89,14 +95,30 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:
                             filteredTasks.map((task) {
+                              bool isDone =
+                                  (progressData.examProgress[task.examId]?[task
+                                          .exercise
+                                          .id] ??
+                                      0.0) >=
+                                  0.8;
                               return CustomTaskCard(
                                 title: task.exercise.title,
                                 description: task.exercise.description,
-                                tags: getTags(task.exercise.exerciseTopic, task.exercise.id),
+                                tags: getTags(
+                                  task.exercise.exerciseTopic,
+                                  task.exercise.id,
+                                  isDone,
+                                ),
                                 year: task.year.toString(),
                                 onTap: () {
                                   //TODO navigate to exact exercise
-                                  Navigator.pushNamed(context, AppRoutes.exercise, arguments: ExerciseScreenArguments(examId: task.examId));
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.exercise,
+                                    arguments: ExerciseScreenArguments(
+                                      examId: task.examId,
+                                    ),
+                                  );
                                   // Your navigation or logic here
                                 },
                               );
@@ -123,9 +145,12 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
     );
   }
 
-  getTags(ExerciseTopic? exerciseTopic, String exerciseId) {
+  getTags(ExerciseTopic? exerciseTopic, String exerciseId, bool isDone) {
     //TODO: request if exercise is Done set Done
     List<String> tags = [];
+    if (isDone) {
+      tags.add('Finished');
+    }
     switch (exerciseTopic) {
       case ExerciseTopic.mandatory:
         tags.add('Mandatory');
@@ -177,7 +202,10 @@ class CustomTaskCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: colorScheme.primaryContainer,
-          border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
+          border: Border.all(
+            color: colorScheme.onPrimaryFixedVariant,
+            width: 2,
+          ),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -186,17 +214,21 @@ class CustomTaskCard extends StatelessWidget {
             // Tags
             Wrap(
               spacing: 8,
-              children: tags.map((tag) {
-                final color = tagColors[tag] ?? Colors.blueGrey;
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(tag, style: lableTextStyle),
-                );
-              }).toList(),
+              children:
+                  tags.map((tag) {
+                    final color = tagColors[tag] ?? Colors.blueGrey;
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: color,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(tag, style: lableTextStyle),
+                    );
+                  }).toList(),
             ),
             const SizedBox(height: 10),
             Row(
@@ -217,4 +249,3 @@ class CustomTaskCard extends StatelessWidget {
     );
   }
 }
-
