@@ -44,26 +44,30 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
     loadTaskCardsData();
   }
 
-  Future<void> loadTaskCardsData() async {
-    try {
-      final exams = await FirebaseService.getExams();
-      progressData = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
-      for (final exam in exams) {
-        for (final exercise in exam.exercises) {
-          exercisesWithDate.add(
-            ExerciseWithExamDate(
-              exercise: exercise,
-              year: exam.year,
-              examId: exam.id, // or exam.date
-            ),
-          );
-        }
+Future<void> loadTaskCardsData() async {
+  try {
+    final exams = await FirebaseService.getExams();
+    final progress = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
+    final tempExercises = <ExerciseWithExamDate>[];
+    for (final exam in exams) {
+      for (final exercise in exam.exercises) {
+        tempExercises.add(
+          ExerciseWithExamDate(
+            exercise: exercise,
+            year: exam.year,
+            examId: exam.id,
+          ),
+        );
       }
-    } catch (e) {
-      print('Error loading task cards data: $e');
     }
+    setState(() {
+      exercisesWithDate = tempExercises;
+      progressData = progress;
+    });
+  } catch (e) {
+    print('Error loading task cards data: $e');
   }
-
+}
   List<ExerciseWithExamDate> get filteredTasks {
     return exercisesWithDate.where((ex) {
       return selectedCategories.contains(ex.exercise.exerciseTopic);
