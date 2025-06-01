@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:frontend/core/utils/constants.dart';
 import 'package:frontend/data/models/exercise.dart';
 import 'package:frontend/data/models/question.dart';
-import 'package:intl/intl.dart';
 
 import '../models/exam.dart';
 import '../models/progress.dart';

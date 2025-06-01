@@ -1,6 +1,7 @@
 import 'dart:convert';                      // ← for JsonEncoder
 import 'package:cloud_firestore/cloud_firestore.dart';
 import './exercise.dart';
+import '../services/firebase_srv.dart';
 
 class Exam {
   final String id;
@@ -64,6 +65,11 @@ class Exam {
       mandatoryExercises: mandatory,
       exercises: all,
     );
+  }
+
+  Future<void> save() async {
+    await FirebaseService.saveAnswers(this);
+
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _StreakCardState extends State<StreakCard> {
   Future<Map<String, dynamic>> loadStreakData() async {
 
     //TODO: replace with actual user ID from auth service
-    const userId = 'OVHaLWokscqwx1iM91M7';
+    var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
 
     final Streak streakObj = await firebase_srv.FirebaseService.getStreak(userId);
 
@@ -90,6 +91,9 @@ class _StreakCardState extends State<StreakCard> {
 
         final List<int> minutesList =
             tenDayLearnProgress.map((e) => e['minutes'] as int).toList();
+        if( minutesList.isEmpty) {
+          return const Center(child: Text('Keine Lernzeit-Daten verfügbar.'));
+        }
 final int maxMinutes = [minutesList.reduce((a, b) => a > b ? a : b), goal.toInt()].reduce((a, b) => a > b ? a : b);
 final int minMinutes = [minutesList.reduce((a, b) => a < b ? a : b), goal.toInt()].reduce((a, b) => a < b ? a : b);
 
