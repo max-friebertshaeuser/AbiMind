@@ -152,7 +152,6 @@ Future<void> loadTaskCardsData() async {
   }
 
   getTags(ExerciseTopic? exerciseTopic, String exerciseId, bool isDone) {
-    //TODO: request if exercise is Done set Done
     List<String> tags = [];
     if (isDone) {
       tags.add('Finished');
