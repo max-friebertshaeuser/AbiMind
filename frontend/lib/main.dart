@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tex/flutter_tex.dart';
 import 'routes/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -15,6 +17,9 @@ Future<void> main() async {
     androidProvider: AndroidProvider.debug, // todo: remove and work out the recaptcha stuff
   );
 
+  if (!kIsWeb) {
+    await TeXRenderingServer.start();
+  }
 
   runApp(const ProviderScope(child: MyApp()));
 }

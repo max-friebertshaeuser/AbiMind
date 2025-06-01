@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/data/services/firebase_srv.dart';
-import 'package:frontend/presentation/screens/exercise/exercise_screen.dart';
-import 'package:frontend/routes/routes.dart';
+import 'package:Abimind/data/services/firebase_srv.dart';
+import 'package:Abimind/presentation/screens/exercise/exercise_screen.dart';
+import 'package:Abimind/routes/routes.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

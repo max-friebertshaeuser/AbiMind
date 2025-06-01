@@ -109,80 +109,6 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     super.didChangeDependencies();
   }
 
-  // Exam exam = Exam(
-
-  //   id: 'OHLESyc19sRHmLTVOUji',
-  //   year: 2025,
-  //   subject: 'math',
-  //   analysisExercises: [
-  //     Exercise(
-  //       id: 'exercise_1',
-  //       title: 'Exercise 1',
-  //       description: 'A description of Exercise 1',
-  //       questions: [
-  //         Question(
-  //           id: 'exercise_1_a',
-  //           title: 'a)',
-  //           description: 'Description of Exercise a), $kSampleText',
-  //           solution: 'Solution of Exercise a)',
-  //         ),
-  //         Question(
-  //           id: 'exercise_1_b',
-  //           title: 'b)',
-  //           description: 'Description of Exercise b), $kSampleText',
-  //           solution: 'Solution of Exercise b)',
-  //         ),
-  //         Question(
-  //           id: 'exercise_1_c',
-  //           title: 'c)',
-  //           description: 'Description of Exercise c), $kSampleText',
-  //           solution: 'Solution of Exercise c)',
-  //         ),
-  //         Question(
-  //           id: 'exercise_1_d',
-  //           title: 'd)',
-  //           description: 'Description of Exercise d), $kSampleText',
-  //           solution: 'Solution of Exercise d)',
-  //         ),
-  //       ],
-  //     ),
-  //     Exercise(
-  //       id: 'exercise_2',
-  //       title: 'Exercise 2',
-  //       description: 'A description of Exercise 1',
-  //       questions: [
-  //         Question(
-  //           id: 'exercise_2_a',
-  //           title: 'a)',
-  //           description: 'Description of Exercise a), $kSampleText',
-  //           solution: 'Solution of Exercise a)',
-  //         ),
-  //         Question(
-  //           id: 'exercise_2_b',
-  //           title: 'b)',
-  //           description: 'Description of Exercise b), $kSampleText',
-  //           solution: 'Solution of Exercise b)',
-  //         ),
-  //         Question(
-  //           id: 'exercise_2_c',
-  //           title: 'c)',
-  //           description: 'Description of Exercise c), $kSampleText',
-  //           solution: 'Solution of Exercise c)',
-  //         ),
-  //         Question(
-  //           id: 'exercise_2_d',
-  //           title: 'd)',
-  //           description: 'Description of Exercise d), $kSampleText',
-  //           solution: 'Solution of Exercise d)',
-  //         ),
-  //       ],
-  //     ),
-  //   ],
-  //   geometryExercises: [],
-  //   stochasticExercises: [],
-  //   mandatoryExercises: [],
-  // );
-
   @override
   Widget build(BuildContext context) {
     ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -271,8 +197,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: ExerciseView(exam: exam,
-                                exerciseIndex: exerciseIndex,
+                            child: ExerciseView(exam: exam!,
                                 currentExercise: currentExercise,
                                 exerciseExpanded: exerciseExpanded),
                           ),
@@ -369,31 +294,51 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
 }
 
 class ExerciseView extends StatelessWidget {
+  final Exam exam;
+  final Exercise currentExercise;
+  final bool exerciseExpanded;
+
   const ExerciseView({
-    super.key,
+    Key? key,
     required this.exam,
     required this.exerciseIndex,
     required this.currentExercise,
     required this.exerciseExpanded,
-  });
+  }) : super(key: key);
 
-  final Exam? exam;
-  final int exerciseIndex;
-  final Exercise currentExercise;
-  final bool exerciseExpanded;
+  String wrapInlineMath(String text) {
+    if (text.isEmpty) return '';
+    // Replace single-dollar patterns with \(...\). Be careful not to
+    // match escaped dollars. This is a simple regex; adjust if needed.
+    var res = '<p> ${text.replaceAllMapped(
+      RegExp(r'\$(.+?)\$'),
+          (match) => r'\(' + match.group(1)! + r'\)',
+    )} </p>';
+    print('---------------\n $res');
+    return res;
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Flex(
-      direction: Axis.vertical,
+    print('ExerciseView: ${currentExercise}');
+
+    final questions = currentExercise.questions!.map((q) => '${q.title}) ${q.description}').map((q) =>
+        wrapInlineMath(q)).map((q) => TeXViewDocument(q)).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Exercise Title
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
-            exam!.exercises[exerciseIndex].title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            currentExercise.title,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
+        // Exercise Description with LaTeX rendering
+
         Padding(
           padding: const EdgeInsets.all(4.0),
           child: Text(currentExercise.description, style: TextStyle(fontSize: 16)),
@@ -410,12 +355,59 @@ class ExerciseView extends StatelessWidget {
                       .title} ${currentExercise.questions?[index].description}',
                   style: TextStyle(fontSize: 16),
                 ),
-              );
-            },
-          )
-              : SizedBox(),
+                // Questions List
+                ...questions,
+              ],
+            ),
+          ),
         ),
+
       ],
     );
   }
 }
+
+
+// Questions List
+// Builder(builder: (context) {
+//   if (currentExercise.questions == null || currentExercise.questions!.isEmpty) {
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: Text(
+//         'No questions available for this exercise.',
+//         style: TextStyle(color: Colors.grey[600]),
+//       ),
+//     );
+//   }
+//   return Expanded(
+//     child: ListView.builder(
+//       itemCount: currentExercise.questions!.length,
+//       itemBuilder: (context, index) {
+//         final question = currentExercise.questions![index];
+//         print('Question: ${question.title}, Description: ${question.description}');
+//         final questionTitle = question.title.isNotEmpty ? wrapInlineMath(question.title) : 'Question ${index + 1}';
+//         final questionDescription = question.description.isNotEmpty
+//             ? wrapInlineMath(question.description)
+//             : 'No description available for this question.';
+//         return Padding(
+//           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+//           child: TeXView(child: TeXViewColumn(
+//             children: [
+//               TeXViewDocument(
+//                 '$questionTitle) $questionDescription',
+//                 style: TeXViewStyle(
+//                   fontStyle: TeXViewFontStyle(fontSize: 16),
+//                 ),
+//               ),
+//             ],
+//           ),
+//           ),
+//         );
+//       },
+//     ),
+//   );
+// }),
+
+
+
+

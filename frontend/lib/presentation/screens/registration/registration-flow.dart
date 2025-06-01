@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/screens/registration/pages/registration-flow-0.dart';
-import 'package:frontend/presentation/screens/registration/pages/registration-flow-1.dart';
-import 'package:frontend/presentation/screens/registration/pages/registration-flow-2.dart';
-import 'package:frontend/presentation/screens/registration/pages/registration-flow-3.dart';
-import 'package:frontend/presentation/screens/registration/pages/registration-flow-4.dart';
+import 'package:Abimind/presentation/screens/registration/pages/registration-flow-0.dart';
+import 'package:Abimind/presentation/screens/registration/pages/registration-flow-1.dart';
+import 'package:Abimind/presentation/screens/registration/pages/registration-flow-2.dart';
+import 'package:Abimind/presentation/screens/registration/pages/registration-flow-3.dart';
+import 'package:Abimind/presentation/screens/registration/pages/registration-flow-4.dart';
 
 import '../../../routes/routes.dart';
 

@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:Abimind/data/models/question.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/data/models/encoded_image.dart';
-import 'package:frontend/data/models/question.dart';
+
+import 'encoded_image.dart';
 
 enum ExerciseTopic { geometry, mandatory, analysis, stochastic, unknown }
 
@@ -28,6 +29,7 @@ class Exercise {
   final String title;
   final String description;
   final ExerciseTopic? exerciseTopic;
+  final int index;
   List<Question>? questions;
   List<EncodedImage>? images;
   List<EncodedImage>? solutionImages;
@@ -39,6 +41,7 @@ class Exercise {
     this.id = '',
     this.title = '',
     this.description = '',
+    this.index = 100,
     this.questions = const [],
     this.images,
     this.solutionImages,
@@ -74,6 +77,7 @@ class Exercise {
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       exerciseTopic: topic,
+      index: int.parse(json['index']?.toString() ?? '100'),
       questions:
       _asList(json['questions'], (m) => Question.fromJson(m)),
       images:

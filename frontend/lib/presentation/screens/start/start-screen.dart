@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:ffi';
-import 'package:frontend/presentation/screens/start/components/side_bar.dart';
+import 'package:Abimind/presentation/screens/start/components/side_bar.dart';
 
 import 'components/exercise_card_list.dart';
 import 'components/progress_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:frontend/core/utils/constants.dart';
+import 'package:Abimind/core/utils/constants.dart';
 import 'components/streak_card.dart';
 
 class StarScreen extends StatelessWidget {

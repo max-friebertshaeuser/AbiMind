@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:frontend/presentation/screens/login/pages/login-flow-1.dart';
-import 'package:frontend/routes/routes.dart';
+import 'package:Abimind/presentation/screens/login/pages/login-flow-1.dart';
+import 'package:Abimind/routes/routes.dart';
 
 import 'pages/login-flow-0.dart';
 

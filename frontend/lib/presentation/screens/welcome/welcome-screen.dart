@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/routes/routes.dart';
+import 'package:Abimind/routes/routes.dart';
 // import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 

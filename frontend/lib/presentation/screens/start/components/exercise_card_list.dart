@@ -5,8 +5,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/data/models/exercise.dart';
-import 'package:frontend/presentation/screens/start/start-screen.dart';
+import 'package:Abimind/data/models/exercise.dart';
+import 'package:Abimind/presentation/screens/start/start-screen.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import '../../../../core/utils/constants.dart';

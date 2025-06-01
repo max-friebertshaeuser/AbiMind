@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:frontend/core/utils/constants.dart';
-import 'package:frontend/data/models/exercise.dart';
-import 'package:frontend/data/models/question.dart';
+import 'package:Abimind/core/utils/constants.dart';
+import 'package:Abimind/data/models/exercise.dart';
+import 'package:Abimind/data/models/question.dart';
 
 import '../models/exam.dart';
 import '../models/progress.dart';
@@ -123,6 +123,7 @@ class FirebaseService {
           snapshot.docs
               .map((q) => Question.fromJson({...q.data(), 'id': q.id}))
               .toList();
+      questions.sort((a, b) => a.title.compareTo(b.title));
       return questions;
     } catch (e) {
       print('Error fetching questions: $e');
@@ -155,6 +156,7 @@ class FirebaseService {
               ),
         ),
       );
+      exercises.sort((a, b) => a.index.compareTo(b.index));
       return exercises;
     } catch (e) {
       print('Failed to fetch exercises: $e');

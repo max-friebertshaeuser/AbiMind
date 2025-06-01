@@ -5,8 +5,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/data/models/streak.dart';
-import 'package:frontend/presentation/screens/start/start-screen.dart';
+import 'package:Abimind/data/models/streak.dart';
+import 'package:Abimind/presentation/screens/start/start-screen.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../data/services/firebase_srv.dart' as firebase_srv;

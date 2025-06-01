@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/data/models/exercise.dart';
+import 'package:Abimind/data/models/exercise.dart';
 
 import '../../../../core/utils/constants.dart';
 

@@ -1,4 +1,4 @@
-import 'package:frontend/data/models/encoded_image.dart';
+import 'package:Abimind/data/models/encoded_image.dart';
 
 class Question {
   final String id;
