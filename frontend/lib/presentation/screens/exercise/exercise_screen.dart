@@ -10,6 +10,7 @@ import 'package:flutter_tex/flutter_tex.dart';
 
 import '../../../data/models/exam.dart';
 import '../../../data/models/exercise.dart';
+import '../../../data/services/correction_srv.dart' as correction_srv;
 import 'custom_drawing_board.dart';
 
 class ExerciseScreenArguments {
@@ -163,6 +164,16 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
             title: const Text('Drawing Test'),
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.check_circle_outline), // choose your icon
+                onPressed: () {
+                  correction_srv.triggerCorrection(
+                    exam!.id,
+                    currentExercise.id,
+                  );
+                  print("Correction gets triggered");
+                },
+              ),
               // IconButton(icon: const Icon(Icons.line_axis), onPressed: _addTestLine),
               // IconButton(icon: const Icon(Icons.javascript_outlined), onPressed: _getJson),
               // IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
