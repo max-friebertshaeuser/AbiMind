@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
-import 'package:frontend/data/services/firebase_srv.dart';
+import 'package:Abimind/data/services/firebase_srv.dart';
+import 'package:flutter_tex/flutter_tex.dart';
 
 import '../../../data/models/exam.dart';
 import '../../../data/models/exercise.dart';
@@ -301,7 +302,6 @@ class ExerciseView extends StatelessWidget {
   const ExerciseView({
     Key? key,
     required this.exam,
-    required this.exerciseIndex,
     required this.currentExercise,
     required this.exerciseExpanded,
   }) : super(key: key);
@@ -340,20 +340,17 @@ class ExerciseView extends StatelessWidget {
         // Exercise Description with LaTeX rendering
 
         Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text(currentExercise.description, style: TextStyle(fontSize: 16)),
-        ),
-        Expanded(
-          child:
-          exerciseExpanded && currentExercise.questions!.isNotEmpty
-              ? ListView.builder(
-            itemCount: currentExercise.questions!.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  currentExercise.questions!.isEmpty ? 'No Questions' : '${currentExercise.questions?[index]
-                      .title} ${currentExercise.questions?[index].description}',
-                  style: TextStyle(fontSize: 16),
+          padding: const EdgeInsets.all(8.0),
+          child: TeXView(
+            child: TeXViewColumn(
+              children: [
+                TeXViewDocument(
+                  wrapInlineMath(currentExercise.description),
+                  style: TeXViewStyle(
+                      fontStyle: TeXViewFontStyle(
+                        fontSize: 16,
+                      )
+                  ),
                 ),
                 // Questions List
                 ...questions,
