@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,7 +36,8 @@ class _ProgressCardState extends State<ProgressCard> {
 
   Future<void> loadStatistics() async {
     try {
-      progressData = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
+      var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+      progressData = await FirebaseService.getProgress(userId);
       final exams = await FirebaseService.getExams();
       setState(() {
         statisticsData = exams;

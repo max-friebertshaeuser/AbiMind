@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,8 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
 Future<void> loadTaskCardsData() async {
   try {
     final exams = await FirebaseService.getExams();
-    final progress = await FirebaseService.getProgress('OVHaLWokscqwx1iM91M7');
+    var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+    final progress = await FirebaseService.getProgress(userId);
     final tempExercises = <ExerciseWithExamDate>[];
     for (final exam in exams) {
       for (final exercise in exam.exercises) {
