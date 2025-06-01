@@ -28,8 +28,8 @@ class _StreakCardState extends State<StreakCard> {
   }
   Future<Map<String, dynamic>> loadStreakData() async {
 
-    //TODO: replace with actual user ID from auth service
     var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+
 
     final Streak streakObj = await firebase_srv.FirebaseService.getStreak(userId);
 
@@ -67,8 +67,6 @@ class _StreakCardState extends State<StreakCard> {
   }
 
 
-
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -85,17 +83,26 @@ class _StreakCardState extends State<StreakCard> {
         }
 
         final data = snapshot.data!;
-        final int streak = data['streak'];
-        final double goal = (data['goal'] as num).toDouble();
-        final List<dynamic> tenDayLearnProgress = data['tenDayLearnProgress'];
+        final int streak = data['streak'] ?? 0;
+        final double goal = (data['goal'] as num?)?.toDouble() ?? 0.0;
+        final List<dynamic> tenDayLearnProgress = data['tenDayLearnProgress'] ?? [];
 
         final List<int> minutesList =
-            tenDayLearnProgress.map((e) => e['minutes'] as int).toList();
-        if( minutesList.isEmpty) {
-          return const Center(child: Text('Keine Lernzeit-Daten verfügbar.'));
-        }
-final int maxMinutes = [minutesList.reduce((a, b) => a > b ? a : b), goal.toInt()].reduce((a, b) => a > b ? a : b);
-final int minMinutes = [minutesList.reduce((a, b) => a < b ? a : b), goal.toInt()].reduce((a, b) => a < b ? a : b);
+        tenDayLearnProgress.map((e) => e['minutes'] as int? ?? 0).toList();
+
+        final List<int> safeMinutesList = minutesList.isEmpty ? [0] : minutesList;
+
+        final int maxMinutes = [safeMinutesList.reduce((a, b) => a > b ? a : b), goal.toInt()].reduce((a, b) => a > b ? a : b);
+        final int minMinutes = [safeMinutesList.reduce((a, b) => a < b ? a : b), goal.toInt()].reduce((a, b) => a < b ? a : b);
+
+        final spots = tenDayLearnProgress.isEmpty
+            ? []
+            : tenDayLearnProgress.asMap().entries.map((entry) {
+          final index = entry.key.toDouble();
+          final minutes = (entry.value['minutes'] as int?) ?? 0;
+          return FlSpot(index, minutes.toDouble());
+        }).toList();
+
 
         return MainSurfaceCard(
           title: 'Streak',
