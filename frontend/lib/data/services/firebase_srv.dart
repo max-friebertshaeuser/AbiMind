@@ -12,8 +12,6 @@ class FirebaseService {
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
   static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  static Progress? _cachedProgress;
-
   static Future<List<Exam>> getExams() async {
     try {
       final querySnapshot = await _db.collection(kExam).get();
@@ -29,40 +27,35 @@ class FirebaseService {
     }
   }
 
-  static Future<Progress> getProgress(
-    String userId, {
-    bool forceRefresh = false,
-  }) async {
-    if (_cachedProgress != null && !forceRefresh) {
-      return _cachedProgress!;
-    }
+ // Remove: static Progress? _cachedProgress;
 
-    final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
-    final userSnap = await userRef.get();
-    if (!userSnap.exists) return Progress(examProgress: {});
+ static Future<Progress> getProgress(
+   String userId, {
+   bool forceRefresh = false, // You can remove this parameter if unused elsewhere
+ }) async {
+   final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
+   final userSnap = await userRef.get();
+   if (!userSnap.exists) return Progress(examProgress: {});
 
-    final examSnap = await userRef.collection('exams').get();
-    final examDocs = examSnap.docs;
+   final examSnap = await userRef.collection('exams').get();
+   final examDocs = examSnap.docs;
 
-    final futures =
-        examDocs.map((examDoc) async {
-          final exerSnap =
-              await examDoc.reference.collection('exercises').get();
-          final Map<String, double> progressMap = {
-            for (final exDoc in exerSnap.docs)
-              exDoc.id: (exDoc.data()['score'] as num? ?? 0).toDouble(),
-          };
-          return MapEntry(examDoc.id, progressMap);
-        }).toList();
+   final futures = examDocs.map((examDoc) async {
+     final exerSnap = await examDoc.reference.collection('exercises').get();
+     final Map<String, double> progressMap = {
+       for (final exDoc in exerSnap.docs)
+         exDoc.id: (exDoc.data()['score'] as num? ?? 0).toDouble(),
+     };
+     return MapEntry(examDoc.id, progressMap);
+   }).toList();
 
-    final entries = await Future.wait(futures);
+   final entries = await Future.wait(futures);
 
-    final Map<String, Map<String, double>> examProgress = {
-      for (final e in entries) e.key: e.value,
-    };
-    _cachedProgress = Progress(examProgress: examProgress);
-    return _cachedProgress!;
-  }
+   final Map<String, Map<String, double>> examProgress = {
+     for (final e in entries) e.key: e.value,
+   };
+   return Progress(examProgress: examProgress);
+ }
 
   static Future<Streak> getStreak(String userId) async {
     final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
