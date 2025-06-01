@@ -289,7 +289,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.stochastic)}/${stat.stochasticExercises.length} Stochastik",
+                                            "${_calculateCategoryDone(progressData.examProgress, stat, ExerciseTopic.stochastic)}/${stat.stochasticExercises.length} Stochastik",
                                             style: TextStyle(
                                               color:
                                                   isSelected
@@ -299,7 +299,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                             ),
                                           ),
                                           Text(
-                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.analysis)}/${stat.analysisExercises.length} Analysis",
+                                            "${_calculateCategoryDone(progressData.examProgress, stat, ExerciseTopic.analysis)}/${stat.analysisExercises.length} Analysis",
                                             style: TextStyle(
                                               color:
                                                   isSelected
@@ -309,7 +309,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                             ),
                                           ),
                                           Text(
-                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.geometry)}/${stat.geometryExercises.length} Geometrie",
+                                            "${_calculateCategoryDone(progressData.examProgress, stat, ExerciseTopic.geometry)}/${stat.geometryExercises.length} Geometrie",
                                             style: TextStyle(
                                               color:
                                                   isSelected
@@ -319,7 +319,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                             ),
                                           ),
                                           Text(
-                                            "${_calculateCategoryDone(progressData.examProgress, selectedExam, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Pflichtaufgaben",
+                                            "${_calculateCategoryDone(progressData.examProgress, stat, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Pflichtaufgaben",
                                             style: TextStyle(
                                               color:
                                                   isSelected
