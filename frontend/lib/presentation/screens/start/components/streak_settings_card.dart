@@ -1,10 +1,13 @@
+import 'package:Abimind/data/services/firebase_srv.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StreakSettingScreen extends StatefulWidget {
   const StreakSettingScreen({super.key});
-@override
-State<StreakSettingScreen> createState() => _StreakSettingScreenState();
+
+  @override
+  State<StreakSettingScreen> createState() => _StreakSettingScreenState();
 }
 
 class _StreakSettingScreenState extends State<StreakSettingScreen> {
@@ -15,6 +18,7 @@ class _StreakSettingScreenState extends State<StreakSettingScreen> {
   void _saveGoal() {
     final minutes = int.tryParse(_controller.text);
     if (minutes != null && minutes > 0) {
+      FirebaseService.saveNewGoal(minutes);
       setState(() {
         _goalSaved = true;
       });
@@ -29,22 +33,26 @@ class _StreakSettingScreenState extends State<StreakSettingScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Daily Learning Goal"),
-      ),
+      appBar: AppBar(title: const Text("Daily Learning Goal")),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: Icon(Icons.emoji_events, size: 80, color: theme.colorScheme.primary),
+              child: Icon(
+                Icons.emoji_events,
+                size: 80,
+                color: theme.colorScheme.primary,
+              ),
             ),
             const SizedBox(height: 16),
             Center(
               child: Text(
                 "Hi ${username},",
-                style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 8),
@@ -92,7 +100,9 @@ class _StreakSettingScreenState extends State<StreakSettingScreen> {
               Center(
                 child: Text(
                   "Your daily goal is saved.",
-                  style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.secondary),
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.secondary,
+                  ),
                 ),
               ),
           ],

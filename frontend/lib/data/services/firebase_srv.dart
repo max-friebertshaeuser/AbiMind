@@ -27,35 +27,37 @@ class FirebaseService {
     }
   }
 
- // Remove: static Progress? _cachedProgress;
+  // Remove: static Progress? _cachedProgress;
 
- static Future<Progress> getProgress(
-   String userId, {
-   bool forceRefresh = false, // You can remove this parameter if unused elsewhere
- }) async {
-   final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
-   final userSnap = await userRef.get();
-   if (!userSnap.exists) return Progress(examProgress: {});
+  static Future<Progress> getProgress(
+    String userId, {
+    bool forceRefresh =
+        false, // You can remove this parameter if unused elsewhere
+  }) async {
+    final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
+    final userSnap = await userRef.get();
+    if (!userSnap.exists) return Progress(examProgress: {});
 
-   final examSnap = await userRef.collection(kExam).get();
-   final examDocs = examSnap.docs;
+    final examSnap = await userRef.collection(kExam).get();
+    final examDocs = examSnap.docs;
 
-   final futures = examDocs.map((examDoc) async {
-     final exerSnap = await examDoc.reference.collection(kExercises).get();
-     final Map<String, double> progressMap = {
-       for (final exDoc in exerSnap.docs)
-         exDoc.id: (exDoc.data()[kScore] as num? ?? 0).toDouble(),
-     };
-     return MapEntry(examDoc.id, progressMap);
-   }).toList();
+    final futures =
+        examDocs.map((examDoc) async {
+          final exerSnap = await examDoc.reference.collection(kExercises).get();
+          final Map<String, double> progressMap = {
+            for (final exDoc in exerSnap.docs)
+              exDoc.id: (exDoc.data()[kScore] as num? ?? 0).toDouble(),
+          };
+          return MapEntry(examDoc.id, progressMap);
+        }).toList();
 
-   final entries = await Future.wait(futures);
+    final entries = await Future.wait(futures);
 
-   final Map<String, Map<String, double>> examProgress = {
-     for (final e in entries) e.key: e.value,
-   };
-   return Progress(examProgress: examProgress);
- }
+    final Map<String, Map<String, double>> examProgress = {
+      for (final e in entries) e.key: e.value,
+    };
+    return Progress(examProgress: examProgress);
+  }
 
   static Future<Streak> getStreak(String userId) async {
     final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
@@ -166,7 +168,13 @@ class FirebaseService {
 
   static Future<void> saveAnswers(Exam exam) async {
     for (var exercise in exam.exercises) {
-      dynamic examRef = await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).get();
+      dynamic examRef =
+          await _db
+              .collection(kUser)
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(exam.id)
+              .get();
       if (exercise.answer.isNotEmpty) {
         await _db
             .collection(kUser)
@@ -176,22 +184,25 @@ class FirebaseService {
             .collection(kExercises)
             .doc(exercise.id)
             .set({
-          kAnswer: exercise.answer,
-          kAnswerImage: exercise.getEncodedImage()
-        });
+              kAnswer: exercise.answer,
+              kAnswerImage: exercise.getEncodedImage(),
+            });
       }
     }
   }
 
-  static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(String examId) async {
+  static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(
+    String examId,
+  ) async {
     try {
-      final snapshot = await _db
-          .collection(kUser)
-          .doc(_auth.currentUser?.uid)
-          .collection(kExam)
-          .doc(examId)
-          .collection(kExercises)
-          .get();
+      final snapshot =
+          await _db
+              .collection(kUser)
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(examId)
+              .collection(kExercises)
+              .get();
 
       Map<String, List<Map<String, dynamic>>> answers = {
         for (var doc in snapshot.docs)
@@ -202,5 +213,22 @@ class FirebaseService {
       print('Error fetching answers: $e');
       return {};
     }
+  }
+
+  static void saveNewGoal(int minutes) {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      print('No user is currently logged in.');
+      return;
+    }
+    final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
+    userRef
+        .set({kGoal: minutes}, SetOptions(merge: true))
+        .then((_) {
+          print('New goal saved successfully.');
+        })
+        .catchError((error) {
+          print('Failed to save new goal: $error');
+        });
   }
 }
