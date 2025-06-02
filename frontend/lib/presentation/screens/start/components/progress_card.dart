@@ -22,7 +22,7 @@ class ProgressCard extends StatefulWidget {
   State<ProgressCard> createState() => _ProgressCardState();
 }
 
-class _ProgressCardState extends State<ProgressCard> {
+class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver {
   List<Exam> statisticsData = [];
   late Exam selectedExam;
   bool isLoading = true;
@@ -31,7 +31,41 @@ class _ProgressCardState extends State<ProgressCard> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     loadStatistics();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshProgressOnly();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
+      refreshProgressOnly();
+    }
+  }
+
+  Future<void> refreshProgressOnly() async {
+    try {
+      var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+      final newProgress = await FirebaseService.getProgress(userId);
+      setState(() {
+        progressData = newProgress;
+      });
+    } catch (e) {
+      print('Error refreshing progress: $e');
+    }
   }
 
   Future<void> loadStatistics() async {
@@ -43,7 +77,7 @@ class _ProgressCardState extends State<ProgressCard> {
         statisticsData = exams;
         if (exams.isNotEmpty) {
           selectedExam = exams.firstWhere(
-            (exam) => exam.year == DateTime.now().year,
+                (exam) => exam.year == DateTime.now().year,
             orElse: () => exams.first,
           );
         }
@@ -53,6 +87,7 @@ class _ProgressCardState extends State<ProgressCard> {
       setState(() => isLoading = false);
     }
   }
+
 
   void selectStatistic(Exam stat) {
     setState(() => selectedExam = stat);
@@ -169,7 +204,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                     .length,
                           ),
                           CategoryProgress(
-                            title: 'Pflichtaufgaben',
+                            title: 'Mandatory',
                             done: _calculateCategoryDone(
                               progressData.examProgress,
                               selectedExam,
@@ -319,7 +354,7 @@ class _ProgressCardState extends State<ProgressCard> {
                                             ),
                                           ),
                                           Text(
-                                            "${_calculateCategoryDone(progressData.examProgress, stat, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Pflichtaufgaben",
+                                            "${_calculateCategoryDone(progressData.examProgress, stat, ExerciseTopic.mandatory)}/${stat.mandatoryExercises.length} Mandatory",
                                             style: TextStyle(
                                               color:
                                                   isSelected
@@ -438,3 +473,4 @@ int _calculateCategoryDone(
   }
   return doneCount;
 }
+

@@ -15,7 +15,6 @@ import '../../../../data/services/firebase_srv.dart';
 import '../../../../routes/routes.dart';
 import '../../exercise/exercise_screen.dart';
 import 'exercise_selection_bar.dart';
-import 'package:flutter_tex/flutter_tex.dart';
 
 class ExerciseCardList extends StatefulWidget {
   @override
@@ -34,7 +33,8 @@ class ExerciseWithExamDate {
   });
 }
 
-class _ExerciseCardListState extends State<ExerciseCardList> {
+class _ExerciseCardListState extends State<ExerciseCardList>
+    with WidgetsBindingObserver {
   List<ExerciseTopic> selectedCategories = [ExerciseTopic.mandatory];
   List<ExerciseWithExamDate> exercisesWithDate = [];
   Progress progressData = Progress(examProgress: {});
@@ -42,34 +42,69 @@ class _ExerciseCardListState extends State<ExerciseCardList> {
   @override
   void initState() {
     super.initState();
-    loadTaskCardsData();
+    WidgetsBinding.instance.addObserver(this);
+    loadTaskCardsData(); // Loads exercises and progress on first launch
   }
 
-Future<void> loadTaskCardsData() async {
-  try {
-    final exams = await FirebaseService.getExams();
-    var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
-    final progress = await FirebaseService.getProgress(userId);
-    final tempExercises = <ExerciseWithExamDate>[];
-    for (final exam in exams) {
-      for (final exercise in exam.exercises) {
-        tempExercises.add(
-          ExerciseWithExamDate(
-            exercise: exercise,
-            year: exam.year,
-            examId: exam.id,
-          ),
-        );
-      }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshProgressOnly();
     }
-    setState(() {
-      exercisesWithDate = tempExercises;
-      progressData = progress;
-    });
-  } catch (e) {
-    print('Error loading task cards data: $e');
   }
-}
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
+      refreshProgressOnly(); // Reload progress when returning to this screen
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  Future<void> refreshProgressOnly() async {
+    try {
+      var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+      final progress = await FirebaseService.getProgress(userId);
+      setState(() {
+        progressData = progress;
+      });
+    } catch (e) {
+      print('Error refreshing progress: $e');
+    }
+  }
+
+  Future<void> loadTaskCardsData() async {
+    try {
+      final exams = await FirebaseService.getExams();
+      var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+      final progress = await FirebaseService.getProgress(userId);
+      final tempExercises = <ExerciseWithExamDate>[];
+      for (final exam in exams) {
+        for (final exercise in exam.exercises) {
+          tempExercises.add(
+            ExerciseWithExamDate(
+              exercise: exercise,
+              year: exam.year,
+              examId: exam.id,
+            ),
+          );
+        }
+      }
+      setState(() {
+        exercisesWithDate = tempExercises;
+        progressData = progress;
+      });
+    } catch (e) {
+      print('Error loading task cards data: $e');
+    }
+  }
+
   List<ExerciseWithExamDate> get filteredTasks {
     return exercisesWithDate.where((ex) {
       return selectedCategories.contains(ex.exercise.exerciseTopic);
