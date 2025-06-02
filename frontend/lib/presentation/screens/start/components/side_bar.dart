@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Abimind/presentation/screens/start/components/streak_settings_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,9 +57,13 @@ class _SideBarState extends State<SideBar> {
                 const SizedBox(height: 20),
                 ListTile(
                   leading: const Icon(Icons.person),
-                  title: const Text("Profil"),
+                  title: const Text("Streak Challenge"),
                   onTap: () {
                     print("Profile was clicked");
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const StreakSettingScreen(),
+                      ),
+                    );
                   },
                 ),
                 const Divider(),
