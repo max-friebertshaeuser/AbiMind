@@ -56,7 +56,7 @@ class _SideBarState extends State<SideBar> {
                 Image.asset('assets/logo.png', height: 30),
                 const SizedBox(height: 20),
                 ListTile(
-                  leading: const Icon(Icons.person),
+                  leading: const Icon(Icons.local_fire_department),
                   title: const Text("Streak Challenge"),
                   onTap: () {
                     print("Profile was clicked");
