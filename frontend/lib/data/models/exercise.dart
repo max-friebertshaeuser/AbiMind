@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
+
 
 import 'package:Abimind/data/models/question.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +35,7 @@ class Exercise {
   final int index;
   final String shortDescription;
   List<Question>? questions;
-  List<EncodedImage>? images;
+  List<EncodedImage> images;
   List<EncodedImage>? solutionImages;
   List<Map<String, dynamic>> answer;
   ByteData? answerImage;
@@ -46,7 +48,7 @@ class Exercise {
     this.description = '',
     this.index = 100,
     this.questions = const [],
-    this.images,
+    this.images = const [],
     this.solutionImages,
     this.answer = const [],
   });
@@ -102,6 +104,13 @@ class Exercise {
     return '';
   }
 
+  List<Uint8List> getImages() {
+    if( images.isNotEmpty) {
+      return images.map((img) => img.imageBytes).toList();
+    } else {
+      return [];
+    }
+  }
 
 
   @override

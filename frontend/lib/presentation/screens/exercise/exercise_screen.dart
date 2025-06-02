@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:Abimind/data/services/firebase_srv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 import 'package:flutter_drawing_board/paint_contents.dart';
-import 'package:Abimind/data/services/firebase_srv.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 
 import '../../../data/models/exam.dart';
@@ -326,10 +326,19 @@ class ExerciseView extends StatelessWidget {
     // Replace single-dollar patterns with \(...\). Be careful not to
     // match escaped dollars. This is a simple regex; adjust if needed.
     var res = '<p> ${text.replaceAllMapped(
-      RegExp(r'\$(.+?)\$'),
-          (match) => r'\(' + match.group(1)! + r'\)',
+        RegExp(r'\$(.+?)\$'),
+            (match) {
+          if (match.group(1)!.contains(r'\begin')) {
+            return r'$$' + match.group(1)! + r'$$'; // Return the original match
+          } else {
+            return r'\(' + match.group(1)! + r'\)';
+          }
+        }
     )} </p>';
-    print('---------------\n $res');
+    // res.replaceAllMapped(
+    //     RegExp(r'\\begin\{([^\}]+)\}([\s\S]*?)\\end\{\1\}'), (match) => r'$$' + match.group(1)! + r'$$');
+    res = res.replaceAll(r'\\ ', r''); // Remove unnecessary backslashes
+    print('----------------- wrapped text: $res');
     return res;
   }
 
@@ -354,26 +363,41 @@ class ExerciseView extends StatelessWidget {
         ),
         // Exercise Description with LaTeX rendering
 
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TeXView(
-            child: TeXViewColumn(
-              children: [
-                TeXViewDocument(
-                  wrapInlineMath(currentExercise.description),
-                  style: TeXViewStyle(
-                      fontStyle: TeXViewFontStyle(
-                        fontSize: 16,
-                      )
-                  ),
-                ),
-                // Questions List
-                ...questions,
-              ],
-            ),
-          ),
-        ),
+            () {
+          if (exerciseExpanded) {
+            return Padding(
+              padding: EdgeInsetsGeometry.all(4.0),
+              child: Column(
+                children: [
 
+                  ...currentExercise.getImages().map(
+                          (bytes) => Image.memory(bytes, fit: BoxFit.contain, height: 200, width: double.infinity)
+                  ),
+
+                  TeXView(
+                    key: ValueKey('questions'),
+                    child: TeXViewColumn(
+                      children: [
+                        TeXViewDocument(
+                            wrapInlineMath(currentExercise.description),
+                            style: TeXViewStyle(backgroundColor: Colors.red)
+                  ),
+
+                        if (currentExercise.questions != null && currentExercise.questions!.isNotEmpty)
+                          ...questions,
+                      ],
+                    ),
+          ),
+                ],
+              ),
+            );
+          } else {
+            return SizedBox(
+              height: 0,
+              width: 0,
+            );
+          }
+        }(),
       ],
     );
   }

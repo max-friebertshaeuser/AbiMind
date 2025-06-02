@@ -22,9 +22,9 @@ class EncodedImage {
   }
 
   // Getter to convert base64 to Flutter Image widget
-  Image get imageWidget {
+  Uint8List get imageBytes {
     final Uint8List bytes = base64Decode(content);
-    return Image.memory(bytes);
+    return bytes;
   }
 
   @override
