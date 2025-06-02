@@ -19,7 +19,7 @@ class FirebaseService {
       final exams = await Future.wait(
         querySnapshot.docs.map((doc) => Exam.fromSnapshot(doc)),
       );
-
+      exams.sort((a, b) => a.year.compareTo(b.year));
       return exams;
     } catch (e) {
       print('Error fetching exams: $e');
