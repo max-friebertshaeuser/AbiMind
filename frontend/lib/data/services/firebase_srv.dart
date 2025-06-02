@@ -27,8 +27,6 @@ class FirebaseService {
     }
   }
 
-  // Remove: static Progress? _cachedProgress;
-
   static Future<Progress> getProgress(
     String userId, {
     bool forceRefresh =
@@ -230,5 +228,22 @@ class FirebaseService {
         .catchError((error) {
           print('Failed to save new goal: $error');
         });
+  }
+
+  static Future<int> getCurrentGoal() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) {
+      print('No user is currently logged in.');
+      return 0;
+    }
+    final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
+    final userSnap = await userRef.get();
+    if (!userSnap.exists) {
+      print('User document does not exist.');
+      return 0;
+    }
+    final data = userSnap.data();
+    final int goal = (data?[kGoal] as num?)?.toInt() ?? 0;
+    return goal;
   }
 }

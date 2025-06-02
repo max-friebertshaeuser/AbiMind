@@ -14,6 +14,20 @@ class _StreakSettingScreenState extends State<StreakSettingScreen> {
   final TextEditingController _controller = TextEditingController();
   var username = FirebaseAuth.instance.currentUser?.displayName ?? 'testUser';
   bool _goalSaved = false;
+  int? _currentGoal;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentGoal();
+  }
+
+  Future<void> _loadCurrentGoal() async {
+    final goal = await FirebaseService.getCurrentGoal();
+    setState(() {
+      _currentGoal = goal;
+    });
+  }
 
   void _saveGoal() {
     final minutes = int.tryParse(_controller.text);
@@ -22,6 +36,7 @@ class _StreakSettingScreenState extends State<StreakSettingScreen> {
       setState(() {
         _goalSaved = true;
       });
+      _loadCurrentGoal(); // Reload the current goal after saving
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please enter a valid number of minutes.")),
@@ -63,6 +78,16 @@ class _StreakSettingScreenState extends State<StreakSettingScreen> {
               ),
             ),
             const SizedBox(height: 32),
+            if (_currentGoal != null)
+              Center(
+                child: Text(
+                  "Your current Goal is $_currentGoal Minutes",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ),
+            const SizedBox(height: 16),
             Text("Daily Learning Goal", style: theme.textTheme.labelLarge),
             const SizedBox(height: 8),
             Row(
