@@ -184,8 +184,8 @@ class FirebaseService {
             .set({
               kAnswer: exercise.answer,
               kAnswerImage: exercise.getEncodedImage(),
-             kLastSaved: FieldValue.serverTimestamp(),
-            });
+              kLastSaved: FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
       }
     }
   }
