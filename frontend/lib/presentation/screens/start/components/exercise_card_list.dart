@@ -144,7 +144,7 @@ class _ExerciseCardListState extends State<ExerciseCardList>
                                   0.8;
                               return CustomTaskCard(
                                 title: task.exercise.title,
-                                description: task.exercise.description,
+                                description: task.exercise.shortDescription,
                                 tags: getTags(
                                   task.exercise.exerciseTopic,
                                   task.exercise.id,

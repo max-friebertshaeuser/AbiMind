@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Abimind/data/models/question.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/utils/constants.dart' as constant;
 import 'encoded_image.dart';
 
 enum ExerciseTopic { geometry, mandatory, analysis, stochastic, unknown }
@@ -30,6 +31,7 @@ class Exercise {
   final String description;
   final ExerciseTopic? exerciseTopic;
   final int index;
+  final String shortDescription;
   List<Question>? questions;
   List<EncodedImage>? images;
   List<EncodedImage>? solutionImages;
@@ -37,6 +39,7 @@ class Exercise {
   ByteData? answerImage;
 
   Exercise({
+    this.shortDescription = constant.shortDescription,
     this.exerciseTopic = ExerciseTopic.unknown,
     this.id = '',
     this.title = '',
