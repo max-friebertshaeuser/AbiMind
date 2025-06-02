@@ -6,6 +6,7 @@ import 'package:Abimind/presentation/screens/start/start-screen.dart';
 import '../presentation/screens/login/login-flow.dart';
 import '../presentation/screens/paint/paint_screen.dart';
 import '../presentation/screens/registration/registration-flow.dart';
+import '../presentation/screens/start/components/streak_settings_card.dart';
 import '../presentation/screens/welcome/welcome-screen.dart';
 
 class AppRoutes {
@@ -16,6 +17,7 @@ class AppRoutes {
   static const login = '/login';
   static const register = '/registration';
   static const start = '/start';
+  static const streak = '/streak';
 }
 
 final Map<String, WidgetBuilder> appRoutes = {
@@ -26,4 +28,6 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.login: (context) => const LoginFlow(),
   AppRoutes.register: (context) => const RegistrationFlow(),
   AppRoutes.start: (context) => const StarScreen(),
+  AppRoutes.streak: (context) => const StreakSettingScreen(),
+
 };
