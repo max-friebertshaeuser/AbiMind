@@ -18,18 +18,43 @@ class StreakCard extends StatefulWidget {
   State<StreakCard> createState() => _StreakCardState();
 }
 
-class _StreakCardState extends State<StreakCard> {
+class _StreakCardState extends State<StreakCard> with WidgetsBindingObserver {
   late Future<Map<String, dynamic>> _streakDataFuture;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _streakDataFuture = loadStreakData();
   }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {
+        _streakDataFuture = loadStreakData();
+      });
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.isCurrent ?? false) {
+      setState(() {
+        _streakDataFuture = loadStreakData();
+      });
+    }
+  }
+
   Future<Map<String, dynamic>> loadStreakData() async {
-
     var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
-
 
     final Streak streakObj = await firebase_srv.FirebaseService.getStreak(userId);
 
@@ -66,7 +91,6 @@ class _StreakCardState extends State<StreakCard> {
     };
   }
 
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -102,7 +126,6 @@ class _StreakCardState extends State<StreakCard> {
           final minutes = (entry.value['minutes'] as int?) ?? 0;
           return FlSpot(index, minutes.toDouble());
         }).toList();
-
 
         return MainSurfaceCard(
           title: 'Streak',
