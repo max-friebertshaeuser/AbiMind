@@ -33,18 +33,18 @@ class FirebaseService {
    String userId, {
    bool forceRefresh = false, // You can remove this parameter if unused elsewhere
  }) async {
-   final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
+   final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
    final userSnap = await userRef.get();
    if (!userSnap.exists) return Progress(examProgress: {});
 
-   final examSnap = await userRef.collection('exams').get();
+   final examSnap = await userRef.collection(kExam).get();
    final examDocs = examSnap.docs;
 
    final futures = examDocs.map((examDoc) async {
-     final exerSnap = await examDoc.reference.collection('exercises').get();
+     final exerSnap = await examDoc.reference.collection(kExercises).get();
      final Map<String, double> progressMap = {
        for (final exDoc in exerSnap.docs)
-         exDoc.id: (exDoc.data()['score'] as num? ?? 0).toDouble(),
+         exDoc.id: (exDoc.data()[kScore] as num? ?? 0).toDouble(),
      };
      return MapEntry(examDoc.id, progressMap);
    }).toList();
@@ -58,16 +58,16 @@ class FirebaseService {
  }
 
   static Future<Streak> getStreak(String userId) async {
-    final userRef = FirebaseFirestore.instance.collection('user').doc(userId);
+    final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
 
     final userSnap = await userRef.get();
     if (!userSnap.exists) {
       return Streak(days: {}, goal: 0);
     }
     final data = userSnap.data()!;
-    final int goal = (data['goal'] as num?)?.toInt() ?? 0;
+    final int goal = (data[kGoal] as num?)?.toInt() ?? 0;
 
-    final logSnap = await userRef.collection('streakLog').get();
+    final logSnap = await userRef.collection(kStreakLog).get();
 
     final Map<DateTime, int> days = {};
     for (final doc in logSnap.docs) {
@@ -75,14 +75,14 @@ class FirebaseService {
       try {
         day = DateTime.parse(doc.id);
       } catch (_) {
-        final ts = doc.data()['date'];
+        final ts = doc.data()[kDate];
         if (ts is Timestamp) {
           day = ts.toDate();
         } else {
           continue;
         }
       }
-      final int mins = (doc.data()['minutes'] as num?)?.toInt() ?? 0;
+      final int mins = (doc.data()[kMinutes] as num?)?.toInt() ?? 0;
       days[day] = mins;
     }
     return Streak(days: days, goal: goal);
@@ -100,8 +100,8 @@ class FirebaseService {
       final exercises = await fetchExercises(examId);
       return Exam(
         id: snapshot.id,
-        year: int.parse(data?['year']),
-        subject: data?['subject'],
+        year: int.parse(data?[kYear]),
+        subject: data?[kSubject],
         exercises: exercises,
       );
     } catch (e) {
@@ -121,7 +121,7 @@ class FirebaseService {
       }
       final questions =
           snapshot.docs
-              .map((q) => Question.fromJson({...q.data(), 'id': q.id}))
+              .map((q) => Question.fromJson({...q.data(), kId: q.id}))
               .toList();
       questions.sort((a, b) => a.title.compareTo(b.title));
       return questions;
@@ -140,7 +140,7 @@ class FirebaseService {
       final snapshot = await exercisesRef.get();
       List<Exercise> exercises =
           snapshot.docs
-              .map((el) => Exercise.fromJson({...el.data(), 'id': el.id}))
+              .map((el) => Exercise.fromJson({...el.data(), kId: el.id}))
               .toList();
       final answers = await fetchAnswers(examId);
       exercises =
@@ -186,7 +186,7 @@ class FirebaseService {
   static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(String examId) async {
     try {
       final snapshot = await _db
-          .collection('user')
+          .collection(kUser)
           .doc(_auth.currentUser?.uid)
           .collection(kExam)
           .doc(examId)
@@ -195,7 +195,7 @@ class FirebaseService {
 
       Map<String, List<Map<String, dynamic>>> answers = {
         for (var doc in snapshot.docs)
-          doc.id: (doc.data()['answer'] as List).cast<Map<String, dynamic>>(),
+          doc.id: (doc.data()[kAnswer] as List).cast<Map<String, dynamic>>(),
       };
       return answers;
     } catch (e) {
