@@ -101,14 +101,6 @@ class _SideBarState extends State<SideBar> {
                     },
                   ),
                 ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text("Settings"),
-                  onTap: () {
-                    print("Settings was clicked");
-                  },
-                ),
               ],
             ),
           ),
