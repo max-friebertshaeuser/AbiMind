@@ -166,7 +166,11 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.check_circle_outline), // choose your icon
-                onPressed: () {
+                onPressed: () async {
+                  currentExercise.answer = _drawingController.getJsonList();
+                  currentExercise.answerImage = await _drawingController.getImageData();
+                  await exam?.save();
+                  print('Saved answer');
                   correction_srv.triggerCorrection(
                     exam!.id,
                     currentExercise.id,
