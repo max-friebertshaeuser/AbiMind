@@ -68,3 +68,4 @@ const String kMinutes = 'minutes';
 const String kYear = 'year';
 const String kSubject = 'subject';
 const String kId = 'id';
+const String kLastSaved = 'lastSaved';
