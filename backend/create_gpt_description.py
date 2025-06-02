@@ -29,7 +29,7 @@ def get_short_description_from_gpt(full_text: str) -> str:
     als Antwort einen ein-zelligen, deutschsprachigen Beschreibungssatz zurück.
     """
     # Setze deinen API-Key (z.B. aus ENV-Variable)
-    openai.api_key = "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"
+    openai.api_key = ""
 
     # Prompt so gestalten, dass GPT versteht, es soll auf Deutsch antworten
     prompt = (
