@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -6,14 +7,14 @@ import openai
 import re
 
 # Initialize OpenAI client
-token = ""
+token = "" # provide API token here
 client = openai.OpenAI(api_key=token)
 
 def init_firebase():
     """
     Initialisiert die Verbindung zu Firebase Firestore.
     """
-    cred = credentials.Certificate("E:/Studium-git/abimind-2caf8-firebase-adminsdk-fbsvc-be13487a7f.json")
+    cred = credentials.Certificate("") # provide Firebase certificate (.json) here
     firebase_admin.initialize_app(cred)
     return firestore.client()
 
@@ -165,7 +166,8 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
         { 
         "correction": full_correction_text.strip(),
         "score": round(avg, 2),
-        "done":  avg >= 0.8
+        "done":  avg >= 0.8,
+        "lastCorrected": datetime.now()
         })
 
     # Optional zur Kontrolle ausgeben
@@ -222,7 +224,8 @@ def main():
         { 
         "correction": full_correction_text.strip(),
         "score": round(avg, 2),
-        "done":  avg >= 0.8
+        "done":  avg >= 0.8,
+        "lastCorrected": datetime.now()
         })
 
     # Optional zur Kontrolle ausgeben
