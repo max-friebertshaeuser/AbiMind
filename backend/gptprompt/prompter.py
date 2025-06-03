@@ -7,19 +7,22 @@ import openai
 import re
 
 # Initialize OpenAI client
-token = "" # provide API token here
+token = "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" # provide API token here
 client = openai.OpenAI(api_key=token)
 
 def init_firebase():
     """
     Initialisiert die Verbindung zu Firebase Firestore.
     """
-    cred = credentials.Certificate("") # provide Firebase certificate (.json) here
+    cred = credentials.Certificate(r"C:\Users\gabri\StudioProjects\abimind\backend\abimind-2caf8-firebase-adminsdk-fbsvc-669bfdd626.json") # provide Firebase certificate (.json) here
     firebase_admin.initialize_app(cred)
     return firestore.client()
 
+
+db = init_firebase()
+
+
 def frage_alle_questions_mit_bildern_aus_firestore(
-    db,
     user_uid: str,
     exam_uid: str,
     aufgabe_uid: str,
@@ -126,7 +129,6 @@ def frage_alle_questions_mit_bildern_aus_firestore(
     return responses
 
 def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
-    db = init_firebase()
     frage_template = (
         "Du bekommst hier eine Mathe-Abituraufgabe und die Musterlösung. "
         "Außerdem als Bild(er) eine Schülerlösung. Vergleiche beide Lösungen und bewerte die Schülerlösung. "
@@ -143,24 +145,33 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
     )
 
     ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
-        db=db,
         user_uid=user_uid,
         exam_uid=exam_uid,
         aufgabe_uid=aufgabe_uid,
         frage_template=frage_template
     )
 
-    sum = 0.0
+    results_json = {}
+    sum = 0
     count = 0
 
-    full_correction_text = ""
     for qid, antwort in ergebnisse.items():
-        full_correction_text += f"{{{qid}}}\n{antwort}\n\n"
-        match = re.match(r"\{([\d.,]+)\}", antwort)
+        results_json[qid] = antwort.strip()
+        # entry = {
+        #     "qid": qid,
+        #     "antwort": antwort,
+        # }
+
+        match = re.match(r"([\d.,]+)", antwort)
         if match:
-            wert = float(match.group(1).replace(",", "."))  # Komma zu Punkt für float
+            wert = float(match.group(1).replace(",", "."))
+            entry["wert"] = wert.__str__()
             sum += wert
             count += 1
+
+
+
+
 
     avg = sum / count if count > 0 else 0.0
 
@@ -172,7 +183,7 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
 
     exercise_ref.update(
         { 
-        "correction": full_correction_text.strip(),
+        "correction": results_json,
         "score": round(avg, 2),
         "done":  avg >= 0.8,
         "lastCorrected": datetime.now()
@@ -180,11 +191,10 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
 
     # Optional zur Kontrolle ausgeben
     print("Korrektur erfolgreich gespeichert:")
-    print(full_correction_text)
+    print(results_json)
 
 
 def main():
-    db = init_firebase()
     frage_template = (
         "Du bekommst hier eine Mathe-Abituraufgabe und die Musterlösung. "
         "Außerdem als Bild(er) eine Schülerlösung. Vergleiche beide Lösungen und bewerte die Schülerlösung. "

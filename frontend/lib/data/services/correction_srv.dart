@@ -1,10 +1,18 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/utils/constants.dart' as constants;
+import '../../core/utils/constants.dart';
 
 Future<void> triggerCorrection(String examId, String exerciseId) async {
+
+  if (FirebaseAuth.instance.currentUser == null) {
+    print('No user logged in, using test user ID');
+    return;
+  }
+
   final userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
 
   final Map<String, String> bodyData = {
@@ -13,9 +21,7 @@ Future<void> triggerCorrection(String examId, String exerciseId) async {
     "exerciseID": exerciseId,
   };
 
-  if (FirebaseAuth.instance.currentUser == null) {
-    print('No user logged in, using test user ID');
-  }
+
 
   try {
     final response = await http.post(
@@ -34,4 +40,23 @@ Future<void> triggerCorrection(String examId, String exerciseId) async {
   } catch (e) {
     print('Error making POST request: $e');
   }
+}
+
+class CorrectionService {
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+
+  static Future<void> triggerCorrection(String examId, String exerciseId) async {
+    await triggerCorrection(examId, exerciseId);
+  }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> watchCorrection(String examId, String exerciseId) {
+    return FirebaseFirestore.instance
+        .collection(kUser)
+        .doc(currentUser!.uid)
+        .collection(kExam).doc(examId).collection(kExercises).doc(exerciseId).snapshots();
+  }
+
+
+
 }
