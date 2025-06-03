@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:Abimind/presentation/screens/start/components/streak_settings_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,20 +57,22 @@ class _StreakCardState extends State<StreakCard> with WidgetsBindingObserver {
   Future<Map<String, dynamic>> loadStreakData() async {
     var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
 
-    final Streak streakObj = await firebase_srv.FirebaseService.getStreak(userId);
+    final Streak streakObj = await firebase_srv.FirebaseService.getStreak(
+      userId,
+    );
 
     final int goal = streakObj.goal;
 
-    final sortedDates = streakObj.days.keys.toList()
-      ..sort((a, b) => a.compareTo(b));
+    final sortedDates =
+        streakObj.days.keys.toList()..sort((a, b) => a.compareTo(b));
 
-    final List<int> minutesList = sortedDates
-        .map((day) => streakObj.days[day]!)
-        .toList();
+    final List<int> minutesList =
+        sortedDates.map((day) => streakObj.days[day]!).toList();
 
-    final List<int> lastTen = minutesList.length > 10
-        ? minutesList.sublist(minutesList.length - 10)
-        : minutesList;
+    final List<int> lastTen =
+        minutesList.length > 10
+            ? minutesList.sublist(minutesList.length - 10)
+            : minutesList;
 
     int streakCount = 0;
     for (int i = lastTen.length - 1; i >= 0; i--) {
@@ -80,9 +83,8 @@ class _StreakCardState extends State<StreakCard> with WidgetsBindingObserver {
       }
     }
 
-    final tenDayLearnProgress = lastTen
-        .map((mins) => {'minutes': mins})
-        .toList();
+    final tenDayLearnProgress =
+        lastTen.map((mins) => {'minutes': mins}).toList();
 
     return {
       'streak': streakCount,
@@ -109,118 +111,158 @@ class _StreakCardState extends State<StreakCard> with WidgetsBindingObserver {
         final data = snapshot.data!;
         final int streak = data['streak'] ?? 0;
         final double goal = (data['goal'] as num?)?.toDouble() ?? 0.0;
-        final List<dynamic> tenDayLearnProgress = data['tenDayLearnProgress'] ?? [];
+        final List<dynamic> tenDayLearnProgress =
+            data['tenDayLearnProgress'] ?? [];
 
         final List<int> minutesList =
-        tenDayLearnProgress.map((e) => e['minutes'] as int? ?? 0).toList();
+            tenDayLearnProgress.map((e) => e['minutes'] as int? ?? 0).toList();
 
-        final List<int> safeMinutesList = minutesList.isEmpty ? [0] : minutesList;
+        final List<int> safeMinutesList =
+            minutesList.isEmpty ? [0] : minutesList;
 
-        final int maxMinutes = [safeMinutesList.reduce((a, b) => a > b ? a : b), goal.toInt()].reduce((a, b) => a > b ? a : b);
-        final int minMinutes = [safeMinutesList.reduce((a, b) => a < b ? a : b), goal.toInt()].reduce((a, b) => a < b ? a : b);
+        final int maxMinutes = [
+          safeMinutesList.reduce((a, b) => a > b ? a : b),
+          goal.toInt(),
+        ].reduce((a, b) => a > b ? a : b);
+        final int minMinutes = [
+          safeMinutesList.reduce((a, b) => a < b ? a : b),
+          goal.toInt(),
+        ].reduce((a, b) => a < b ? a : b);
 
-        final spots = tenDayLearnProgress.isEmpty
-            ? []
-            : tenDayLearnProgress.asMap().entries.map((entry) {
-          final index = entry.key.toDouble();
-          final minutes = (entry.value['minutes'] as int?) ?? 0;
-          return FlSpot(index, minutes.toDouble());
-        }).toList();
+        final spots =
+            tenDayLearnProgress.isEmpty
+                ? []
+                : tenDayLearnProgress.asMap().entries.map((entry) {
+                  final index = entry.key.toDouble();
+                  final minutes = (entry.value['minutes'] as int?) ?? 0;
+                  return FlSpot(index, minutes.toDouble());
+                }).toList();
 
         return MainSurfaceCard(
           title: 'Streak',
           boxFlex: 1,
-          child: Row(
+          child: Stack(
             children: [
-              Expanded(
-                flex: 1,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
+              Row(
+                children: [
+                  // Existing content
+                  Expanded(
+                    flex: 1,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(streak.toString(), style: kHeaderStyle),
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.local_fire_department,
-                          color: flameColor,
-                          size: 32,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        'Du hast dein\nLernziel $streak Tage\nlang erreicht',
-                        style: smallTextStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: colorScheme.onPrimaryFixedVariant,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: LineChart(
-                      LineChartData(
-                        gridData: FlGridData(show: false),
-                        titlesData: FlTitlesData(show: false),
-                        borderData: FlBorderData(show: false),
-                        minY: minMinutes - 10,
-                        maxY: maxMinutes + 10,
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots:
-                                tenDayLearnProgress.asMap().entries.map((
-                                  entry,
-                                ) {
-                                  final index = entry.key.toDouble();
-                                  final minutes = entry.value['minutes'] as int;
-                                  return FlSpot(index, minutes.toDouble());
-                                }).toList(),
-                            isCurved: false,
-                            isStrokeCapRound: false,
-                            barWidth: 0,
-                            color: Colors.transparent,
-                            dotData: FlDotData(
-                              show: true,
-                              getDotPainter:
-                                  (spot, percent, barData, index) =>
-                                      FlDotCirclePainter(
-                                        radius: 4,
-                                        color:
-                                            colorScheme.onPrimaryFixedVariant,
-                                        strokeWidth: 0,
-                                      ),
-                            ),
-                            belowBarData: BarAreaData(show: false),
-                          ),
-                        ],
-                        extraLinesData: ExtraLinesData(
-                          horizontalLines: [
-                            HorizontalLine(
-                              y: goal,
-                              color: colorScheme.onPrimaryFixedVariant,
-                              strokeWidth: 2,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(streak.toString(), style: kHeaderStyle),
+                            const SizedBox(width: 8),
+                            Icon(
+                              Icons.local_fire_department,
+                              color: flameColor,
+                              size: 32,
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8),
+                        Center(
+                          child: Text(
+                            'Du hast dein\nLernziel $streak Tage\nlang erreicht',
+                            style: smallTextStyle,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: colorScheme.onPrimaryFixedVariant,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: LineChart(
+                          LineChartData(
+                            gridData: FlGridData(show: false),
+                            titlesData: FlTitlesData(show: false),
+                            borderData: FlBorderData(show: false),
+                            minY: minMinutes - 10,
+                            maxY: maxMinutes + 10,
+                            lineBarsData: [
+                              LineChartBarData(
+                                spots:
+                                    tenDayLearnProgress.asMap().entries.map((
+                                      entry,
+                                    ) {
+                                      final index = entry.key.toDouble();
+                                      final minutes =
+                                          entry.value['minutes'] as int;
+                                      return FlSpot(index, minutes.toDouble());
+                                    }).toList(),
+                                isCurved: false,
+                                isStrokeCapRound: false,
+                                barWidth: 0,
+                                color: Colors.transparent,
+                                dotData: FlDotData(
+                                  show: true,
+                                  getDotPainter:
+                                      (spot, percent, barData, index) =>
+                                          FlDotCirclePainter(
+                                            radius: 4,
+                                            color:
+                                                colorScheme
+                                                    .onPrimaryFixedVariant,
+                                            strokeWidth: 0,
+                                          ),
+                                ),
+                                belowBarData: BarAreaData(show: false),
+                              ),
+                            ],
+                            extraLinesData: ExtraLinesData(
+                              horizontalLines: [
+                                HorizontalLine(
+                                  y: goal,
+                                  color: colorScheme.onPrimaryFixedVariant,
+                                  strokeWidth: 2,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
+                  ),
+                ],
+              ),
+
+              Positioned(
+                bottom: 8,
+                left: 8,
+                child: FloatingActionButton.small(
+                  onPressed: () {
+                    print("Profile was clicked");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const StreakSettingScreen(),
+                      ),
+                    );
+                  },
+                  backgroundColor: colorScheme.primary,
+                  elevation: 2,
+                  heroTag: null,
+                  child: const Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 20,
                   ),
                 ),
               ),
