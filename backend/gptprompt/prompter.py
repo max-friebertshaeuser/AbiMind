@@ -140,6 +140,9 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
         "Spreche den Schüler bei den Korrekturvorschlägen direkt an. Verhalte dich wie ein Lehrer."
         "Bewerte die Teilaufgaben als Ganzes. Auch wenn sie auf mehrere Bilder verteilt sind. Die Korrektur soll die gesamte Schülerlösung über mehrere Bilder hinweg berücksichtigen."
         "Vor der Bewertung, ob 'falsch' oder 'richtig' gebe einen Prozentsatz an, ob 100% korrekt oder 0% korrekt oder etwas dazwischen. Gebe es als Dezimalzahl in geschweiften Klammern am Anfang deiner Antwort zurück."
+        "Wenn etwas nicht lesbar ist, rate nicht, sondern melde zurück, dass du etwas nicht lesen konntest. Du kannst dafür dann den Score etwas verschlechtern."
+        "Wenn ein Ergebnis richtig ist, aber der notwendige Rechenweg nicht angegeben ist, ziehe entsprechend etwas vom Score ab. Bewerte selber, bei welchen Aufgaben ein Rechenweg nötig ist. Schätze ein, ob der Rechenweg ausführlich genug ist. Ist der Rechenweg richtig, aber sich der Schüler verrechnet hat, ziehe ein wenig beim Score ab. Wenn sowohl Rechenweg als auch Lösung falsch beziehungsweise nicht nachvollziehbar sind, vergebe den Score 0.0. Bewerte keine falsch gelösten Aufgaben mit nicht-nachvollziehbarem Rechenweg als richtig."
+        "Betrachte nur die handgeschriebenen Lösungen als Schülerlösung. Die getippten Lösungen sind die Musterlösungen."
     )
 
     ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
@@ -199,7 +202,7 @@ def main():
         "Bewerte die Teilaufgaben als Ganzes. Auch wenn sie auf mehrere Bilder verteilt sind. Die Korrektur soll die gesamte Schülerlösung über mehrere Bilder hinweg berücksichtigen."
         "Vor der Bewertung, ob 'falsch' oder 'richtig' gebe einen Prozentsatz an, ob 100% korrekt oder 0% korrekt oder etwas dazwischen. Gebe es als Dezimalzahl in geschweiften Klammern am Anfang deiner Antwort zurück."
         "Wenn etwas nicht lesbar ist, rate nicht, sondern melde zurück, dass du etwas nicht lesen konntest. Du kannst dafür dann den Score etwas verschlechtern."
-        "Wenn ein Ergebnis richtig ist, aber der notwendige Rechenweg nicht angegeben ist, ziehe entsprechend etwas vom Score ab. Schätze ein, ob der Rechenweg ausführlich genug ist. Ist der Rechenweg richtig, aber sich der Schüler verrechnet hat, ziehe ein wenig beim Score ab. Wenn sowohl Rechenweg als auch Lösung falsch beziehungsweise nicht nachvollziehbar sind, vergebe den Score 0.0. Bewerte keine falsch gelösten Aufgaben mit nicht-nachvollziehbarem Rechenweg als richtig."
+        "Wenn ein Ergebnis richtig ist, aber der notwendige Rechenweg nicht angegeben ist, ziehe entsprechend etwas vom Score ab. Bewerte selber, bei welchen Aufgaben ein Rechenweg nötig ist. Schätze ein, ob der Rechenweg ausführlich genug ist. Ist der Rechenweg richtig, aber sich der Schüler verrechnet hat, ziehe ein wenig beim Score ab. Wenn sowohl Rechenweg als auch Lösung falsch beziehungsweise nicht nachvollziehbar sind, vergebe den Score 0.0. Bewerte keine falsch gelösten Aufgaben mit nicht-nachvollziehbarem Rechenweg als richtig."
         "Betrachte nur die handgeschriebenen Lösungen als Schülerlösung. Die getippten Lösungen sind die Musterlösungen."
     )
 
