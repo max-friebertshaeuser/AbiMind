@@ -1,9 +1,8 @@
 from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel
-from gptprompt.prompter import correctExercice
+from gptprompt.prompter import correctExercice, init_firebase
 
 app = FastAPI()
-
 class Correction_Request(BaseModel):
     userID: str
     examID: str

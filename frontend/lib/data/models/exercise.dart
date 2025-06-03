@@ -34,7 +34,7 @@ class Exercise {
   final ExerciseTopic? exerciseTopic;
   final int index;
   final String shortDescription;
-  List<Question>? questions;
+  List<Question> questions;
   List<EncodedImage> images;
   List<EncodedImage>? solutionImages;
   List<Map<String, dynamic>> answer;

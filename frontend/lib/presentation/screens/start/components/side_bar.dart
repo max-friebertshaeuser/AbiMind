@@ -45,7 +45,6 @@ class _SideBarState extends State<SideBar> {
         kLastSaved,
       );
 
-      // Load exercise data using those IDs
       final newProgressExercises = await FirebaseService.loadExamById(
         newTopInProgressEx,
       );
@@ -151,12 +150,13 @@ class _SideBarState extends State<SideBar> {
                     ...correctedExercises.map(
                       (exam) => ListTile(
                         leading: const Icon(Icons.description),
-                        title: Text("${exam.subject} ${exam.year}"),
+                        title: Text("ABI ${exam.year}"),
                         onTap: () {
-                          print(
-                            "${exam.subject} ${exam.year} (corrected) was clicked",
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.exercise,
+                            arguments: ExerciseScreenArguments(examId: exam.id),
                           );
-                          // Add navigation logic here
                         },
                       ),
                     ),

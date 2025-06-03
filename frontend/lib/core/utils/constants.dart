@@ -41,7 +41,7 @@ final Map<String, Color> tagColors = {
   // Mandatory tag (pastel yellow too bright → switch to amber for contrast)
 };
 
-const correctionEndpoint = 'http://10.0.2.2:8000/correction/';
+const correctionEndpoint = 'http://10.0.2.2:8001/correction/';
 
 
 const String shortDescription = 'Dieser Text existiert nur, um irgendetwas zu füllen, was du vermutlich vermeiden willst, ernsthaft zu bearbeiten. Dreißig Wörter, keine Substanz, aber hey – sieht gut aus';
@@ -70,3 +70,5 @@ const String kSubject = 'subject';
 const String kId = 'id';
 const String kLastSaved = 'lastSaved';
 const String kLastCorrected = 'lastCorrected';
+const String kAntwort = 'antwort';
+const String kCorrection = 'correction';

@@ -5,6 +5,7 @@ class Question {
   final String title;
   final String description;
   final String solution;
+  String correction;
   List<EncodedImage>? images;
   List<EncodedImage>? solutionImages;
 
@@ -13,6 +14,7 @@ class Question {
     required this.title,
     required this.description,
     required this.solution,
+    this.correction = 'No correction available',
     this.images,
     this.solutionImages,
   });

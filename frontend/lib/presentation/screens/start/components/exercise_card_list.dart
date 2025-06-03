@@ -158,6 +158,7 @@ class _ExerciseCardListState extends State<ExerciseCardList>
                                     AppRoutes.exercise,
                                     arguments: ExerciseScreenArguments(
                                       examId: task.examId,
+                                      exerciseId: task.exercise.id
                                     ),
                                   );
                                   // Your navigation or logic here
