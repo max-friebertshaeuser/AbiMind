@@ -168,7 +168,6 @@ def correctExercice(user_uid : str, exam_uid : str, aufgabe_uid : str):
         match = re.match(r"([\d.,]+)", antwort)
         if match:
             wert = float(match.group(1).replace(",", "."))
-            entry["wert"] = wert.__str__()
             sum += wert
             count += 1
 

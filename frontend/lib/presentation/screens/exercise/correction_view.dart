@@ -31,6 +31,9 @@ class CorrectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (correction == null || !correction!.containsKey(kCorrection)) {
+      return const Center(child: Text('No correction available'));
+    }
     exercise.questions =
         exercise.questions.map((q) {
           q.correction = correction![kCorrection][q.id];
@@ -67,7 +70,7 @@ class CorrectionView extends StatelessWidget {
                 key: ValueKey('questions'),
                 child: TeXViewColumn(
                   children: [
-                    TeXViewDocument(wrapInlineMath(exercise.description)),
+                    // TeXViewDocument(wrapInlineMath(exercise.description)),
 
                     if (exercise.questions.isNotEmpty) ...corrections,
                   ],

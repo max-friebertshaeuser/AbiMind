@@ -165,6 +165,16 @@ class FirebaseService {
   }
 
   static Future<void> saveAnswers(Exam exam) async {
+    final examRef =await _db.collection(kUser).doc(_auth.currentUser?.uid).collection(kExam).doc(exam.id).get();
+    if(examRef.data() == null) {
+      print('Exam ${exam.id} does not exist, creating new document.');
+      await _db
+          .collection(kUser)
+          .doc(_auth.currentUser?.uid)
+          .collection(kExam)
+          .doc(exam.id)
+          .set({});
+    }
     for (var exercise in exam.exercises) {
       dynamic examRef =
           await _db
