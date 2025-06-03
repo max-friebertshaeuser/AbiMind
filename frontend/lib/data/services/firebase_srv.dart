@@ -164,31 +164,33 @@ class FirebaseService {
     }
   }
 
-static Future<void> saveAnswers(Exam exam) async {
-  for (var exercise in exam.exercises) {
-    dynamic examRef =
+  static Future<void> saveAnswers(Exam exam) async {
+    for (var exercise in exam.exercises) {
+      dynamic examRef =
+          await _db
+              .collection(kUser)
+              .doc(_auth.currentUser?.uid)
+              .collection(kExam)
+              .doc(exam.id)
+              .get();
+      if (exercise.answer.isNotEmpty ||
+          (exercise.getEncodedImage() != null &&
+              exercise.getEncodedImage()!.isNotEmpty)) {
         await _db
             .collection(kUser)
             .doc(_auth.currentUser?.uid)
             .collection(kExam)
             .doc(exam.id)
-            .get();
-    if (exercise.answer.isNotEmpty || (exercise.getEncodedImage() != null && exercise.getEncodedImage()!.isNotEmpty)) {
-      await _db
-          .collection(kUser)
-          .doc(_auth.currentUser?.uid)
-          .collection(kExam)
-          .doc(exam.id)
-          .collection(kExercises)
-          .doc(exercise.id)
-          .set({
-            kAnswer: exercise.answer,
-            kAnswerImage: exercise.getEncodedImage(),
-            kLastSaved: FieldValue.serverTimestamp(),
-          }, SetOptions(merge: true));
+            .collection(kExercises)
+            .doc(exercise.id)
+            .set({
+              kAnswer: exercise.answer,
+              kAnswerImage: exercise.getEncodedImage(),
+              kLastSaved: FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
+      }
     }
   }
-}
 
   static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(
     String examId,
@@ -247,4 +249,72 @@ static Future<void> saveAnswers(Exam exam) async {
     final int goal = (data?[kGoal] as num?)?.toInt() ?? 0;
     return goal;
   }
+
+static Future<List<String>> getTopExercises(String orderBy) async {
+  final userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
+  try {
+    final examSnapshot = await _db
+        .collection(kUser)
+        .doc(userId)
+        .collection(kExam)
+        .get();
+
+    List<Map<String, dynamic>> examsWithTimestamp = [];
+
+    for (var examDoc in examSnapshot.docs) {
+      final exercisesQuery = await _db
+          .collection(kUser)
+          .doc(userId)
+          .collection(kExam)
+          .doc(examDoc.id)
+          .collection(kExercises)
+          .orderBy(orderBy, descending: true)
+          .limit(1)
+          .get();
+
+      if (exercisesQuery.docs.isNotEmpty) {
+        final latestExercise = exercisesQuery.docs.first;
+        final timestamp = latestExercise.data()[orderBy];
+        if (timestamp != null) {
+          examsWithTimestamp.add({
+            'examId': examDoc.id,
+            'timestamp': timestamp,
+          });
+        }
+      }
+    }
+    examsWithTimestamp.sort((a, b) =>
+        (b['timestamp'] as Timestamp).compareTo(a['timestamp'] as Timestamp));
+
+    final topExams = examsWithTimestamp.take(3).map((e) => e['examId'] as String).toList();
+    print('Found ${topExams.length} exams with $orderBy timestamps');
+    return topExams;
+  } catch (error) {
+    print('Error fetching top exercises: $error');
+    return [];
+  }
+}
+
+static Future<List<Exam>> loadExamById(List<String> topInProgressEx) async {
+  List<Exam> exams = [];
+  for (String id in topInProgressEx) {
+    try {
+      final doc = await _db.collection(kExam).doc(id).get();
+      if (doc.exists) {
+        final data = doc.data()!;
+        final exercises = await fetchExercises(doc.id);
+        final exam = Exam(
+          id: doc.id,
+          year: int.parse(data[kYear].toString()),
+          subject: data[kSubject],
+          exercises: exercises,
+        );
+        exams.add(exam);
+      }
+    } catch (e) {
+      print('Error loading exam $id: $e');
+    }
+  }
+  return exams;
+}
 }
