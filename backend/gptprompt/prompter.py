@@ -71,10 +71,18 @@ def frage_alle_questions_mit_bildern_aus_firestore(
 
     # 3) Über alle Questions iterieren
     responses: dict[str, str] = {}
-    questions = ex_ref.collection("exercises").document(aufgabe_uid)\
-                     .collection("questions").stream()
 
-    for q_doc in questions:
+    sorted_questions = sorted(
+        ex_ref
+        .collection("exercises")
+        .document(aufgabe_uid)
+        .collection("questions")
+        .stream(),
+        key=lambda doc: doc.to_dict().get("title", "")
+    )
+    
+
+    for q_doc in sorted_questions:
         q_data = q_doc.to_dict()
         q_id   = q_doc.id
         q_title= q_data.get("title", q_id)
@@ -190,13 +198,16 @@ def main():
         "Spreche den Schüler bei den Korrekturvorschlägen direkt an. Verhalte dich wie ein Lehrer."
         "Bewerte die Teilaufgaben als Ganzes. Auch wenn sie auf mehrere Bilder verteilt sind. Die Korrektur soll die gesamte Schülerlösung über mehrere Bilder hinweg berücksichtigen."
         "Vor der Bewertung, ob 'falsch' oder 'richtig' gebe einen Prozentsatz an, ob 100% korrekt oder 0% korrekt oder etwas dazwischen. Gebe es als Dezimalzahl in geschweiften Klammern am Anfang deiner Antwort zurück."
+        "Wenn etwas nicht lesbar ist, rate nicht, sondern melde zurück, dass du etwas nicht lesen konntest. Du kannst dafür dann den Score etwas verschlechtern."
+        "Wenn ein Ergebnis richtig ist, aber der notwendige Rechenweg nicht angegeben ist, ziehe entsprechend etwas vom Score ab. Schätze ein, ob der Rechenweg ausführlich genug ist. Ist der Rechenweg richtig, aber sich der Schüler verrechnet hat, ziehe ein wenig beim Score ab. Wenn sowohl Rechenweg als auch Lösung falsch beziehungsweise nicht nachvollziehbar sind, vergebe den Score 0.0. Bewerte keine falsch gelösten Aufgaben mit nicht-nachvollziehbarem Rechenweg als richtig."
+        "Betrachte nur die handgeschriebenen Lösungen als Schülerlösung. Die getippten Lösungen sind die Musterlösungen."
     )
 
     ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
         db=db,
         user_uid="TNddezDjmEYDGEx0HdcMWvEQVbv1",
-        exam_uid="BLILtj4qkTk5RJVM1sfH",
-        aufgabe_uid="09Xxx1t1RT59AgyJhBsi",
+        exam_uid="qsdrPSoetpkJBN0efiyq",
+        aufgabe_uid="1u1EEZ0h77Vqf1gSDwDa",
         frage_template=frage_template
     )
 
@@ -216,10 +227,10 @@ def main():
 
     exercise_ref = (
         db.collection("user").document("TNddezDjmEYDGEx0HdcMWvEQVbv1")
-          .collection("exams").document("BLILtj4qkTk5RJVM1sfH")
-          .collection("exercises").document("09Xxx1t1RT59AgyJhBsi")
+          .collection("exams").document("qsdrPSoetpkJBN0efiyq")
+          .collection("exercises").document("1u1EEZ0h77Vqf1gSDwDa")
     )
-
+    
     exercise_ref.update(
         { 
         "correction": full_correction_text.strip(),
