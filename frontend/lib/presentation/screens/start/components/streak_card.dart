@@ -243,29 +243,26 @@ class _StreakCardState extends State<StreakCard> with WidgetsBindingObserver {
                 ],
               ),
 
-              Positioned(
-                bottom: 8,
-                left: 8,
-                child: FloatingActionButton.small(
-                  onPressed: () {
-                    print("Profile was clicked");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const StreakSettingScreen(),
-                      ),
-                    );
-                  },
-                  backgroundColor: colorScheme.primary,
-                  elevation: 2,
-                  heroTag: null,
-                  child: const Icon(
-                    Icons.settings,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
+Positioned(
+  top: 0,
+  left: 0,
+  child: IconButton(
+    icon: const Icon(
+      Icons.settings,
+      color: Colors.white,
+      size: 20,
+    ),
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const StreakSettingScreen(),
+        ),
+      );
+    },
+    tooltip: 'Settings',
+  ),
+),
             ],
           ),
         );
