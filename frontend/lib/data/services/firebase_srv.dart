@@ -164,31 +164,31 @@ class FirebaseService {
     }
   }
 
-  static Future<void> saveAnswers(Exam exam) async {
-    for (var exercise in exam.exercises) {
-      dynamic examRef =
-          await _db
-              .collection(kUser)
-              .doc(_auth.currentUser?.uid)
-              .collection(kExam)
-              .doc(exam.id)
-              .get();
-      if (exercise.answer.isNotEmpty) {
+static Future<void> saveAnswers(Exam exam) async {
+  for (var exercise in exam.exercises) {
+    dynamic examRef =
         await _db
             .collection(kUser)
             .doc(_auth.currentUser?.uid)
             .collection(kExam)
             .doc(exam.id)
-            .collection(kExercises)
-            .doc(exercise.id)
-            .set({
-              kAnswer: exercise.answer,
-              kAnswerImage: exercise.getEncodedImage(),
-              kLastSaved: FieldValue.serverTimestamp(),
-            }, SetOptions(merge: true));
-      }
+            .get();
+    if (exercise.answer.isNotEmpty || (exercise.getEncodedImage() != null && exercise.getEncodedImage()!.isNotEmpty)) {
+      await _db
+          .collection(kUser)
+          .doc(_auth.currentUser?.uid)
+          .collection(kExam)
+          .doc(exam.id)
+          .collection(kExercises)
+          .doc(exercise.id)
+          .set({
+            kAnswer: exercise.answer,
+            kAnswerImage: exercise.getEncodedImage(),
+            kLastSaved: FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
     }
   }
+}
 
   static Future<Map<String, List<Map<String, dynamic>>>> fetchAnswers(
     String examId,
