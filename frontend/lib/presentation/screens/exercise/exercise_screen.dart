@@ -19,13 +19,14 @@ import 'custom_drawing_board.dart';
 class ExerciseScreenArguments {
   final String examId;
   final int exerciseIndex;
+  final String? exerciseId;
 
   @override
   String toString() {
     return 'ExerciseScreenArguments{examId: $examId, exerciseIndex: $exerciseIndex}';
   }
 
-  ExerciseScreenArguments({required this.examId, this.exerciseIndex = 0});
+ExerciseScreenArguments({this.exerciseId, required this.examId, this.exerciseIndex = 0});
 }
 
 enum LoadingState { loading, finished, error }
@@ -162,8 +163,21 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     });
     print('exam: ${exam?.exercises[exerciseIndex].answer}');
     if (exam != null) {
+      // If exerciseId is provided, find the corresponding exercise
+      if (args.exerciseId != null) {
+        for (int i = 0; i < exam!.exercises.length; i++) {
+          if (exam!.exercises[i].id == args.exerciseId) {
+            exerciseIndex = i;
+            break;
+          }
+        }
+      } else {
+        // Otherwise use the provided index
+        exerciseIndex = args.exerciseIndex;
+      }
+
       _loadAnswer(exam!.exercises[exerciseIndex].answer);
-      exerciseIndex = args.exerciseIndex;
+
       setState(() {
         loadingState = LoadingState.finished;
       });
