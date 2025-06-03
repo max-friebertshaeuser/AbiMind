@@ -41,7 +41,7 @@ class Exercise {
   ByteData? answerImage;
 
   Exercise({
-    this.shortDescription = constant.shortDescription,
+    this.shortDescription = '',
     this.exerciseTopic = ExerciseTopic.unknown,
     this.id = '',
     this.title = '',
@@ -82,6 +82,7 @@ class Exercise {
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       exerciseTopic: topic,
+      shortDescription: json['shortDescription'] as String? ?? '',
       index: int.parse(json['index']?.toString() ?? '100'),
       questions:
       _asList(json['questions'], (m) => Question.fromJson(m)),
