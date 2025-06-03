@@ -234,7 +234,6 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
 
         correction.whenData((doc) {
           final data = doc.data();
-          print('aaaaahh new Correction data: ${data?['correction']}');
           if (data?['correction'] != null && !ref.read(isCorrectionReadyProvider)) {
             print('Correction data received: ${data!['correction']}');
             Future.microtask(() {
