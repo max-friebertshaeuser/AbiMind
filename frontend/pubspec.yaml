@@ -74,10 +74,6 @@ dev_dependencies:
 flutter:
   assets:
     - assets/logo.png
-    - assets/exerciseData.json
-    - assets/exerciseProgress.json
-    - assets/streak.json
-    - assets/sidebar.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
