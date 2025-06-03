@@ -7,14 +7,14 @@ import openai
 import re
 
 # Initialize OpenAI client
-token = "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" # provide API token here
+token = "" # provide API token here
 client = openai.OpenAI(api_key=token)
 
 def init_firebase():
     """
     Initialisiert die Verbindung zu Firebase Firestore.
     """
-    cred = credentials.Certificate(r"C:\Users\gabri\StudioProjects\abimind\backend\abimind-2caf8-firebase-adminsdk-fbsvc-669bfdd626.json") # provide Firebase certificate (.json) here
+    cred = credentials.Certificate("") # provide Firebase certificate (.json) here
     firebase_admin.initialize_app(cred)
     return firestore.client()
 
@@ -215,7 +215,6 @@ def main():
         "Wenn ein Ergebnis richtig ist, aber der notwendige Rechenweg nicht angegeben ist, ziehe entsprechend etwas vom Score ab. Bewerte selber, bei welchen Aufgaben ein Rechenweg nötig ist. Schätze ein, ob der Rechenweg ausführlich genug ist. Ist der Rechenweg richtig, aber sich der Schüler verrechnet hat, ziehe ein wenig beim Score ab. Wenn sowohl Rechenweg als auch Lösung falsch beziehungsweise nicht nachvollziehbar sind, vergebe den Score 0.0. Bewerte keine falsch gelösten Aufgaben mit nicht-nachvollziehbarem Rechenweg als richtig."
         "Betrachte nur die handgeschriebenen Lösungen als Schülerlösung. Die getippten Lösungen sind die Musterlösungen."
     )
-
     ergebnisse = frage_alle_questions_mit_bildern_aus_firestore(
         db=db,
         user_uid="TNddezDjmEYDGEx0HdcMWvEQVbv1",
