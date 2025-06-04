@@ -22,7 +22,8 @@ class ProgressCard extends StatefulWidget {
   State<ProgressCard> createState() => _ProgressCardState();
 }
 
-class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver {
+class _ProgressCardState extends State<ProgressCard>
+    with WidgetsBindingObserver {
   List<Exam> statisticsData = [];
   late Exam selectedExam;
   bool isLoading = true;
@@ -77,7 +78,7 @@ class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver
         statisticsData = exams;
         if (exams.isNotEmpty) {
           selectedExam = exams.firstWhere(
-                (exam) => exam.year == DateTime.now().year,
+            (exam) => exam.year == DateTime.now().year,
             orElse: () => exams.first,
           );
         }
@@ -87,7 +88,6 @@ class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver
       setState(() => isLoading = false);
     }
   }
-
 
   void selectStatistic(Exam stat) {
     setState(() => selectedExam = stat);
@@ -141,12 +141,16 @@ class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver
                           progressColor: colorScheme.onPrimaryFixedVariant,
                           radius: 70.0,
                           lineWidth: 12.0,
-                          percent: 0.0,
+                          percent:
+                              _loadProgressPercentage(
+                                progressData.examProgress[selectedExam.id] ??
+                                    {},
+                                selectedExam,
+                              ) /
+                              100.0,
+                          // Convert from percentage to decimal
                           center: Text(
-                            _loadProgressPercentage(
-                              progressData.examProgress[selectedExam.id] ?? {},
-                              selectedExam,
-                            ),
+                            "${_loadProgressPercentage(progressData.examProgress[selectedExam.id] ?? {}, selectedExam)} %",
                             style: percentageStyle,
                           ),
                           circularStrokeCap: CircularStrokeCap.round,
@@ -291,32 +295,22 @@ class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircularPercentIndicator(
-                                        backgroundColor:
-                                            colorScheme.surfaceContainerHigh,
-                                        progressColor:
-                                            colorScheme.onPrimaryFixedVariant,
+                                        backgroundColor: colorScheme.surfaceContainerHigh,
+                                        progressColor: colorScheme.onPrimaryFixedVariant,
                                         radius: 30.0,
                                         lineWidth: 8.0,
-                                        percent: 0.0,
+                                        percent: _loadProgressPercentage(progressData.examProgress[stat.id] ?? {}, stat) / 100.0,  // Convert from percentage to decimal
                                         center: Text(
-                                          _loadProgressPercentage(
-                                            progressData.examProgress[stat
-                                                    .id] ??
-                                                {},
-                                            stat,
-                                          ),
+                                          "${_loadProgressPercentage(progressData.examProgress[stat.id] ?? {}, stat)} %",
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
-                                            color:
-                                                isSelected
-                                                    ? colorScheme
-                                                        .onPrimaryContainer
-                                                    : colorScheme.onSurface,
+                                            color: isSelected
+                                                 ? colorScheme.onPrimaryContainer
+                                                 : colorScheme.onSurface,
                                           ),
                                         ),
-                                        circularStrokeCap:
-                                            CircularStrokeCap.round,
+                                        circularStrokeCap: CircularStrokeCap.round,
                                       ),
                                       const SizedBox(width: 20),
                                       Column(
@@ -399,13 +393,13 @@ class _ProgressCardState extends State<ProgressCard> with WidgetsBindingObserver
     );
   }
 
-  String _loadProgressPercentage(Map<String, double> map, Exam stat) {
-    if (map.isEmpty) return "0%";
+  int _loadProgressPercentage(Map<String, double> map, Exam stat) {
+    if (map.isEmpty) return 0;
     final total = stat.exercises.length;
-    if (total == 0) return "0%";
+    if (total == 0) return 0;
     final done = map.values.where((p) => p >= 0.8).length;
-    final percentage = ((done / total) * 100).round().toString();
-    return "$percentage%";
+    final percentage = ((done / total) * 100).round();
+    return percentage;
   }
 }
 
@@ -473,4 +467,3 @@ int _calculateCategoryDone(
   }
   return doneCount;
 }
-
