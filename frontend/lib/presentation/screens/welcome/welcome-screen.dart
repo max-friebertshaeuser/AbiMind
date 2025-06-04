@@ -28,7 +28,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return CustomScaffold(
       appBar: AppBar(
-        title: const Center(child: Text('achievd')),
+        title: const Center(child: Text('Abimind')),
       ),
       body: Flex(
         direction: Axis.vertical,
@@ -38,7 +38,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           Expanded(
             child: Center(
               child: Text(
-                'TODO',
+                '',
                 style: TextStyle(
                     fontSize: 48,
                     fontFamily: GoogleFonts.montserrat().fontFamily,
