@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Abimind/core/utils/constants.dart';
 import 'package:Abimind/data/models/exercise.dart';
 import 'package:Abimind/data/models/question.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../models/exam.dart';
 import '../models/progress.dart';
@@ -27,11 +27,8 @@ class FirebaseService {
     }
   }
 
-  static Future<Progress> getProgress(
-    String userId, {
-    bool forceRefresh =
-        false, // You can remove this parameter if unused elsewhere
-  }) async {
+  static Future<Progress> getProgress({bool forceRefresh = false}) async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     final userRef = FirebaseFirestore.instance.collection(kUser).doc(userId);
     final userSnap = await userRef.get();
     if (!userSnap.exists) return Progress(examProgress: {});

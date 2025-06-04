@@ -278,14 +278,13 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                 ];
               },
             ),
-            title: const Text('Drawing Test'),
+            title: Text('Abitur ${exam!.year}'),
             systemOverlayStyle: SystemUiOverlayStyle.dark,
             actions: <Widget>[
               Transform.scale(
                 scale: 0.75,
                 child: Switch(
                   value: showCorrection,
-
                   onChanged: isReady ? (value) {
                     setState(() {
                       showCorrection = value;
@@ -293,9 +292,8 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                   } : null,
                 ),
               ),
-
               IconButton(
-                icon: const Icon(Icons.photo),
+                icon: Icon(Icons.photo, color: colorScheme.primary,),
                 onPressed: () async {
                   final ImagePicker picker = ImagePicker();
                   final XFile? pickedFile = await picker.pickImage(
@@ -322,7 +320,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
               ),
 
               IconButton(
-                icon: const Icon(Icons.check_circle_outline),
+                icon: Icon(Icons.check_circle_outline, color: colorScheme.primary),
                 onPressed: () async {
                   currentExercise.answer = _drawingController.getJsonList();
                   currentExercise.answerImage = await _drawingController.getImageData();
@@ -340,7 +338,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
               // IconButton(icon: const Icon(Icons.check), onPressed: _getImageData),
               // IconButton(icon: const Icon(Icons.restore_page_rounded), onPressed: _restBoard),
               IconButton(
-                icon: const Icon(Icons.save),
+                icon: Icon(Icons.save, color: colorScheme.primary),
                 onPressed: () async {
                   currentExercise.answer = _drawingController.getJsonList();
                   currentExercise.answerImage =
@@ -371,7 +369,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                               topRight: Radius.circular(10),
                               bottomRight: Radius.circular(10),
                             ),
-                            color: colorScheme.surfaceContainerHighest,
+                            color: colorScheme.surfaceContainer,
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -424,7 +422,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                               });
                             },
                             style: IconButton.styleFrom(
-                              backgroundColor: colorScheme.primaryContainer,
+                              backgroundColor: colorScheme.surfaceContainer,
                               shape: CircleBorder(),
                             ),
                             icon: Icon(exerciseExpanded ? Icons.chevron_left : Icons.chevron_right),

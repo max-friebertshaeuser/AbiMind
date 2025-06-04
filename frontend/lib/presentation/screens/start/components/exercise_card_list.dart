@@ -1,13 +1,6 @@
-import 'dart:convert';
-
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:Abimind/data/models/exercise.dart';
-import 'package:Abimind/presentation/screens/start/start-screen.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../data/models/progress.dart';
@@ -15,6 +8,7 @@ import '../../../../data/services/firebase_srv.dart';
 import '../../../../routes/routes.dart';
 import '../../exercise/exercise_screen.dart';
 import 'exercise_selection_bar.dart';
+import 'main_surface_card.dart';
 
 class ExerciseCardList extends StatefulWidget {
   @override
@@ -70,7 +64,7 @@ class _ExerciseCardListState extends State<ExerciseCardList>
   Future<void> refreshProgressOnly() async {
     try {
       var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
-      final progress = await FirebaseService.getProgress(userId);
+      final progress = await FirebaseService.getProgress();
       setState(() {
         progressData = progress;
       });
@@ -83,7 +77,7 @@ class _ExerciseCardListState extends State<ExerciseCardList>
     try {
       final exams = await FirebaseService.getExams();
       var userId = FirebaseAuth.instance.currentUser?.uid ?? 'testUserId';
-      final progress = await FirebaseService.getProgress(userId);
+      final progress = await FirebaseService.getProgress();
       final tempExercises = <ExerciseWithExamDate>[];
       for (final exam in exams) {
         for (final exercise in exam.exercises) {
@@ -124,64 +118,60 @@ class _ExerciseCardListState extends State<ExerciseCardList>
       child: MainSurfaceCard(
         title: 'Exercises',
         boxFlex: 1,
-        child: Column(
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:
-                            filteredTasks.map((task) {
-                              bool isDone =
-                                  (progressData.examProgress[task.examId]?[task
-                                          .exercise
-                                          .id] ??
-                                      0.0) >=
-                                  0.8;
-                              return CustomTaskCard(
-                                title: task.exercise.title,
-                                description: task.exercise.shortDescription,
-                                tags: getTags(
-                                  task.exercise.exerciseTopic,
-                                  task.exercise.id,
-                                  isDone,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: filteredTasks.length,
+                        itemBuilder: (context, index) {
+                          final task = filteredTasks[index];
+                          final isDone = (progressData.examProgress[task.examId]?[task.exercise.id] ?? 0.0) >= 0.8;
+
+                          return CustomTaskCard(
+                            title: task.exercise.title,
+                            description: task.exercise.shortDescription,
+                            tags: getTags(
+                              task.exercise.exerciseTopic,
+                              task.exercise.id,
+                              isDone,
+                            ),
+                            year: task.year.toString(),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.exercise,
+                                arguments: ExerciseScreenArguments(
+                                  examId: task.examId,
+                                  exerciseId: task.exercise.id,
                                 ),
-                                year: task.year.toString(),
-                                onTap: () {
-                                  //TODO navigate to exact exercise
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.exercise,
-                                    arguments: ExerciseScreenArguments(
-                                      examId: task.examId,
-                                      exerciseId: task.exercise.id
-                                    ),
-                                  );
-                                  // Your navigation or logic here
-                                },
                               );
-                            }).toList(),
-                      ),
+                            },
+                          );
+                        },
+                      )
+
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            CategoryToggleBar(
-              categories: [
-                ExerciseTopic.mandatory,
-                ExerciseTopic.analysis,
-                ExerciseTopic.stochastic,
-                ExerciseTopic.geometry,
-              ],
-              selected: selectedCategories,
-              onSelectionChanged: onCategorySelectionChanged,
-            ),
-          ],
+              CategoryToggleBar(
+                categories: [
+                  ExerciseTopic.mandatory,
+                  ExerciseTopic.analysis,
+                  ExerciseTopic.stochastic,
+                  ExerciseTopic.geometry,
+                ],
+                selected: selectedCategories,
+                onSelectionChanged: onCategorySelectionChanged,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -242,9 +232,9 @@ class CustomTaskCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: colorScheme.primaryContainer,
+          color: colorScheme.surfaceContainer,
           border: Border.all(
-            color: colorScheme.onPrimaryFixedVariant,
+            color: colorScheme.primary,
             width: 2,
           ),
           borderRadius: BorderRadius.circular(16),
@@ -255,16 +245,16 @@ class CustomTaskCard extends StatelessWidget {
             // Tags
             Wrap(
               spacing: 8,
+              alignment: WrapAlignment.end,
               children:
                   tags.map((tag) {
-                    final color = tagColors[tag] ?? Colors.blueGrey;
                     return Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
+                        horizontal: 8,
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: color,
+                        color: colorScheme.onPrimaryContainer,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(tag, style: lableTextStyle),

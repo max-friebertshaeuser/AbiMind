@@ -69,7 +69,7 @@ class _LoginFlowState extends State<LoginFlow> {
         await FirebaseAuth.instance.signInWithCredential(credential);
         if (FirebaseAuth.instance.currentUser != null) {
           Navigator.removeRouteBelow(context, ModalRoute.of(context)!);
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
+          Navigator.pushReplacementNamed(context, AppRoutes.start);
         } else {
           print('something went wrong with the verification code');
         }

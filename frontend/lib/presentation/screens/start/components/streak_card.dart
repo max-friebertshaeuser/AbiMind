@@ -1,16 +1,13 @@
-import 'dart:convert';
-
+import 'package:Abimind/data/models/streak.dart';
 import 'package:Abimind/presentation/screens/start/components/streak_settings_card.dart';
+import 'package:Abimind/presentation/screens/start/start-screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:Abimind/data/models/streak.dart';
-import 'package:Abimind/presentation/screens/start/start-screen.dart';
 
 import '../../../../core/utils/constants.dart';
 import '../../../../data/services/firebase_srv.dart' as firebase_srv;
+import 'main_surface_card.dart';
 
 class StreakCard extends StatefulWidget {
   const StreakCard({super.key});
@@ -100,13 +97,27 @@ class _StreakCardState extends State<StreakCard> with WidgetsBindingObserver {
     return FutureBuilder<Map<String, dynamic>>(
       future: _streakDataFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Fehler: ${snapshot.error}'));
-        } else if (!snapshot.hasData) {
-          return const Center(child: Text('Keine Daten verfügbar.'));
+
+        if (!snapshot.hasData) {
+          return MainSurfaceCard(
+            title: 'Streak',
+            boxFlex: 1,
+            child: Center(
+              child:
+                  () {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Fehler: ${snapshot.error}'));
+                } else if (!snapshot.hasData) {
+                  return const Center(child: Text('Keine Daten verfügbar.'));
+                }
+                return Text('Keine Daten verfügbar.');
+              }(),
+            ),
+          );
         }
+
 
         final data = snapshot.data!;
         final int streak = data['streak'] ?? 0;
@@ -247,9 +258,9 @@ Positioned(
   top: 0,
   left: 0,
   child: IconButton(
-    icon: const Icon(
+    icon:  Icon(
       Icons.settings,
-      color: Colors.white,
+      color: colorScheme.primary,
       size: 20,
     ),
     onPressed: () {

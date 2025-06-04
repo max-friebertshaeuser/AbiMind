@@ -27,7 +27,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.welcome: (context) => const WelcomeScreen(),
   AppRoutes.login: (context) => const LoginFlow(),
   AppRoutes.register: (context) => const RegistrationFlow(),
-  AppRoutes.start: (context) => const StarScreen(),
+  AppRoutes.start: (context) => const StartScreen(),
   AppRoutes.streak: (context) => const StreakSettingScreen(),
 
 };

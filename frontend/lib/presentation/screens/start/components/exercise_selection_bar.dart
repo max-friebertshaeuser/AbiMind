@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:Abimind/data/models/exercise.dart';
+import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants.dart';
 
@@ -44,12 +43,12 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         border: Border.all(color: colorScheme.onPrimaryFixedVariant, width: 2),
         borderRadius: BorderRadius.circular(40),
-        color: colorScheme.primaryContainer,
+        color: colorScheme.surfaceContainer,
       ),
       child: Row(
         children:
@@ -66,6 +65,10 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
                       ? colorScheme.onPrimaryFixedVariant
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(32),
+                  border: Border.all(
+                    color: colorScheme.primary,
+                    width: 2,
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

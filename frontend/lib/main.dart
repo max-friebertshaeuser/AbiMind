@@ -30,14 +30,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Math App',
+      title: 'Abimind',
       theme: ThemeData(
         useMaterial3: true,
-        colorSchemeSeed: Colors.deepPurple,
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF7916FF)).copyWith(
+          surfaceContainer: Color(0xFFF1DFD9),
+        )
       ),
       initialRoute:
       FirebaseAuth.instance.currentUser == null ? AppRoutes.welcome :
-      AppRoutes.home,
+      AppRoutes.start,
       routes: appRoutes,
     );
   }
