@@ -66,7 +66,7 @@ class _CategoryToggleBarState extends State<CategoryToggleBar> {
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(32),
                   border: Border.all(
-                    color: colorScheme.primary,
+                    color: colorScheme.onPrimaryFixedVariant,
                     width: 2,
                   ),
                 ),

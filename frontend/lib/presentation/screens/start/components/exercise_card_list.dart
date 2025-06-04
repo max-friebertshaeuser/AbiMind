@@ -240,13 +240,19 @@ class CustomTaskCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             // Tags
-            Wrap(
-              spacing: 8,
-              alignment: WrapAlignment.end,
-              children:
+            Row(
+              children: [
+                Text(year, style: kHeaderStyle),
+                const SizedBox(width: 8),
+                Text(title, style: kHeaderStyle),
+                Spacer(),
+                Wrap(
+                  spacing: 8,
+                  alignment: WrapAlignment.end,
+                  children:
                   tags.map((tag) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
@@ -260,13 +266,7 @@ class CustomTaskCard extends StatelessWidget {
                       child: Text(tag, style: lableTextStyle),
                     );
                   }).toList(),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Text(year, style: kHeaderStyle),
-                const SizedBox(width: 8),
-                Text(title, style: kHeaderStyle),
+                ),
               ],
             ),
             const SizedBox(height: 6),

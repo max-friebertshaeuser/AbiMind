@@ -22,7 +22,7 @@ class MainSurfaceCard extends StatelessWidget {
           Expanded(
             child: Container(
               margin: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 10.0),
-              decoration: BoxDecoration(color: colorScheme.surfaceContainer, borderRadius: BorderRadius.circular(20)),
+              decoration: BoxDecoration(color: colorScheme.surfaceContainer,borderRadius: BorderRadius.circular(20),),
               child: child,
             ),
           ),

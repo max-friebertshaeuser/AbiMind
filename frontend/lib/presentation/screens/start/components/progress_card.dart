@@ -248,17 +248,20 @@ class _ProgressCardState extends State<ProgressCard>
                 // right side: scrollable mini cards
                 Expanded(
                   flex: 1,
-                  child: ListView.builder(
-                    itemCount: statisticsData.length,
-                    itemBuilder: (context, index) {
-                      final stat = statisticsData[index];
-                      return ExamCard(
-                        stat: stat,
-                        isSelected: stat.year == selectedExam.year,
-                        progressData: progressData,
-                        onTap: () => selectStatistic(stat),
-                      );
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: ListView.builder(
+                      itemCount: statisticsData.length,
+                      itemBuilder: (context, index) {
+                        final stat = statisticsData[index];
+                        return ExamCard(
+                          stat: stat,
+                          isSelected: stat.year == selectedExam.year,
+                          progressData: progressData,
+                          onTap: () => selectStatistic(stat),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ],

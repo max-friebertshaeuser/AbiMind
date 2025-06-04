@@ -70,6 +70,9 @@ class _SideBarState extends State<SideBar> {
 
   @override
   Widget build(BuildContext context) {
+
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Drawer(
       child: Container(
         color: const Color(0xFFF9F4FC),
@@ -85,8 +88,8 @@ class _SideBarState extends State<SideBar> {
                     Image.asset('assets/logo.png', height: 30),
                     const SizedBox(height: 20),
                     ListTile(
-                      leading: const Icon(Icons.local_fire_department),
-                      title: const Text("Streak Challenge"),
+                      leading: Icon(Icons.local_fire_department, color: colorScheme.primary),
+                      title: Text("Streak Challenge", style: TextStyle(color: colorScheme.primary),),
                       onTap: () {
                         print("Profile was clicked");
                         Navigator.push(
@@ -116,8 +119,8 @@ class _SideBarState extends State<SideBar> {
 
                     ...progressExercises.map(
                       (exam) => ListTile(
-                        leading: const Icon(Icons.description),
-                        title: Text("ABI ${exam.year}"),
+                        leading: Icon(Icons.description, color: colorScheme.primary,),
+                        title: Text("ABI ${exam.year}", style: TextStyle(color: colorScheme.primary)),
                         onTap: () {
                           Navigator.pushNamed(
                             context,
@@ -137,7 +140,7 @@ class _SideBarState extends State<SideBar> {
                     // No corrected exams message
                     if (correctedExercises.isEmpty)
                       ListTile(
-                        leading: const Icon(Icons.info_outline),
+                        leading:  Icon(Icons.info_outline, color: colorScheme.primary,),
                         title: Text(
                           "No corrected exams",
                           style: TextStyle(
@@ -149,8 +152,8 @@ class _SideBarState extends State<SideBar> {
 
                     ...correctedExercises.map(
                       (exam) => ListTile(
-                        leading: const Icon(Icons.description),
-                        title: Text("ABI ${exam.year}"),
+                        leading: Icon(Icons.description,color: colorScheme.primary),
+                        title: Text("ABI ${exam.year}", style: TextStyle(color: colorScheme.primary)),
                         onTap: () {
                           Navigator.pushNamed(
                             context,

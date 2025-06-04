@@ -14,8 +14,10 @@ class StartScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
-        elevation: 5,
+        scrolledUnderElevation: 0,
+        elevation: 0,
         centerTitle: true,
         backgroundColor: colorScheme.surface,
         title: Image.asset('assets/logo.png', height: 40),
